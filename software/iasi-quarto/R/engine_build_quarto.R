@@ -11,7 +11,6 @@
   quarto = .ensure_checked_project(quarto)
   quarto = .prepare_project(quarto)
   quarto = .render_build_project(quarto, formats)
-  .record_build_state(quarto)
   .IASI$status$OK
 }
 

@@ -4,14 +4,10 @@
 \alias{release}
 \title{Collect local IASI release artifacts}
 \usage{
-release(source = NULL, path = ".", force = FALSE)
+release(path = ".")
 }
 \arguments{
-\item{source}{Optional release source.}
-
 \item{path}{Directory from which IASI projects are discovered.}
-
-\item{force}{Reserved for API symmetry.}
 }
 \value{
 Numeric status code. \code{0} means success.

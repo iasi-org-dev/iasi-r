@@ -2,36 +2,15 @@
   context$path = normalizePath(context$path, winslash = "/", mustWork = TRUE)
   context$plan = .discover(context)
 
-  message(sprintf(
-    "%s: %d IASI project(s) discovered:",
-    tools::toTitleCase(context$action),
-    length(context$plan)
-  ))
-
-  for (path in context$plan) {
-    message("  ", path)
-  }
+  message(sprintf("%s: %d IASI project(s) discovered:", tools::toTitleCase(context$action), length(context$plan)))
+  for (path in context$plan) message("  ", path)
 
   context$projects = .select_projects(context)
 
-  message(sprintf(
-    "%s: %d IASI project(s) selected:",
-    tools::toTitleCase(context$action),
-    length(context$projects)
-  ))
+  message(sprintf("%s: %d IASI project(s) selected:", tools::toTitleCase(context$action), length(context$projects)))
+  for (project in context$projects) message("  ", project$path, " [", project$config$type, "]")
 
-  for (project in context$projects) {
-    message(
-      "  ",
-      project$path,
-      " [",
-      project$config$type,
-      "]"
-    )
-  }
-
-  context$current = length(context$projects) == 1L &&
-    identical(context$projects[[1L]]$path, context$path)
+  context$current = length(context$projects) == 1L && identical(context$projects[[1L]]$path, context$path)
 
   context
 }
@@ -39,35 +18,9 @@
 
 .select_projects = function(context) {
   projects = lapply(context$plan, .read_iasi_project)
-
-  .select_requested_projects(projects, context)
-}
-
-
-
-.select_requested_projects = function(projects, context) {
-  if (is.null(context$book) || identical(context$book, "all") || !length(projects)) {
-    return(projects)
-  }
-
-  requested = unique(as.character(context$book))
-  names = vapply(projects, function(project) basename(project$path), character(1))
-  simple = sub("^[0-9]+-", "", names)
-  numbers = sub("-.*$", "", names)
-
-  selected = vapply(
-    seq_along(projects),
-    function(i) {
-      any(
-        requested == names[[i]] |
-        requested == simple[[i]] |
-        (grepl("^[0-9]+$", requested) & suppressWarnings(as.integer(requested)) == suppressWarnings(as.integer(numbers[[i]])))
-      )
-    },
-    logical(1)
-  )
-
-  projects[selected]
+  targets = .IASI$targets[[context$action]]
+  if (is.null(targets)) return(projects)
+  Filter(function(project) project$config$type %in% targets, projects)
 }
 
 

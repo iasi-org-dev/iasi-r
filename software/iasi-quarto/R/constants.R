@@ -24,5 +24,12 @@
     guide = "guide",
     web = "web",
     pkg = "r-package"
+  ),
+
+  targets = list(
+    validate = c("guide", "web", "r-package"),
+    build = c("guide", "web", "r-package"),
+    publish = c("guide", "web"),
+    release = c("guide", "web", "r-package")
   )
 )

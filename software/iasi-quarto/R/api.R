@@ -52,22 +52,19 @@ build = function(format = NULL, path = ".") {
 
 #' Publish built IASI projects locally
 #'
-#' @param book Optional project selection.
-#' @param source Optional build-output root.
+#' Publishes selected build outputs from `_outputs` only when their content
+#' changed, unless `force = TRUE`.
+#'
 #' @param path Directory from which IASI projects are discovered.
-#' @param force Reserved for API symmetry.
+#' @param force Publish even when the build-output hash has not changed.
 #' @return Numeric status code. `0` means success.
 #' @export
-publish = function(book = NULL, source = NULL, path = ".", force = FALSE) {
-  context = list(action = "publish", book = book, source = source, path = path, force = force)
+publish = function(path = ".", force = FALSE) {
+  context = list(action = "publish", path = path, force = force)
 
   rc = tryCatch(
-    {
-      .engine_publish(context)
-    },
-    error = function(error) {
-      .IASI$status$ERROR
-    }
+    .engine_publish(context),
+    error = function(error) .IASI$status$ERROR
   )
 
   invisible(rc)
@@ -76,21 +73,15 @@ publish = function(book = NULL, source = NULL, path = ".", force = FALSE) {
 
 #' Collect local IASI release artifacts
 #'
-#' @param source Optional release source.
 #' @param path Directory from which IASI projects are discovered.
-#' @param force Reserved for API symmetry.
 #' @return Numeric status code. `0` means success.
 #' @export
-release = function(source = NULL, path = ".", force = FALSE) {
-  context = list(action = "release", source = source, path = path, force = force)
+release = function(path = ".") {
+  context = list(action = "release", path = path)
 
   rc = tryCatch(
-    {
-      .engine_release(context)
-    },
-    error = function(error) {
-      .IASI$status$ERROR
-    }
+    .engine_release(context),
+    error = function(error) .IASI$status$ERROR
   )
 
   invisible(rc)

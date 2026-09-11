@@ -189,67 +189,6 @@
 # Publish consumes one build root containing sibling format directories. If an
 # author deliberately scatters profile outputs across different parents, the
 # source must be supplied explicitly rather than guessed.
-.project_output_root = function(project, formats = NULL) {
-  paths = .project_output_paths(
-    project,
-    formats
-  )
-
-  if (!length(paths)) {
-    return(NULL)
-  }
-
-  parents = unique(
-    dirname(paths)
-  )
-
-  if (length(parents) != 1L) {
-    stop(
-      paste(
-        "Quarto profile outputs do not share one publication root;",
-        "use `source` explicitly or configure sibling output directories."
-      ),
-      call. = FALSE
-    )
-  }
-
-  parents[[1L]]
-}
 
 # Resolve the tree consumed by publish(). Explicit sources are relative to the
 # publication unless absolute; otherwise the common build root is inferred.
-.project_output_source = function(project, source = NULL) {
-  if (!is.null(source)) {
-    if (!is.character(source) ||
-        length(source) != 1L ||
-        is.na(source) ||
-        !nzchar(source)) {
-      stop(
-        "`source` must be one non-empty directory path.",
-        call. = FALSE
-      )
-    }
-
-    if (.is_absolute_path(source)) {
-      return(source)
-    }
-
-    return(
-      file.path(
-        project$path,
-        source
-      )
-    )
-  }
-
-  root = .project_output_root(project)
-
-  if (is.null(root)) {
-    stop(
-      "Could not infer a publication output root; pass `source` explicitly.",
-      call. = FALSE
-    )
-  }
-
-  root
-}

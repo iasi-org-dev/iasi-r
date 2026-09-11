@@ -1,33 +1,3 @@
-#' Check discovered IASI Quarto publications
-#'
-#' Checks the configuration and structure of every publication discovered in
-#' an IASI Quarto plan.
-#'
-#' @param plan An `iasi_quarto_plan` returned by `.discover()`.
-#'
-#' @return Invisibly returns the checked plan.
-#'
-#' @noRd
-.check = function(plan) {
-
-  plan$projects = lapply(
-    plan$projects,
-    .check_project
-  )
-
-  plan$valid = all(vapply(
-    plan$projects,
-    function(project) {
-      isTRUE(project$valid)
-    },
-    logical(1)
-  ))
-
-  .report_check(plan)
-
-  invisible(plan)
-}
-
 .check_project = function(project) {
   errors = character()
   warnings = character()
@@ -737,55 +707,6 @@
       character()
     }
   )
-}
-
-.report_check = function(plan) {
-  message("IASI Quarto check")
-  message("-----------------")
-  message(sprintf(
-    "Status  : %s",
-    if (isTRUE(plan$valid)) {
-      "VALID"
-    } else {
-      "INVALID"
-    }
-  ))
-  message(sprintf(
-    "Projects: %d",
-    length(plan$projects)
-  ))
-
-  for (project in plan$projects) {
-    message(sprintf(
-      "- %s [%s]",
-      project$name,
-      if (isTRUE(project$valid)) {
-        "VALID"
-      } else {
-        "INVALID"
-      }
-    ))
-
-    if (length(project$errors)) {
-      for (error in project$errors) {
-        message(sprintf(
-          "  ERROR: %s",
-          error
-        ))
-      }
-    }
-
-    if (length(project$warnings)) {
-      for (warning in project$warnings) {
-        message(sprintf(
-          "  WARNING: %s",
-          warning
-        ))
-      }
-    }
-  }
-
-  invisible(plan)
 }
 
 .display_checked_value = function(value) {

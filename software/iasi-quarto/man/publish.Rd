@@ -4,20 +4,17 @@
 \alias{publish}
 \title{Publish built IASI projects locally}
 \usage{
-publish(book = NULL, source = NULL, path = ".", force = FALSE)
+publish(path = ".", force = FALSE)
 }
 \arguments{
-\item{book}{Optional project selection.}
-
-\item{source}{Optional build-output root.}
-
 \item{path}{Directory from which IASI projects are discovered.}
 
-\item{force}{Reserved for API symmetry.}
+\item{force}{Publish even when the build-output hash has not changed.}
 }
 \value{
 Numeric status code. \code{0} means success.
 }
 \description{
-Publish built IASI projects locally
+Publishes selected build outputs from \verb{_outputs} only when their content
+changed, unless \code{force = TRUE}.
 }

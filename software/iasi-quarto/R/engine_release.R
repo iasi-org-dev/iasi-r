@@ -1,14 +1,9 @@
 .engine_release = function(context) {
   context = .prepare_context(context)
 
-  results = lapply(
-    context$projects,
-    function(project) .release_project(context, project)
-  )
+  results = lapply(context$projects, function(project) .release_project(context, project))
 
-  if (length(results) && any(unlist(results) != .IASI$status$OK)) {
-    return(.IASI$status$ERROR)
-  }
+  if (length(results) && any(unlist(results) != .IASI$status$OK)) return(.IASI$status$ERROR)
 
   .IASI$status$OK
 }
@@ -19,9 +14,7 @@
 
   message("Release project: ", project$path, " [", project$config$type, "]")
 
-  if (identical(project$config$type, .IASI$types$pkg)) {
-    return(.release_package(context, project))
-  }
+  if (identical(project$config$type, .IASI$types$pkg)) return(.release_package(context, project))
 
   .release_published(context, project)
 }

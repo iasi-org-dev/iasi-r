@@ -1,1 +1,0 @@
-Fixture intentionally contains no IASI Quarto files.
