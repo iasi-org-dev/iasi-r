@@ -12,7 +12,7 @@ publish(path = ".", force = FALSE)
 \item{force}{Publish even when the build-output hash has not changed.}
 }
 \value{
-Numeric status code. \code{0} means success.
+Numeric status bitmask.
 }
 \description{
 Publishes selected build outputs from \verb{_outputs} only when their content

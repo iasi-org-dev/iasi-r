@@ -5,8 +5,16 @@
 
 .IASI = list(
   status = list(
-    OK = 0L,
-    ERROR = 1L
+    OK = 0x00L,
+    NOTHING_TO_DO = 0x01L,
+    INFO = 0x02L,
+    WARNING = 0x04L,
+    ATTENTION = 0x08L,
+    ERROR = 0x10L,
+    SEVERE = 0x20L,
+    FATAL = 0x40L,
+    NOTICE_MASK = 0x0FL,
+    ERROR_MASK = 0xF0L
   ),
 
   files = list(

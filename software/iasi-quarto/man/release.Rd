@@ -10,7 +10,7 @@ release(path = ".")
 \item{path}{Directory from which IASI projects are discovered.}
 }
 \value{
-Numeric status code. \code{0} means success.
+Numeric status bitmask.
 }
 \description{
 Collect local IASI release artifacts

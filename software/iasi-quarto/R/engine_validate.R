@@ -2,19 +2,13 @@
 
 .engine_validate = function(context) {
   context = .prepare_context(context)
-
-  results = lapply(context$projects, function(project) .validate_project(project))
-
-  if (length(results) && any(unlist(results) != .IASI$status$OK)) {
-    return(.IASI$status$ERROR)
-  }
-
-  .IASI$status$OK
+  lapply(context$projects, function(project) .validate_project(context, project))
+  invisible(context$rc)
 }
 
 
 # Validate one selected project.
-.validate_project = function(project) {
+.validate_project = function(context, project) {
   project = .prepare_project_config(project)
 
   if (identical(project$config$type, .IASI$types$pkg)) {
@@ -23,10 +17,10 @@
       stop("Invalid R package project.", call. = FALSE)
     }
 
-    return(.IASI$status$OK)
+    return(invisible(context$rc))
   }
 
   quarto = .as_quarto_project(project)
   .ensure_checked_project(quarto)
-  .IASI$status$OK
+  invisible(context$rc)
 }

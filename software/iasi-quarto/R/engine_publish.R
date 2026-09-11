@@ -8,18 +8,15 @@
 # Publish every selected target.
 .engine_publish = function(context) {
   context = .prepare_context(context)
-  if (!length(context$projects)) return(.IASI$status$OK)
 
-  results = lapply(context$projects, function(project) {
+  lapply(context$projects, function(project) {
     project = .prepare_project_config(project)
     quarto = .as_quarto_project(project)
     quarto = .ensure_checked_project(quarto)
     .publish_project(context, quarto)
   })
 
-  if (length(results) && any(unlist(results) != .IASI$status$OK)) return(.IASI$status$ERROR)
-
-  .IASI$status$OK
+  invisible(context$rc)
 }
 
 
@@ -31,12 +28,12 @@
 
   if (!isTRUE(context$force) && .publish_unchanged(destination, hash)) {
     message("Publication unchanged: ", project$path)
-    return(.IASI$status$OK)
+    .rc_add(context, .IASI$status$NOTHING_TO_DO)
+    return(invisible(context$rc))
   }
 
-  project = .publish_project_to(project = project, destination = destination, hash = hash, clean = TRUE)
-
-  .IASI$status$OK
+  .publish_project_to(project = project, destination = destination, hash = hash, clean = TRUE)
+  invisible(context$rc)
 }
 
 
@@ -71,7 +68,7 @@
 
   relative = if (length(files)) substring(normalizePath(files, winslash = "/", mustWork = TRUE), nchar(path) + 2L) else character()
   hashes = if (length(files)) unname(tools::md5sum(files)) else character()
-  manifest = paste(relative, hashes, sep = "	")
+  manifest = paste(relative, hashes, sep = "\t")
 
   tmp = tempfile("iasi-publish-hash-")
   on.exit(unlink(tmp), add = TRUE)

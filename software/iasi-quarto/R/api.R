@@ -1,21 +1,27 @@
+# Run one public action while preserving the cumulative return-code mask.
+.run_action = function(context, engine) {
+  tryCatch(
+    withCallingHandlers(
+      engine(context),
+      error = function(error) {
+        if (bitwAnd(context$rc, .IASI$status$ERROR_MASK) == 0L) .rc_add(context, .IASI$status$ERROR)
+      }
+    ),
+    error = function(error) NULL
+  )
+
+  invisible(context$rc)
+}
+
+
 #' Validate IASI projects
 #'
 #' @param path Directory from which IASI projects are discovered.
-#' @return Numeric status code. `0` means success.
+#' @return Numeric status bitmask.
 #' @export
 validate = function(path = ".") {
-  context = list(action = "validate", path = path)
-
-  rc = tryCatch(
-    {
-      .engine_validate(context)
-    },
-    error = function(error) {
-      .IASI$status$ERROR
-    }
-  )
-
-  invisible(rc)
+  context = .new_context(action = "validate", path = path)
+  .run_action(context, .engine_validate)
 }
 
 
@@ -28,25 +34,11 @@ validate = function(path = ".") {
 #'
 #' @param format Optional Quarto format/profile selection.
 #' @param path Directory from which IASI projects are discovered.
-#' @return Numeric status code. `0` means success.
+#' @return Numeric status bitmask.
 #' @export
 build = function(format = NULL, path = ".") {
-  context = list(
-    action = "build",
-    format = format,
-    path = path
-  )
-
-  rc = tryCatch(
-    {
-      .engine_build(context)
-    },
-    error = function(error) {
-      .IASI$status$ERROR
-    }
-  )
-
-  invisible(rc)
+  context = .new_context(action = "build", format = format, path = path)
+  .run_action(context, .engine_build)
 }
 
 
@@ -57,32 +49,20 @@ build = function(format = NULL, path = ".") {
 #'
 #' @param path Directory from which IASI projects are discovered.
 #' @param force Publish even when the build-output hash has not changed.
-#' @return Numeric status code. `0` means success.
+#' @return Numeric status bitmask.
 #' @export
 publish = function(path = ".", force = FALSE) {
-  context = list(action = "publish", path = path, force = force)
-
-  rc = tryCatch(
-    .engine_publish(context),
-    error = function(error) .IASI$status$ERROR
-  )
-
-  invisible(rc)
+  context = .new_context(action = "publish", path = path, force = force)
+  .run_action(context, .engine_publish)
 }
 
 
 #' Collect local IASI release artifacts
 #'
 #' @param path Directory from which IASI projects are discovered.
-#' @return Numeric status code. `0` means success.
+#' @return Numeric status bitmask.
 #' @export
 release = function(path = ".") {
-  context = list(action = "release", path = path)
-
-  rc = tryCatch(
-    .engine_release(context),
-    error = function(error) .IASI$status$ERROR
-  )
-
-  invisible(rc)
+  context = .new_context(action = "release", path = path)
+  .run_action(context, .engine_release)
 }

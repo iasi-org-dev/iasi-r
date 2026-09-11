@@ -3,16 +3,9 @@
   context = .prepare_context(context)
   message(sprintf("Building %d IASI project(s)...", length(context$projects)))
 
-  results = lapply(
-    context$projects,
-    function(project) .build_project(context, project)
-  )
+  lapply(context$projects, function(project) .build_project(context, project))
 
-  if (length(results) && any(unlist(results) != .IASI$status$OK)) {
-    return(.IASI$status$ERROR)
-  }
-
-  .IASI$status$OK
+  invisible(context$rc)
 }
 
 
@@ -21,13 +14,9 @@
   project = .prepare_project_config(project)
   message("Building: ", project$path, " [", project$config$type, "]")
 
-  if (identical(project$config$type, .IASI$types$pkg)) {
-    return(.build_package_project(context, project))
-  }
+  if (identical(project$config$type, .IASI$types$pkg)) return(.build_package_project(context, project))
+  if (project$config$type %in% c(.IASI$types$guide, .IASI$types$web)) return(.build_quarto_project(context, project))
 
-  if (project$config$type %in% c(.IASI$types$guide, .IASI$types$web)) {
-    return(.build_quarto_project(context, project))
-  }
-
-  .IASI$status$OK
+  .rc_add(context, .IASI$status$NOTHING_TO_DO)
+  invisible(context$rc)
 }
