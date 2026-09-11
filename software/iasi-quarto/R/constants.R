@@ -30,14 +30,15 @@
   types = list(
     repo = "repository",
     guide = "guide",
+    book = "book",
     web = "web",
     pkg = "r-package"
   ),
 
   targets = list(
-    validate = c("guide", "web", "r-package"),
-    build = c("guide", "web", "r-package"),
-    publish = c("guide", "web"),
-    release = c("guide", "web", "r-package")
+    validate = c("guide", "book", "web", "r-package"),
+    build = c("guide", "book", "web", "r-package"),
+    publish = c("guide", "book", "web"),
+    release = c("guide", "book", "web", "r-package")
   )
 )

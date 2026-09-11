@@ -15,7 +15,7 @@
   message("Building: ", project$path, " [", project$config$type, "]")
 
   if (identical(project$config$type, .IASI$types$pkg)) return(.build_package_project(context, project))
-  if (project$config$type %in% c(.IASI$types$guide, .IASI$types$web)) return(.build_quarto_project(context, project))
+  if (project$config$type %in% c(.IASI$types$guide, .IASI$types$book, .IASI$types$web)) return(.build_quarto_project(context, project))
 
   .rc_add(context, .IASI$status$NOTHING_TO_DO)
   invisible(context$rc)
