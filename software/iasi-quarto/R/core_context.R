@@ -2,13 +2,7 @@
   context$path = normalizePath(context$path, winslash = "/", mustWork = TRUE)
   context$plan = .discover(context)
 
-  message(sprintf("%s: %d IASI project(s) discovered:", tools::toTitleCase(context$action), length(context$plan)))
-  for (path in context$plan) message("  ", path)
-
   context$projects = .select_projects(context)
-
-  message(sprintf("%s: %d IASI project(s) selected:", tools::toTitleCase(context$action), length(context$projects)))
-  for (project in context$projects) message("  ", project$path, " [", project$config$type, "]")
 
   context$current = length(context$projects) == 1L && identical(context$projects[[1L]]$path, context$path)
 

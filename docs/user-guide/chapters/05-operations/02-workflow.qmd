@@ -1,38 +1,39 @@
 ## Flujo recomendado
 
-Durante la edición:
+Durante la edición, construya únicamente el formato que necesita revisar:
 
 ```r
 build(format = "html")
 ```
 
-Cuando quiera comprobar todos los formatos:
+Cuando quiera materializar todos los perfiles declarados:
 
 ```r
 build()
 ```
 
-Cuando los resultados construidos ya son los que quiere publicar:
+Cuando el resultado construido sea publicable:
 
 ```r
 publish()
 ```
 
-Para el trabajo habitual una vez estabilizado el proyecto:
+Una segunda llamada a `publish()` no repite trabajo si `_outputs/` no ha cambiado. Para repetir expresamente la publicación:
 
 ```r
-deploy()
+publish(force = TRUE)
 ```
 
-Y cuando haya cambiado la herramienta, una plantilla, una regla de postprocesado o cualquier elemento que pueda alterar la salida sin modificar los fuentes:
+Cuando quiera reunir los entregables locales:
 
 ```r
-deploy(force = TRUE)
+release()
 ```
 
 La regla práctica es:
 
 ```text
-normal → haz lo necesario
-force  → hazlo todo
+build    → construye siempre
+publish  → publica si cambió; force publica siempre
+release  → recoge lo ya construido/publicado
 ```

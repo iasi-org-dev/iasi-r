@@ -10,17 +10,13 @@
   context = .prepare_context(context)
   if (!length(context$projects)) return(.IASI$status$OK)
 
-  projects = lapply(context$projects, function(project) {
+  results = lapply(context$projects, function(project) {
     project = .prepare_project_config(project)
     quarto = .as_quarto_project(project)
-    .ensure_checked_project(quarto)
+    quarto = .ensure_checked_project(quarto)
+    .publish_project(context, quarto)
   })
 
-  publish_context = context
-  publish_context$projects = projects
-  destinations = .publish_destinations(publish_context)
-
-  results = Map(function(project, destination) .publish_project(context, project, destination), projects, destinations)
   if (length(results) && any(unlist(results) != .IASI$status$OK)) return(.IASI$status$ERROR)
 
   .IASI$status$OK
@@ -28,8 +24,9 @@
 
 
 # Publish one target from its `_outputs` directory unless unchanged.
-.publish_project = function(context, project, destination) {
+.publish_project = function(context, project) {
   source = file.path(project$path, .IASI$dirs$output)
+  destination = .publish_destination(project)
   hash = .publish_hash(source)
 
   if (!isTRUE(context$force) && .publish_unchanged(destination, hash)) {

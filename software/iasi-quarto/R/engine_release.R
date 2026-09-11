@@ -55,11 +55,7 @@
   release = .release_path(project)
 
   quarto = .as_quarto_project(project)
-  publish_context = context
-  publish_context$projects = list(quarto)
-  publish_context$current = identical(context$path, project$path)
-
-  source = .publish_destination(publish_context, quarto)
+  source = .publish_destination(quarto)
 
   if (!dir.exists(source)) {
     message("No published content found in: ", source)
@@ -76,7 +72,7 @@
   target = if (identical(project$config$type, .IASI$types$web)) {
     release
   } else {
-    file.path(release, .publish_slot(quarto))
+    file.path(release, sub("^[0-9]+-", "", basename(quarto$path)))
   }
 
   dir.create(target, recursive = TRUE, showWarnings = FALSE)

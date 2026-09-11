@@ -1,93 +1,81 @@
-## Trabajar con varias publicaciones
+## Trabajar con varios proyectos IASI
 
-Un multiproyecto permite mantener varias publicaciones IASI Quarto bajo una misma raíz. Las publicaciones pueden estar agrupadas físicamente en directorios como `docs/`; cada una sigue siendo una unidad de construcción independiente.
+Un repositorio puede contener varios proyectos IASI bajo una misma raíz. Los directorios intermedios no necesitan configuración IASI: el descubrimiento continúa descendiendo hasta encontrar un directorio que contenga `_iasi.yml` o `.iasi.yml`, salvo las ramas definidas como excluidas.
 
 Ejemplo:
 
 ```text
-workspace/
+repository/
+├── _iasi.yml
 ├── docs/
-│   ├── 01-user-guide/
-│   │   ├── _quarto.yml
-│   │   ├── _iasi.yml
-│   │   └── _outputs/
-│   ├── 02-developer-guide/
-│   │   ├── _quarto.yml
-│   │   ├── _iasi.yml
-│   │   └── _outputs/
-│   └── 03-reference/
-│       ├── _quarto.yml
+│   └── user-guide/
 │       ├── _iasi.yml
+│       ├── _quarto.yml
 │       └── _outputs/
-└── _publish/
-    ├── user-guide/
-    ├── developer-guide/
-    └── reference/
+└── software/
+    └── iasi-quarto/
+        ├── .iasi.yml
+        └── DESCRIPTION
 ```
 
-Desde la raíz puede operar sobre el conjunto:
+En este ejemplo, `docs/` y `software/` son únicamente contenedores. Los proyectos IASI son la raíz `repository/`, `docs/user-guide/` y `software/iasi-quarto/`.
+
+## `path` define el ámbito
+
+Las operaciones utilizan `path` como único selector del ámbito:
 
 ```r
-prepare(path = ".")
+validate(path = ".")
 build(path = ".")
 publish(path = ".")
-deploy(path = ".")
+release(path = ".")
 ```
 
-## Seleccionar una publicación
+Si se ejecuta una operación desde una subcarpeta, el descubrimiento se limita a ese árbol.
 
-Puede seleccionar una publicación con `book`:
+No existe un selector adicional `book`: para trabajar sobre un proyecto concreto, utilice su `path`.
+
+Por ejemplo:
 
 ```r
-build(
-  path = ".",
-  book = "user-guide"
-)
+build(path = "docs/user-guide", format = "html")
 ```
 
-También puede combinar selección y formato:
+## Selección por operación
 
-```r
-build(
-  path = ".",
-  book = "user-guide",
-  format = "html"
-)
+Descubrir un proyecto no significa necesariamente procesarlo.
+
+Cada operación selecciona de los proyectos descubiertos únicamente los tipos a los que aplica:
+
+```text
+validate  → guide, web, r-package
+build     → guide, web, r-package
+publish   → guide, web
+release   → guide, web, r-package
 ```
 
-La selección puede utilizar el nombre de la publicación, su ruta relativa, su directorio completo o su prefijo numérico cuando corresponda.
+Un proyecto de tipo `repository` puede servir como raíz de configuración y contener otros proyectos IASI, pero no se procesa como una publicación o un paquete.
 
 ## Un único árbol de publicación
 
-Cuando la operación se ejecuta desde la raíz de un multiproyecto, IASI Quarto utiliza un único `_publish/` común.
+Cuando `publish()` se ejecuta desde la raíz que contiene varias publicaciones, utiliza un único `_publish/` común. Cada publicación ocupa un slot estable.
 
-El nombre del subdirectorio se deriva del nombre físico de la publicación eliminando únicamente el prefijo numérico inicial:
+Los prefijos numéricos organizativos se eliminan al derivar el nombre del slot:
 
 ```text
 01-user-guide       → _publish/user-guide/
 02-developer-guide  → _publish/developer-guide/
 ```
 
-Publicar una sola unidad recrea únicamente su destino:
+Cada publicación se prepara primero en su árbol temporal y sustituye únicamente su destino. Publicar `user-guide` no modifica `developer-guide`.
 
-```r
-publish(
-  path = ".",
-  book = "user-guide"
-)
-```
+Cuando `path` apunta directamente a una publicación individual, esa publicación utiliza su propio `_publish/`.
 
-La operación anterior sustituye `_publish/user-guide/` y no modifica `_publish/developer-guide/`.
-
-Si dos publicaciones distintas resolvieran el mismo nombre de destino, la operación se detiene antes de modificar `_publish/`.
-
-Cuando `path` apunta directamente a una publicación individual, esa publicación es el workspace seleccionado y su salida se materializa en su propio `_publish/`.
-
-Esta separación mantiene tres niveles distintos:
+Los niveles quedan separados:
 
 ```text
 fuentes
-→ _outputs/   construcción local de cada publicación
-→ _publish/   árbol publicable del workspace
-→ release     distribución o congelación posterior
+→ _outputs/   artefactos construidos
+→ _publish/   publicación local preparada
+→ release/    entregables locales
 ```

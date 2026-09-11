@@ -7,6 +7,7 @@
 
   r = file.path(R.home("bin"), "R")
 
+  message("  Building source package...")
   source_status = system2(
     r,
     c("CMD", "build", ".")
@@ -24,6 +25,7 @@
     stop("R package source artifact not found.", call. = FALSE)
   }
 
+  message("  Building binary package...")
   binary_status = system2(
     r,
     c("CMD", "INSTALL", "--build", source)

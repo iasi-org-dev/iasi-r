@@ -1,16 +1,15 @@
 ## Operaciones principales
 
-El uso habitual de `iasi.quarto` gira alrededor de cinco operaciones:
+La API pública de `iasi.quarto` gira alrededor de cuatro operaciones:
 
 ```r
 validate()
-prepare()
 build()
 publish()
-deploy()
+release()
 ```
 
-Cada operación tiene una responsabilidad distinta. La separación es deliberada: reconocer y comprobar un proyecto, materializar artefactos derivados, renderizar formatos y preparar un árbol publicable no son la misma cosa.
+Las cuatro utilizan la misma infraestructura de descubrimiento y selección. A partir de `path`, IASI recorre el árbol, descubre los proyectos IASI y selecciona únicamente los tipos a los que aplica la operación solicitada.
 
 ### Validar
 
@@ -18,19 +17,11 @@ Cada operación tiene una responsabilidad distinta. La separación es deliberada
 validate()
 ```
 
-Utilice `validate()` para comprobar que la ruta corresponde a una publicación o espacio de trabajo IASI Quarto reconocido.
+`validate()` comprueba los proyectos IASI seleccionados.
 
-No prepara, construye ni publica.
+Para publicaciones Quarto valida su configuración y estructura. Para paquetes R comprueba, entre otras condiciones, la existencia de `DESCRIPTION`.
 
-### Preparar
-
-```r
-prepare()
-```
-
-`prepare()` ejecuta el reconocimiento, descubrimiento y comprobación de la publicación y materializa los artefactos derivados necesarios para Quarto, pero se detiene antes del renderizado.
-
-Es útil cuando se quieren revisar artefactos como `_book-structure.yml` o `_generated/navbar-left.yml` antes de construir la publicación.
+No construye, publica ni libera artefactos.
 
 ### Construir
 
@@ -38,25 +29,36 @@ Es útil cuando se quieren revisar artefactos como `_book-structure.yml` o `_gen
 build()
 ```
 
-Construye los formatos seleccionados.
+`build()` construye siempre que se invoca. No intenta decidir si los fuentes han cambiado.
 
-Cuando no se configura otra ubicación, cada publicación escribe sus resultados en subdirectorios de `_outputs/`:
+Para publicaciones Quarto, los resultados se materializan en `_outputs/`, separados por perfil/formato:
 
 ```text
 publication/
 └── _outputs/
     ├── html/
     ├── pdf/
+    ├── epub/
     └── ...
 ```
 
-Durante la edición suele ser cómodo construir únicamente HTML:
+Durante la edición puede construirse un formato concreto:
 
 ```r
 build(format = "html")
 ```
 
-`_outputs/` contiene artefactos generados y regenerables. No forma parte de la fuente de verdad de la publicación.
+Si no se indica `format`, se construyen los perfiles declarados por el proyecto para los que exista renderer.
+
+Para un proyecto `r-package`, `build()` genera los dos artefactos del paquete en su raíz:
+
+```text
+package/
+├── package_version.tar.gz
+└── package_version.zip
+```
+
+El primero es el paquete fuente y el segundo el paquete binario en Windows.
 
 ### Publicar
 
@@ -64,7 +66,15 @@ build(format = "html")
 publish()
 ```
 
-`publish()` toma los resultados ya construidos y prepara el árbol `_publish/`. No vuelve a renderizar las fuentes.
+`publish()` trabaja únicamente con proyectos publicables. Toma siempre como entrada el árbol `_outputs/`; no vuelve a renderizar las fuentes.
+
+Antes de publicar calcula una firma del contenido de `_outputs/`. Si coincide con la firma de la última publicación, la operación se omite. Puede forzarse una nueva publicación aunque el contenido no haya cambiado:
+
+```r
+publish(force = TRUE)
+```
+
+La preparación se realiza sobre un árbol temporal `.work`. Solo cuando la copia y el postprocesado terminan correctamente se sustituye el destino final. Si el proceso falla, la publicación anterior permanece intacta.
 
 En una publicación individual:
 
@@ -80,30 +90,29 @@ publication/
         └── libro.epub
 ```
 
-El contenido HTML ocupa la raíz de la publicación preparada; los demás formatos permanecen en sus propios subdirectorios.
+El contenido HTML ocupa la raíz del árbol publicable; los demás formatos permanecen como exports.
 
-En un multiproyecto existe un único `_publish/` en la raíz del workspace. Cada publicación ocupa un subdirectorio cuyo prefijo numérico se elimina. Publicar de nuevo una publicación sustituye únicamente su subdirectorio y conserva los demás.
+La metadata `.publish` conserva el timestamp y la firma del contenido que originó la publicación.
 
-`publish()` no despliega ni congela una release. Esas responsabilidades pertenecen a las operaciones posteriores de distribución.
-
-### Desplegar
+### Liberar
 
 ```r
-deploy()
+release()
 ```
 
-`deploy()` mantiene las publicaciones al día de forma incremental.
+`release()` reúne los entregables locales. No despliega nada en servicios externos.
 
-Para cada publicación comprueba si necesita construir y, después, si necesita publicar. Si no hay cambios relevantes, no repite trabajo innecesario.
+Para un `r-package`, mueve a `release/` los artefactos construidos (`*.tar.*` y `*.zip`).
 
-## Forzar una operación
+Para proyectos publicables, copia a `release/` el contenido previamente materializado por `publish()`.
 
-Cuando quiera ejecutar una operación completa aunque el estado indique que no es necesaria, utilice `force = TRUE`:
+Por tanto, el ciclo queda separado deliberadamente:
 
-```r
-deploy(force = TRUE)
+```text
+validate  → comprobar
+build     → construir artefactos
+publish   → preparar publicaciones
+release   → reunir entregables
 ```
 
-El modo forzado no elimina las comprobaciones de validez ni oculta errores. Solo evita que el estado previo suprima una construcción o publicación que se ha solicitado expresamente.
-
-`build()` y `publish()` ejecutan directamente la operación solicitada; `force` se mantiene en sus interfaces para conservar una política común cuando son invocados desde otros flujos.
+`iasi.quarto` termina aquí. El despliegue a sistemas externos pertenece a herramientas de nivel superior, como `iasi-dev`.

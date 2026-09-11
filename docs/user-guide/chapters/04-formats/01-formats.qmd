@@ -1,6 +1,6 @@
 ## Formatos disponibles
 
-IASI Quarto reconoce actualmente los siguientes formatos de construcción:
+IASI Quarto puede construir los perfiles para los que dispone de renderer:
 
 ```{r}
 #| echo: false
@@ -8,28 +8,25 @@ IASI Quarto reconoce actualmente los siguientes formatos de construcción:
 #| message: false
 
 formats = data.frame(
-  Formato = c("html", "pdf", "typst", "epub", "doc", "odt", "git"),
+  Formato = c("html", "pdf", "pdfua", "epub", "docx", "odt", "git"),
   "Resultado habitual" = c(
     "Publicación HTML",
     "PDF generado por Quarto",
-    "PDF mediante Typst",
+    "PDF/UA mediante el perfil Typst configurado",
     "Libro EPUB",
-    "Documento ODT presentado como formato DOC de IASI Quarto",
+    "Documento DOCX",
     "Documento ODT",
     "GitBook"
   ),
   check.names = FALSE
 )
 
-knitr::kable(
-  formats,
-  align = c("l", "l")
-)
+knitr::kable(formats, align = c("l", "l"))
 ```
 
-Un Website utiliza HTML. Un Book puede utilizar cualquiera de los formatos soportados que tenga configurados.
+Un proyecto `web` utiliza su perfil web. Un `guide` puede declarar varios perfiles de salida.
 
-El formato `git` representa una publicación **GitBook**. `gfm` no es un formato soportado por IASI Quarto.
+El formato `git` representa una publicación destinada a GitBook.
 
 ## Configurar un formato
 
@@ -43,7 +40,7 @@ _quarto-epub.yml
 
 IASI Quarto no sustituye la configuración propia de Quarto para cada formato.
 
-## Construir un formato
+## Construir formatos
 
 Para construir solo HTML:
 
@@ -65,10 +62,6 @@ build(format = c("html", "pdf"))
 
 ## Construcción predeterminada
 
-Si no indica `format`, IASI Quarto utiliza su conjunto predeterminado:
+Si no indica `format`, `build()` utiliza los perfiles declarados por el proyecto y construye aquellos para los que existe renderer.
 
-```text
-html, pdf, epub, doc, git
-```
-
-Solo se construyen los formatos que estén disponibles en la publicación mediante sus perfiles correspondientes.
+`build()` no utiliza el estado anterior para decidir si debe trabajar: una llamada a `build()` significa construir.

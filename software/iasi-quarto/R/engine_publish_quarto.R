@@ -12,57 +12,25 @@
 
 # A multiproject publishes each child publication into a stable slot. Numeric
 # prefixes are organisational metadata and are deliberately omitted.
-.publish_slot = function(project) {
-  slot = sub("^[0-9]+-", "", basename(project$path))
-
-  if (!nzchar(slot)) {
-    stop(sprintf("Could not derive a publish slot for project '%s'.", project$name), call. = FALSE)
-  }
-
-  slot
-}
 
 # `_publish` belongs to the workspace selected by the public operation, not to
 # an individual Quarto output directory.
-.publish_root = function(context) {
-  file.path(context$path, .publish_dir_name)
-}
 
 # A current publication owns `_publish` directly. In a multiproject, every
 # selected publication owns one child slot below the single workspace root.
-.publish_destination = function(context, project) {
-  root = .publish_root(context)
-
-  if (isTRUE(context$current)) {
-    return(root)
-  }
-
-  file.path(root, .publish_slot(project))
-}
 
 # Resolve all destinations before modifying the filesystem so name collisions
 # fail atomically instead of overwriting another publication.
-.publish_destinations = function(context) {
-  destinations = vapply(
-    context$projects,
-    function(project) {
-      .publish_destination(context = context, project = project)
-    },
-    character(1)
- )
 
-  keys = tolower(normalizePath(destinations, winslash = "/", mustWork = FALSE))
-
-  duplicated_keys = unique(keys[duplicated(keys)])
-
-  if (length(duplicated_keys)) {
-    collisions = destinations[keys %in% duplicated_keys]
-
-    stop(sprintf("Multiple publications resolve to the same publish destination: %s.", paste(unique(collisions), collapse = ", ")), call. = FALSE)
-  }
-
-  destinations
+# Each project owns its publication tree. release() is responsible for
+# assembling project publications into a repository-level release layout.
+.publish_destination = function(project) {
+  value = project$config$paths$publish
+  base = .config_base(project$path, "publish")
+  path = if (.is_absolute_path(value)) value else file.path(base, value)
+  normalizePath(path, winslash = "/", mustWork = FALSE)
 }
+
 
 # Materialise one publication atomically. The source tree is never modified:
 # work happens in a sibling `.work` directory and replaces only this target.
