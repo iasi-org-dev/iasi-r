@@ -106,9 +106,14 @@
     root = path
   )
 
+  relative_dirs = dirname(relative)
+
+  # Technical and generated directories are outside publication discovery.
+  # Only directory names are considered here so `_iasi.yml` and `.iasi.yml`
+  # remain valid publication signatures.
   ignored = grepl(
-    "(^|/)(tests|\\.git|\\.iasi)(/|$)",
-    relative
+    "(^|/)([._][^/]+|tests)(/|$)",
+    relative_dirs
   )
 
   iasi_files = iasi_files[!ignored]
@@ -217,37 +222,4 @@
   }
 
   invisible(plan)
-}
-
-
-# Merged from temporary hyphenated file -------------------------------
-
-.engine_validate = function(context) {
-  context = .prepare_context(context)
-
-  results = lapply(
-    context$projects,
-    function(project) {
-      project = .prepare_project_config(project)
-
-      if (identical(project$config$type, .IASI$types$pkg)) {
-        if (!file.exists(file.path(project$path, "DESCRIPTION"))) {
-          message("Missing DESCRIPTION in R package: ", project$path)
-          stop("Invalid R package project.", call. = FALSE)
-        }
-
-        return(.IASI$status$OK)
-      }
-
-      quarto = .as_quarto_project(project)
-      .ensure_checked_project(quarto)
-      .IASI$status$OK
-    }
-  )
-
-  if (length(results) && any(unlist(results) != .IASI$status$OK)) {
-    return(.IASI$status$ERROR)
-  }
-
-  .IASI$status$OK
 }

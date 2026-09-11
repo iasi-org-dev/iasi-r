@@ -9,6 +9,7 @@
 #'
 #' @noRd
 .check = function(plan) {
+  .assert_discovered_plan(plan)
 
   plan$projects = lapply(
     plan$projects,

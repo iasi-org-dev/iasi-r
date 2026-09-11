@@ -134,6 +134,25 @@
   )
 }
 
+# Internal build artifacts such as the Pandoc staging tree follow the same
+# output policy as public formats.
+.build_output_config = function(project, name) {
+  output_dir = .resolve_output_dir(
+    quarto = project$quarto,
+    profile_quarto = list(),
+    profile = name
+  )
+
+  list(
+    name = name,
+    output_dir = output_dir,
+    output_path = .resolve_output_path(
+      project_path = project$path,
+      output_dir = output_dir
+    )
+  )
+}
+
 .valid_output_dir = function(value) {
   is.character(value) &&
     length(value) == 1L &&

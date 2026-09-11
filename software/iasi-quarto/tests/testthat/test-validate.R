@@ -128,22 +128,57 @@ test_that("validate recognises a book with any supported output profile", {
   expect_true(.is_iasi_publication(root))
 })
 
-test_that("recursive discovery ignores tests directories", {
-  root = tempfile("iasi-validate-ignore-tests-")
+test_that("recursive discovery ignores technical directories", {
+  root = tempfile("iasi-validate-ignore-")
   book = file.path(root, "book")
-  fixture = file.path(root, "tests", "testthat", "fixtures", "malformed")
+
+  ignored = c(
+    file.path(root, "tests", "testthat", "fixtures", "book"),
+    file.path(root, "_publish", "book"),
+    file.path(root, "_outputs", "html", "book"),
+    file.path(root, "_extensions", "extension"),
+    file.path(root, ".git", "book"),
+    file.path(root, ".iasi", "book"),
+    file.path(root, ".cache", "book")
+  )
+
   dir.create(book, recursive = TRUE)
-  dir.create(fixture, recursive = TRUE)
   withr::defer(unlink(root, recursive = TRUE, force = TRUE))
 
-  writeLines(c("project:", "  type: book"), file.path(book, "_quarto.yml"))
-  writeLines("publication: {}", file.path(book, "_iasi.yml"))
-  file.create(file.path(book, "_quarto-html.yml"))
+  writeLines(
+    c("project:", "  type: book"),
+    file.path(book, "_quarto.yml")
+  )
 
-  writeLines(c("project:", "  type: [book"), file.path(fixture, "_quarto.yml"))
-  writeLines("publication: {}", file.path(fixture, "_iasi.yml"))
-  file.create(file.path(fixture, "_quarto-html.yml"))
+  writeLines(
+    "publication: {}",
+    file.path(book, "_iasi.yml")
+  )
 
-  plan = suppressMessages(validate(root))
-  expect_identical(plan$books, normalizePath(book, winslash = "/", mustWork = TRUE))
+  for (path in ignored) {
+    dir.create(path, recursive = TRUE)
+
+    writeLines(
+      c("project:", "  type: book"),
+      file.path(path, "_quarto.yml")
+    )
+
+    writeLines(
+      "publication: {}",
+      file.path(path, "_iasi.yml")
+    )
+  }
+
+  plan = suppressMessages(
+    validate(root)
+  )
+
+  expect_identical(
+    plan$books,
+    normalizePath(
+      book,
+      winslash = "/",
+      mustWork = TRUE
+    )
+  )
 })
