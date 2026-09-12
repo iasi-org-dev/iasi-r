@@ -1,12 +1,3 @@
 book:
   chapters:
-    - index.qmd
-    - chapters/01-proposito-y-fronteras.qmd
-    - chapters/02-modelo-conceptual.qmd
-    - chapters/03-arquitectura.qmd
-    - chapters/04-organizacion-del-codigo.qmd
-    - chapters/05-acciones-publicas.qmd
-    - chapters/06-estrategias-y-formatos.qmd
-    - chapters/07-como-evolucionar.qmd
-    - chapters/08-calidad-pruebas-y-observabilidad.qmd
-    - chapters/09-principios-de-evolucion.qmd
+    - "index.qmd"
