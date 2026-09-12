@@ -1,15 +1,26 @@
 # Publish engine ----------------------------------------------------------
 #
-# prepare_context() supplies the publish targets. Each target is converted to
-# the existing Quarto publication model, hashed, materialised in a temporary
-# tree, post-processed, and atomically installed in its final destination.
+# prepare_context() supplies executable projects. Package projects do not
+# support publish; the remaining projects are converted to the existing Quarto
+# publication model, hashed, materialised in a temporary tree, post-processed,
+# and atomically installed in their final destination.
 
 
 # Publish every selected target.
 .engine_publish = function(context) {
   context = .prepare_context(context)
 
-  lapply(context$projects, function(project) {
+  projects = Filter(
+    function(project) !identical(project$config$type, .IASI$types$pkg),
+    context$projects
+  )
+
+  if (!length(projects)) {
+    .rc_add(context, .IASI$status$NOTHING_TO_DO)
+    return(invisible(context$rc))
+  }
+
+  lapply(projects, function(project) {
     project = .prepare_project_config(project)
     quarto = .as_quarto_project(project)
     quarto = .ensure_checked_project(quarto)

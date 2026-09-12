@@ -1,6 +1,9 @@
-test_that("public APIs return status invisibly", {
-  # Structural regression test: public wrappers must finish with invisible(rc).
-  api = readLines(system.file("R", "api.R", package = "iasi.quarto"), warn = FALSE)
-  skip_if(!length(api))
-  expect_gte(sum(grepl("invisible\\(rc\\)", api)), 4L)
+test_that("public APIs delegate through the cumulative RC runner", {
+  body_text = paste(deparse(body(iasi.quarto:::.run_action)), collapse = "\n")
+  expect_match(body_text, "invisible\\(context\\$rc\\)")
+
+  for (name in c("validate", "build", "publish", "release")) {
+    fn = getExportedValue("iasi.quarto", name)
+    expect_match(paste(deparse(body(fn)), collapse = "\n"), "\\.run_action")
+  }
 })

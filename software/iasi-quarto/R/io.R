@@ -1,15 +1,24 @@
 .write_if_changed = function(content, path) {
-  current = if (file.exists(path)) {
-    readLines(
-      path,
-      warn = FALSE,
-      encoding = "UTF-8"
+  content = enc2utf8(content)
+
+  text = if (length(content)) {
+    paste0(
+      paste(content, collapse = "\n"),
+      "\n"
     )
   } else {
-    character()
+    ""
   }
 
-  if (identical(current, content)) {
+  expected = charToRaw(text)
+  current = if (file.exists(path)) {
+    size = file.info(path)$size
+    readBin(path, what = "raw", n = size)
+  } else {
+    raw()
+  }
+
+  if (identical(current, expected)) {
     return(FALSE)
   }
 
@@ -19,11 +28,10 @@
     showWarnings = FALSE
   )
 
-  writeLines(
-    content,
-    path,
-    useBytes = TRUE
-  )
+  connection = file(path, open = "wb")
+  on.exit(close(connection), add = TRUE)
+
+  writeBin(expected, connection)
 
   TRUE
 }

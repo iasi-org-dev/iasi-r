@@ -31,12 +31,12 @@
   projects = lapply(context$plan, function(path) .read_iasi_project(path, context))
   projects = Filter(Negate(is.null), projects)
 
-  targets = .IASI$targets[[context$action]]
-  if (is.null(targets)) return(projects)
+  selected = Filter(
+    function(project) !identical(project$config$type, .IASI$types$repo),
+    projects
+  )
 
-  selected = Filter(function(project) project$config$type %in% targets, projects)
-
-  if (length(selected) < length(projects)) .rc_add(context, .IASI$status$NOTHING_TO_DO)
+  if (!length(selected)) .rc_add(context, .IASI$status$NOTHING_TO_DO)
 
   selected
 }
