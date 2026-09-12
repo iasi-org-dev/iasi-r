@@ -2,23 +2,67 @@
   {
     "objectID": "index.html",
     "href": "index.html",
-    "title": "IASI Quarto User Guide",
+    "title": "IASI Quarto",
     "section": "",
-    "text": "iasi.quarto ayuda a organizar, construir y publicar proyectos documentales basados en Quarto.\nIASI Quarto nació de una necesidad concreta: gestionar distintos tipos de publicaciones dentro de una misma estructura documental, compartiendo reglas de construcción, validación, formatos, publicación y despliegue sin obligar a que todas las publicaciones tengan que organizarse de la misma manera.\nIASI es su primer caso de uso y el entorno en el que el framework se desarrolla y se valida. Por eso su implementación actual responde a problemas reales del propio proyecto. Sin embargo, el modelo no está ligado a IASI ni pretende ser una solución exclusiva para su estructura documental.\nLa idea es que otras organizaciones puedan partir de una infraestructura de publicación ya resuelta y realizar únicamente el tailoring necesario para adaptarla a su contexto: tipos de publicación, perfiles, formatos, estilos, convenciones y reglas propias. El pipeline, los contratos y los mecanismos comunes no deberían tener que reinventarse para cada organización.\nEn otras palabras: gran parte del problema ya está resuelto; cada organización adapta la parte que le pertenece.\nEsta guía explica cómo utilizarlo. No describe su arquitectura interna ni el funcionamiento de sus componentes privados.\nEl recorrido recomendado es sencillo:\n\nconocer los términos que utiliza IASI Quarto;\ninstalar la herramienta;\nelegir el tipo de publicación y su estrategia;\nconfigurar los formatos de salida;\nconstruir y publicar;\nutilizar un multiproyecto cuando varias publicaciones comparten un mismo espacio de trabajo.\n\nSi ya conoce IASI Quarto, puede ir directamente al capítulo que corresponda a la tarea que quiere realizar.",
+    "text": "1 Introducción\niasi.quarto es un paquete R que ayuda a validar, construir, preparar para publicación y reunir entregables de proyectos IASI basados en Quarto y de paquetes R.\nSu objetivo es que el usuario pueda concentrarse en el contenido y en la configuración del proyecto sin tener que reconstruir manualmente la navegación, los artefactos auxiliares o el proceso de publicación cada vez.\nLa API pública es pequeña:\nvalidate()\nbuild()\npublish()\nrelease()\nCada operación tiene una responsabilidad distinta:\nvalidate  → comprobar\nbuild     → construir\npublish   → preparar una publicación local\nrelease   → reunir entregables locales\niasi.quarto no despliega a servicios externos. Esa responsabilidad corresponde a herramientas de nivel superior, como iasi-dev.\nEsta guía describe el uso de iasi.quarto 0.10.2. No necesita conocer su arquitectura interna para seguirla.",
     "crumbs": [
-      "Definiciones",
-      "<span class='chapter-number'>1</span>  <span class='chapter-title'>IASI Quarto User Guide</span>"
+      "Conceptos",
+      "<span class='chapter-number'>1</span>  <span class='chapter-title'>IASI Quarto</span>"
     ]
   },
   {
-    "objectID": "chapters/01-definitions/index.html",
-    "href": "chapters/01-definitions/index.html",
-    "title": "2  Definiciones y conceptos",
+    "objectID": "chapters/01-concepts/index.html",
+    "href": "chapters/01-concepts/index.html",
+    "title": "2  Conceptos",
     "section": "",
-    "text": "2.1 Definiciones y conceptos\nEn este documento se utilizan los siguientes términos y conceptos. Las definiciones se presentan en orden alfabético para facilitar su consulta.\nTérmino\nDefinición\n\n\n\n\nBuild\nOperación que construye uno o varios formatos de una publicación a partir de sus fuentes. Por defecto, los resultados se escriben en _outputs/; la ubicación puede configurarse. Véase: Formato.\n\n\nCapítulo\nUnidad principal de contenido de un libro. Puede estar organizado en secciones.\n\n\nDirect\nEstrategia de libro en la que cada documento .qmd del contenido se publica como capítulo y las carpetas se utilizan únicamente para organizar físicamente los archivos. Véase: Estrategia.\n\n\nDeploy\nOperación que mantiene una publicación al día: construye cuando es necesario y publica cuando el resultado construido ha cambiado. Puede ejecutarse en modo forzado. Véase: Force y Publish.\n\n\nEstrategia\nRegla que determina cómo interpreta IASI Quarto la organización física de un libro. Las estrategias de libro son regular, structured y direct.\n\n\nForce\nModo explícito que ordena ejecutar la operación completa sin consultar si el estado previo indica que es necesaria. No evita las validaciones ni convierte operaciones Git en operaciones forzadas.\n\n\nFormato\nTipo de salida que puede generar una publicación, por ejemplo HTML, PDF o EPUB.\n\n\nGitBook\nFormato de publicación de IASI Quarto para generar un libro destinado a GitBook. Se selecciona mediante el formato `git`. Véase: Formato.\n\n\nLibro\nPublicación Quarto de tipo book. IASI Quarto admite las estrategias regular, structured y direct para libros. Véase: Publicación.\n\n\nMultiproyecto\nEspacio de trabajo que contiene varias publicaciones IASI Quarto y permite operar sobre todas o seleccionar una de ellas. Véase: Publicación.\n\n\nParte\nDivisión de alto nivel de un libro utilizada para agrupar capítulos relacionados. En la estrategia structured, una carpeta de contenido representa una Parte. Véase: Structured.\n\n\nProyecto Quarto\nProyecto reconocido por Quarto mediante su configuración habitual, incluida _quarto.yml.\n\n\nPublicación\nProyecto Quarto gestionado por IASI Quarto mediante _iasi.yml. Puede ser un Website o un Libro. Véase: Website.\n\n\nPublish\nOperación que toma los resultados ya construidos y crea el árbol final publish/ preparado para desplegarse. No vuelve a renderizar los fuentes.\n\n\nQuarto\nMotor de publicación que procesa los documentos .qmd y genera los formatos finales. IASI Quarto organiza y coordina el proyecto, pero Quarto continúa siendo el motor de renderizado.\n\n\nRegular\nEstrategia de libro en la que cada carpeta de contenido se convierte en una unidad o capítulo y los documentos .qmd que contiene se combinan en el index.qmd generado de esa carpeta. Véase: Estrategia.\n\n\nSección\nDivisión principal dentro de un capítulo.\n\n\nStructured\nEstrategia de libro en la que cada carpeta de contenido representa una Parte, su index.qmd presenta esa Parte y los demás documentos .qmd de la carpeta son Capítulos. Véase: Estrategia.\n\n\nWebsite\nPublicación Quarto de tipo website. En IASI Quarto utiliza la estrategia regular.",
+    "text": "2.1 Las ideas básicas\nAntes de empezar conviene distinguir unas pocas palabras que aparecen continuamente.",
     "crumbs": [
-      "Definiciones",
-      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Definiciones y conceptos</span>"
+      "Conceptos",
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Conceptos</span>"
+    ]
+  },
+  {
+    "objectID": "chapters/01-concepts/index.html#las-ideas-básicas",
+    "href": "chapters/01-concepts/index.html#las-ideas-básicas",
+    "title": "2  Conceptos",
+    "section": "",
+    "text": "Término\nSignificado\n\n\n\n\nProyecto IASI\nCarpeta que contiene _iasi.yml o .iasi.yml.\n\n\nProyecto Quarto\nProyecto que Quarto reconoce mediante _quarto.yml.\n\n\nTipo IASI\nIndica qué clase de proyecto es para IASI: repository, guide, web o r-package.\n\n\nEstrategia\nIndica cómo interpretar la organización editorial de un libro.\n\n\nFormato / perfil\nSalida que se quiere construir, por ejemplo html, pdf, epub o git.\n\n\nBuild\nConstrucción de los artefactos en _outputs/, o de los paquetes R.\n\n\nPublish\nPreparación local de una publicación a partir de _outputs/.\n\n\nRelease\nReunión de los entregables locales ya construidos o publicados.",
+    "crumbs": [
+      "Conceptos",
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Conceptos</span>"
+    ]
+  },
+  {
+    "objectID": "chapters/01-concepts/index.html#cuatro-tipos-de-proyecto",
+    "href": "chapters/01-concepts/index.html#cuatro-tipos-de-proyecto",
+    "title": "2  Conceptos",
+    "section": "2.2 Cuatro tipos de proyecto",
+    "text": "2.2 Cuatro tipos de proyecto\n\n\n\nTipo\nPara qué sirve\nBuild\nPublish\nRelease\n\n\n\n\nrepository\nRaíz o contenedor común\n\n\n\n\n\nguide\nLibro o guía Quarto\n✓\n✓\n✓\n\n\nweb\nSitio web Quarto\n✓\n✓\n✓\n\n\nr-package\nPaquete R\n✓\n\n✓\n\n\n\nUn proyecto repository puede proporcionar configuración común a proyectos situados debajo, pero no se construye como entregable.",
+    "crumbs": [
+      "Conceptos",
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Conceptos</span>"
+    ]
+  },
+  {
+    "objectID": "chapters/01-concepts/index.html#tipo-y-estrategia-no-son-lo-mismo",
+    "href": "chapters/01-concepts/index.html#tipo-y-estrategia-no-son-lo-mismo",
+    "title": "2  Conceptos",
+    "section": "2.3 Tipo y estrategia no son lo mismo",
+    "text": "2.3 Tipo y estrategia no son lo mismo\nUn guide indica qué es el proyecto.\nLa estrategia (regular, structured, parted o direct) indica cómo está organizado editorialmente el libro.\nPor ejemplo, dos proyectos pueden ser ambos guide y utilizar estrategias distintas sin dejar de ser guías.",
+    "crumbs": [
+      "Conceptos",
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Conceptos</span>"
+    ]
+  },
+  {
+    "objectID": "chapters/01-concepts/index.html#tres-niveles-de-materialización",
+    "href": "chapters/01-concepts/index.html#tres-niveles-de-materialización",
+    "title": "2  Conceptos",
+    "section": "2.4 Tres niveles de materialización",
+    "text": "2.4 Tres niveles de materialización\nPara una publicación Quarto:\nfuentes\n   ↓ build()\n_outputs/\n   ↓ publish()\n_publish/\n   ↓ release()\nrelease/\nLos tres directorios representan estados diferentes. No son copias intercambiables.",
+    "crumbs": [
+      "Conceptos",
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Conceptos</span>"
     ]
   },
   {
@@ -26,9 +70,9 @@
     "href": "chapters/02-installation/index.html",
     "title": "3  Instalación",
     "section": "",
-    "text": "3.1 Requisitos\nPara utilizar iasi.quarto necesita:\nPuede comprobar R y Quarto desde una terminal:",
+    "text": "3.1 Requisitos\nPara utilizar iasi.quarto necesita:\nPor ejemplo, un PDF puede necesitar una instalación TeX funcional.\nCompruebe R y Quarto:",
     "crumbs": [
-      "Definiciones",
+      "Conceptos",
       "<span class='chapter-number'>3</span>  <span class='chapter-title'>Instalación</span>"
     ]
   },
@@ -37,318 +81,560 @@
     "href": "chapters/02-installation/index.html#requisitos",
     "title": "3  Instalación",
     "section": "",
-    "text": "R;\nQuarto;\nacceso a los formatos adicionales que quiera generar, por ejemplo una instalación TeX para PDF;\nGit si va a instalar el paquete directamente desde GitHub.\n\n\nR --version\nquarto --version",
+    "text": "R 4.2 o posterior;\nQuarto;\nGit si instala el paquete directamente desde GitHub;\nlas herramientas adicionales que exija cada formato.\n\n\n\nR --version\nquarto --version",
     "crumbs": [
-      "Definiciones",
+      "Conceptos",
       "<span class='chapter-number'>3</span>  <span class='chapter-title'>Instalación</span>"
     ]
   },
   {
-    "objectID": "chapters/02-installation/index.html#instalar-iasi.quarto",
-    "href": "chapters/02-installation/index.html#instalar-iasi.quarto",
+    "objectID": "chapters/02-installation/index.html#instalar-el-paquete",
+    "href": "chapters/02-installation/index.html#instalar-el-paquete",
     "title": "3  Instalación",
-    "section": "3.2 Instalar iasi.quarto",
-    "text": "3.2 Instalar iasi.quarto\nUna forma sencilla de instalar la versión disponible en GitHub es utilizar remotes:\ninstall.packages(\"remotes\")\nremotes::install_github(\"iasi-org/iasi-quarto\")\nDespués puede cargar el paquete:\nlibrary(iasi.quarto)",
+    "section": "3.2 Instalar el paquete",
+    "text": "3.2 Instalar el paquete\nPuede instalarlo desde GitHub con remotes:\ninstall.packages(\"remotes\")\nremotes::install_github(\"iasi-org/iasi-quarto\")\nDespués:\nlibrary(iasi.quarto)\nCompruebe la versión instalada:\npackageVersion(\"iasi.quarto\")",
     "crumbs": [
-      "Definiciones",
+      "Conceptos",
       "<span class='chapter-number'>3</span>  <span class='chapter-title'>Instalación</span>"
     ]
   },
   {
-    "objectID": "chapters/02-installation/index.html#comprobar-la-instalación",
-    "href": "chapters/02-installation/index.html#comprobar-la-instalación",
+    "objectID": "chapters/02-installation/index.html#primera-comprobación",
+    "href": "chapters/02-installation/index.html#primera-comprobación",
     "title": "3  Instalación",
-    "section": "3.3 Comprobar la instalación",
-    "text": "3.3 Comprobar la instalación\nCompruebe la versión instalada:\npackageVersion(\"iasi.quarto\")\nY, desde una publicación IASI Quarto, ejecute:\nvalidate()\nSi el proyecto es válido, IASI Quarto lo reconocerá sin construir todavía ningún formato.",
+    "section": "3.3 Primera comprobación",
+    "text": "3.3 Primera comprobación\nSitúese en un proyecto IASI y ejecute:\nvalidate()\nvalidate() comprueba el proyecto sin construirlo.\nSi trabaja desde otra carpeta puede indicar la ruta:\nvalidate(path = \"docs/01-user-guide\")",
     "crumbs": [
-      "Definiciones",
+      "Conceptos",
       "<span class='chapter-number'>3</span>  <span class='chapter-title'>Instalación</span>"
     ]
   },
   {
-    "objectID": "chapters/03-publications/index.html",
-    "href": "chapters/03-publications/index.html",
-    "title": "4  Tipos de publicación",
+    "objectID": "chapters/03-projects/index.html",
+    "href": "chapters/03-projects/index.html",
+    "title": "4  Proyectos IASI",
     "section": "",
-    "text": "4.1 Estrategias soportadas\nIASI Quarto soporta tres estrategias de publicación. La estrategia define cómo se interpreta la organización de los documentos fuente.\nEstrategia\nDisponible para\nOrganización editorial\nCuándo utilizarla\n\n\n\n\nregular\nWebsite y Book\nEn un Book, cada carpeta de contenido forma una unidad y sus archivos .qmd se combinan.\nCuando varios documentos fuente forman una única unidad editorial. Es la estrategia predeterminada.\n\n\nstructured\nBook\nCada carpeta representa una Parte; su index.qmd presenta la Parte y los demás archivos .qmd son Capítulos.\nCuando la estructura Parte → Capítulo debe estar representada explícitamente.\n\n\ndirect\nBook\nCada archivo .qmd se publica directamente como Capítulo; las carpetas solo organizan los fuentes.\nCuando cada documento ya es una unidad editorial completa.\nPara un Website, la estrategia soportada es regular. Las estrategias structured y direct son propias de publicaciones de tipo Book.",
+    "text": "4.1 Marcar un proyecto\nUna carpeta se convierte en proyecto IASI al contener uno de estos ficheros:\nNo utilice ambos en la misma carpeta.\nLa configuración mínima indica el tipo:\no, por ejemplo:",
     "crumbs": [
-      "Definiciones",
-      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Tipos de publicación</span>"
+      "Conceptos",
+      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Proyectos IASI</span>"
     ]
   },
   {
-    "objectID": "chapters/03-publications/index.html#configuración-de-una-publicación",
-    "href": "chapters/03-publications/index.html#configuración-de-una-publicación",
-    "title": "4  Tipos de publicación",
-    "section": "4.2 Configuración de una publicación",
-    "text": "4.2 Configuración de una publicación\nUna publicación IASI Quarto combina la configuración de Quarto con _iasi.yml.\n_quarto.yml continúa describiendo el proyecto Quarto. _iasi.yml indica cómo debe interpretar IASI Quarto su organización.\nUna configuración mínima de libro puede ser:\npublication:\n  strategy: regular\n  content-dir: chapters\n  numbered: true\nLos valores predeterminados para un libro son:\nstrategy    = regular\ncontent-dir = chapters\nnumbered    = true\ncontent-dir indica dónde se encuentra el contenido organizado de la publicación.\nCuando numbered: true, los documentos y carpetas de contenido que participan en el orden editorial utilizan prefijos numéricos, por ejemplo:\nchapters/\n├── 01-intro/\n├── 02-installation/\n└── 03-usage/",
-    "crumbs": [
-      "Definiciones",
-      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Tipos de publicación</span>"
-    ]
-  },
-  {
-    "objectID": "chapters/03-publications/index.html#crear-un-website",
-    "href": "chapters/03-publications/index.html#crear-un-website",
-    "title": "4  Tipos de publicación",
-    "section": "4.3 Crear un Website",
-    "text": "4.3 Crear un Website\nUn Website utiliza el tipo de proyecto website de Quarto y la estrategia regular de IASI Quarto.\nEn _quarto.yml:\nproject:\n  type: website\nEn _iasi.yml puede utilizar:\npublication:\n  strategy: regular\nPara un Website, IASI Quarto no introduce las estrategias editoriales propias de los libros. La estructura y navegación continúan siendo las del proyecto Website de Quarto.\nPara construirlo:\nbuild(format = \"html\")",
-    "crumbs": [
-      "Definiciones",
-      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Tipos de publicación</span>"
-    ]
-  },
-  {
-    "objectID": "chapters/03-publications/index.html#crear-un-book-regular",
-    "href": "chapters/03-publications/index.html#crear-un-book-regular",
-    "title": "4  Tipos de publicación",
-    "section": "4.4 Crear un Book Regular",
-    "text": "4.4 Crear un Book Regular\nregular es la estrategia predeterminada para libros.\nLa idea es:\ncarpeta de contenido\n    → capítulo o unidad de publicación\n\ndocumentos .qmd dentro de la carpeta\n    → contenido combinado de esa unidad\nEjemplo:\nchapters/\n└── 01-intro/\n    ├── front-matter.quarto\n    ├── 01-purpose.qmd\n    └── 02-scope.qmd\nIASI Quarto genera el index.qmd de la carpeta combinando los documentos fuente.\nfront-matter.quarto puede proporcionar el front matter del index.qmd generado:\n---\ntitle: \"Introducción\"\ntitle-block-style: none\n---\nPor tanto, no edite el index.qmd generado. Edite los documentos fuente y, cuando corresponda, front-matter.quarto.\nUse regular cuando una carpeta represente una unidad editorial formada por varios fragmentos o documentos fuente.",
-    "crumbs": [
-      "Definiciones",
-      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Tipos de publicación</span>"
-    ]
-  },
-  {
-    "objectID": "chapters/03-publications/index.html#crear-un-book-structured",
-    "href": "chapters/03-publications/index.html#crear-un-book-structured",
-    "title": "4  Tipos de publicación",
-    "section": "4.5 Crear un Book Structured",
-    "text": "4.5 Crear un Book Structured\nstructured representa explícitamente Partes y Capítulos.\nLa regla es:\ncarpeta de contenido\n    → Parte\n\nindex.qmd de la carpeta\n    → presentación de la Parte\n\ndemás .qmd de la carpeta\n    → Capítulos\nEjemplo:\nchapters/\n└── 20-methodologies/\n    ├── index.qmd\n    ├── 01-history.qmd\n    └── 02-current.qmd\nEn _iasi.yml:\npublication:\n  strategy: structured\n  content-dir: chapters\n  numbered: true\nA diferencia de regular, el index.qmd de cada carpeta es fuente y debe existir. IASI Quarto no lo genera a partir de otros documentos.\nfront-matter.quarto no participa en la estrategia structured.\nUse structured cuando quiera que la jerarquía editorial Parte → Capítulo esté representada directamente por la estructura del proyecto.",
-    "crumbs": [
-      "Definiciones",
-      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Tipos de publicación</span>"
-    ]
-  },
-  {
-    "objectID": "chapters/03-publications/index.html#crear-un-book-direct",
-    "href": "chapters/03-publications/index.html#crear-un-book-direct",
-    "title": "4  Tipos de publicación",
-    "section": "4.6 Crear un Book Direct",
-    "text": "4.6 Crear un Book Direct\ndirect publica cada documento .qmd como capítulo.\nLas carpetas sirven para ordenar físicamente los fuentes, pero no crean Partes ni capítulos contenedores.\nEjemplo:\nchapters/\n├── 01-concepts/\n│   ├── 01-model.qmd\n│   └── 02-context.qmd\n└── 02-usage/\n    ├── 01-build.qmd\n    └── 02-publish.qmd\nLa publicación resultante contiene los cuatro documentos como capítulos consecutivos.\nEn _iasi.yml:\npublication:\n  strategy: direct\n  content-dir: chapters\n  numbered: true\nUse direct cuando cada .qmd ya sea una unidad editorial completa y las carpetas solo deban ayudar a mantener organizado el repositorio.",
-    "crumbs": [
-      "Definiciones",
-      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Tipos de publicación</span>"
-    ]
-  },
-  {
-    "objectID": "chapters/03-publications/index.html#elegir-una-estrategia",
-    "href": "chapters/03-publications/index.html#elegir-una-estrategia",
-    "title": "4  Tipos de publicación",
-    "section": "4.7 Elegir una estrategia",
-    "text": "4.7 Elegir una estrategia\n\n\n\n\n\n\n\n\n\nSi necesita…\nEstrategia\n\n\n\n\nUn Website Quarto\nregular\n\n\nCombinar varios archivos .qmd de una carpeta en una única unidad\nregular\n\n\nRepresentar Partes que contienen Capítulos\nstructured\n\n\nPublicar cada archivo .qmd directamente como Capítulo\ndirect\n\n\n\n\n\nLa elección es editorial. No depende del formato final: un mismo libro puede utilizar la misma estrategia para HTML, PDF, EPUB y otros formatos.",
-    "crumbs": [
-      "Definiciones",
-      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Tipos de publicación</span>"
-    ]
-  },
-  {
-    "objectID": "chapters/04-formats/index.html",
-    "href": "chapters/04-formats/index.html",
-    "title": "5  Formatos",
+    "objectID": "chapters/03-projects/index.html#marcar-un-proyecto",
+    "href": "chapters/03-projects/index.html#marcar-un-proyecto",
+    "title": "4  Proyectos IASI",
     "section": "",
-    "text": "5.1 Formatos disponibles\nIASI Quarto reconoce actualmente los siguientes formatos de construcción:\nFormato\nResultado habitual\n\n\n\n\nhtml\nPublicación HTML\n\n\npdf\nPDF generado por Quarto\n\n\ntypst\nPDF mediante Typst\n\n\nepub\nLibro EPUB\n\n\ndoc\nDocumento ODT presentado como formato DOC de IASI Quarto\n\n\nodt\nDocumento ODT\n\n\ngit\nGitBook\nUn Website utiliza HTML. Un Book puede utilizar cualquiera de los formatos soportados que tenga configurados.\nEl formato git representa una publicación GitBook. gfm no es un formato soportado por IASI Quarto.",
+    "text": "_iasi.yml\n.iasi.yml\n\n\ntype: guide\n\ntype: r-package",
     "crumbs": [
-      "Definiciones",
-      "<span class='chapter-number'>5</span>  <span class='chapter-title'>Formatos</span>"
+      "Conceptos",
+      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Proyectos IASI</span>"
     ]
   },
   {
-    "objectID": "chapters/04-formats/index.html#configurar-un-formato",
-    "href": "chapters/04-formats/index.html#configurar-un-formato",
-    "title": "5  Formatos",
-    "section": "5.2 Configurar un formato",
-    "text": "5.2 Configurar un formato\nCada formato se configura mediante su perfil Quarto correspondiente, por ejemplo:\n_quarto-html.yml\n_quarto-pdf.yml\n_quarto-epub.yml\nIASI Quarto no sustituye la configuración propia de Quarto para cada formato.",
+    "objectID": "chapters/03-projects/index.html#una-guía-quarto",
+    "href": "chapters/03-projects/index.html#una-guía-quarto",
+    "title": "4  Proyectos IASI",
+    "section": "4.2 Una guía Quarto",
+    "text": "4.2 Una guía Quarto\nUn guide necesita además su configuración Quarto:\n# _quarto.yml\nproject:\n  type: book\ny su configuración IASI:\n# _iasi.yml\ntype: guide\npublication:\n  strategy: regular\nPara los libros, si no indica otra cosa, IASI utiliza estos valores:\nstrategy     = regular\nfront-matter = front-matter\ncontent-dir  = chapters\nback-matter  = back-matter\nnumbered     = true",
     "crumbs": [
-      "Definiciones",
-      "<span class='chapter-number'>5</span>  <span class='chapter-title'>Formatos</span>"
+      "Conceptos",
+      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Proyectos IASI</span>"
     ]
   },
   {
-    "objectID": "chapters/04-formats/index.html#construir-un-formato",
-    "href": "chapters/04-formats/index.html#construir-un-formato",
-    "title": "5  Formatos",
-    "section": "5.3 Construir un formato",
-    "text": "5.3 Construir un formato\nPara construir solo HTML:\nbuild(format = \"html\")\nPara construir solo PDF:\nbuild(format = \"pdf\")\nPuede solicitar varios formatos:\nbuild(format = c(\"html\", \"pdf\"))",
+    "objectID": "chapters/03-projects/index.html#un-sitio-web",
+    "href": "chapters/03-projects/index.html#un-sitio-web",
+    "title": "4  Proyectos IASI",
+    "section": "4.3 Un sitio web",
+    "text": "4.3 Un sitio web\n# _iasi.yml\ntype: web\npublication:\n  strategy: regular\n# _quarto.yml\nproject:\n  type: website\nLos websites utilizan la estrategia regular.",
     "crumbs": [
-      "Definiciones",
-      "<span class='chapter-number'>5</span>  <span class='chapter-title'>Formatos</span>"
+      "Conceptos",
+      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Proyectos IASI</span>"
     ]
   },
   {
-    "objectID": "chapters/04-formats/index.html#construcción-predeterminada",
-    "href": "chapters/04-formats/index.html#construcción-predeterminada",
-    "title": "5  Formatos",
-    "section": "5.4 Construcción predeterminada",
-    "text": "5.4 Construcción predeterminada\nSi no indica format, IASI Quarto utiliza su conjunto predeterminado:\nhtml, pdf, epub, doc, git\nSolo se construyen los formatos que estén disponibles en la publicación mediante sus perfiles correspondientes.",
+    "objectID": "chapters/03-projects/index.html#un-paquete-r",
+    "href": "chapters/03-projects/index.html#un-paquete-r",
+    "title": "4  Proyectos IASI",
+    "section": "4.4 Un paquete R",
+    "text": "4.4 Un paquete R\ntype: r-package\nEl proyecto debe tener la estructura normal de un paquete R, incluido DESCRIPTION.",
     "crumbs": [
-      "Definiciones",
-      "<span class='chapter-number'>5</span>  <span class='chapter-title'>Formatos</span>"
+      "Conceptos",
+      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Proyectos IASI</span>"
     ]
   },
   {
-    "objectID": "chapters/05-operations/index.html",
-    "href": "chapters/05-operations/index.html",
-    "title": "6  Construir y publicar",
+    "objectID": "chapters/03-projects/index.html#una-raíz-común",
+    "href": "chapters/03-projects/index.html#una-raíz-común",
+    "title": "4  Proyectos IASI",
+    "section": "4.5 Una raíz común",
+    "text": "4.5 Una raíz común\nUna carpeta que agrupa varios proyectos puede declararse:\ntype: repository\nLa raíz puede contener valores comunes, por ejemplo un directorio compartido de release:\ntype: repository\n\npaths:\n  release: release\nLos proyectos hijos pueden omitir valores que ya están definidos en una carpeta superior. Sus propios valores siempre tienen prioridad.",
+    "crumbs": [
+      "Conceptos",
+      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Proyectos IASI</span>"
+    ]
+  },
+  {
+    "objectID": "chapters/04-publications/index.html",
+    "href": "chapters/04-publications/index.html",
+    "title": "5  Publicaciones",
     "section": "",
-    "text": "6.1 Operaciones principales\nEl uso habitual de iasi.quarto gira alrededor de cinco operaciones:\nCada operación tiene una responsabilidad distinta. La separación es deliberada: reconocer y comprobar un proyecto, materializar artefactos derivados, renderizar formatos y preparar un árbol publicable no son la misma cosa.",
+    "text": "5.1 Las cuatro estrategias de libro\nLos libros pueden utilizar cuatro estrategias.\nUn Website utiliza regular.\nLa estrategia es una decisión editorial. No depende de si después construye HTML, PDF o EPUB.",
     "crumbs": [
-      "Definiciones",
-      "<span class='chapter-number'>6</span>  <span class='chapter-title'>Construir y publicar</span>"
+      "Conceptos",
+      "<span class='chapter-number'>5</span>  <span class='chapter-title'>Publicaciones</span>"
     ]
   },
   {
-    "objectID": "chapters/05-operations/index.html#operaciones-principales",
-    "href": "chapters/05-operations/index.html#operaciones-principales",
-    "title": "6  Construir y publicar",
+    "objectID": "chapters/04-publications/index.html#las-cuatro-estrategias-de-libro",
+    "href": "chapters/04-publications/index.html#las-cuatro-estrategias-de-libro",
+    "title": "5  Publicaciones",
     "section": "",
-    "text": "validate()\nprepare()\nbuild()\npublish()\ndeploy()\n\n\n6.1.1 Validar\nvalidate()\nUtilice validate() para comprobar que la ruta corresponde a una publicación o espacio de trabajo IASI Quarto reconocido.\nNo prepara, construye ni publica.\n\n\n6.1.2 Preparar\nprepare()\nprepare() ejecuta el reconocimiento, descubrimiento y comprobación de la publicación y materializa los artefactos derivados necesarios para Quarto, pero se detiene antes del renderizado.\nEs útil cuando se quieren revisar artefactos como _book-structure.yml o _generated/navbar-left.yml antes de construir la publicación.\n\n\n6.1.3 Construir\nbuild()\nConstruye los formatos seleccionados.\nCuando no se configura otra ubicación, cada publicación escribe sus resultados en subdirectorios de _outputs/:\npublication/\n└── _outputs/\n    ├── html/\n    ├── pdf/\n    └── ...\nDurante la edición suele ser cómodo construir únicamente HTML:\nbuild(format = \"html\")\n_outputs/ contiene artefactos generados y regenerables. No forma parte de la fuente de verdad de la publicación.\n\n\n6.1.4 Publicar\npublish()\npublish() toma los resultados ya construidos y prepara el árbol _publish/. No vuelve a renderizar las fuentes.\nEn una publicación individual:\npublication/\n├── _outputs/\n└── _publish/\n    ├── index.html\n    ├── chapters/\n    ├── pdf/\n    │   └── libro.pdf\n    └── epub/\n        └── libro.epub\nEl contenido HTML ocupa la raíz de la publicación preparada; los demás formatos permanecen en sus propios subdirectorios.\nEn un multiproyecto existe un único _publish/ en la raíz del workspace. Cada publicación ocupa un subdirectorio cuyo prefijo numérico se elimina. Publicar de nuevo una publicación sustituye únicamente su subdirectorio y conserva los demás.\npublish() no despliega ni congela una release. Esas responsabilidades pertenecen a las operaciones posteriores de distribución.\n\n\n6.1.5 Desplegar\ndeploy()\ndeploy() mantiene las publicaciones al día de forma incremental.\nPara cada publicación comprueba si necesita construir y, después, si necesita publicar. Si no hay cambios relevantes, no repite trabajo innecesario.",
+    "text": "Estrategia\nÚsela cuando…\n\n\n\n\nregular\nvarios .qmd de una carpeta forman una única unidad editorial;\n\n\nstructured\nquiere representar explícitamente Partes que contienen Capítulos;\n\n\nparted\nnecesita Partes con una combinación más rica de capítulos directos y carpetas de capítulo;\n\n\ndirect\ncada .qmd ya es un capítulo completo.",
     "crumbs": [
-      "Definiciones",
-      "<span class='chapter-number'>6</span>  <span class='chapter-title'>Construir y publicar</span>"
+      "Conceptos",
+      "<span class='chapter-number'>5</span>  <span class='chapter-title'>Publicaciones</span>"
     ]
   },
   {
-    "objectID": "chapters/05-operations/index.html#forzar-una-operación",
-    "href": "chapters/05-operations/index.html#forzar-una-operación",
-    "title": "6  Construir y publicar",
-    "section": "6.2 Forzar una operación",
-    "text": "6.2 Forzar una operación\nCuando quiera ejecutar una operación completa aunque el estado indique que no es necesaria, utilice force = TRUE:\ndeploy(force = TRUE)\nEl modo forzado no elimina las comprobaciones de validez ni oculta errores. Solo evita que el estado previo suprima una construcción o publicación que se ha solicitado expresamente.\nbuild() y publish() ejecutan directamente la operación solicitada; force se mantiene en sus interfaces para conservar una política común cuando son invocados desde otros flujos.",
+    "objectID": "chapters/04-publications/index.html#estrategia-regular",
+    "href": "chapters/04-publications/index.html#estrategia-regular",
+    "title": "5  Publicaciones",
+    "section": "5.2 Estrategia regular",
+    "text": "5.2 Estrategia regular\nregular es la estrategia predeterminada para libros.\nUna carpeta representa una unidad editorial y los .qmd que contiene se combinan en el index.qmd generado de esa carpeta.\nchapters/\n└── 01-introduction/\n    ├── front-matter.quarto\n    ├── 01-purpose.qmd\n    └── 02-scope.qmd\nfront-matter.quarto puede definir, por ejemplo:\n---\ntitle: \"Introducción\"\ntitle-block-style: none\n---\nIASI genera el index.qmd. Edite los documentos fuente y front-matter.quarto, no el index.qmd generado.",
     "crumbs": [
-      "Definiciones",
-      "<span class='chapter-number'>6</span>  <span class='chapter-title'>Construir y publicar</span>"
+      "Conceptos",
+      "<span class='chapter-number'>5</span>  <span class='chapter-title'>Publicaciones</span>"
     ]
   },
   {
-    "objectID": "chapters/05-operations/index.html#flujo-recomendado",
-    "href": "chapters/05-operations/index.html#flujo-recomendado",
-    "title": "6  Construir y publicar",
-    "section": "6.3 Flujo recomendado",
-    "text": "6.3 Flujo recomendado\nDurante la edición:\nbuild(format = \"html\")\nCuando quiera comprobar todos los formatos:\nbuild()\nCuando los resultados construidos ya son los que quiere publicar:\npublish()\nPara el trabajo habitual una vez estabilizado el proyecto:\ndeploy()\nY cuando haya cambiado la herramienta, una plantilla, una regla de postprocesado o cualquier elemento que pueda alterar la salida sin modificar los fuentes:\ndeploy(force = TRUE)\nLa regla práctica es:\nnormal → haz lo necesario\nforce  → hazlo todo",
+    "objectID": "chapters/04-publications/index.html#estrategia-structured",
+    "href": "chapters/04-publications/index.html#estrategia-structured",
+    "title": "5  Publicaciones",
+    "section": "5.3 Estrategia structured",
+    "text": "5.3 Estrategia structured\nstructured representa directamente una jerarquía Parte → Capítulo.\nchapters/\n└── 20-methodologies/\n    ├── index.qmd\n    ├── 01-history.qmd\n    └── 02-current.qmd\nLa carpeta 20-methodologies representa la Parte.\nSu index.qmd presenta esa Parte y los otros .qmd son Capítulos.\nEn esta estrategia el index.qmd es fuente y debe existir:\npublication:\n  strategy: structured\n  content-dir: chapters\n  numbered: true",
     "crumbs": [
-      "Definiciones",
-      "<span class='chapter-number'>6</span>  <span class='chapter-title'>Construir y publicar</span>"
+      "Conceptos",
+      "<span class='chapter-number'>5</span>  <span class='chapter-title'>Publicaciones</span>"
     ]
   },
   {
-    "objectID": "chapters/06-multiproject/index.html",
-    "href": "chapters/06-multiproject/index.html",
-    "title": "7  Multiproyectos",
+    "objectID": "chapters/04-publications/index.html#estrategia-parted",
+    "href": "chapters/04-publications/index.html#estrategia-parted",
+    "title": "5  Publicaciones",
+    "section": "5.4 Estrategia parted",
+    "text": "5.4 Estrategia parted\nparted permite construir una Parte más rica.\nCada carpeta principal representa una Parte y debe contener index.qmd. Dentro puede mezclar:\n\nintro.qmd;\ncapítulos .qmd directos;\ncarpetas que representan capítulos y que tienen su propio index.qmd;\ndocumentos dentro de esas carpetas de capítulo.\n\nEjemplo:\nchapters/\n└── 20-engineering/\n    ├── index.qmd\n    ├── intro.qmd\n    ├── 01-principles.qmd\n    └── 02-lifecycle/\n        ├── index.qmd\n        ├── 01-build.qmd\n        └── 02-publish.qmd\nEn _iasi.yml:\npublication:\n  strategy: parted\n  content-dir: chapters\n  numbered: true\nSi numbered: true, los capítulos directos y las carpetas de capítulo utilizan prefijos numéricos y no deben repetir el mismo número dentro de una Parte.\nUse parted cuando structured resulte demasiado plano pero quiera conservar una jerarquía editorial explícita.",
+    "crumbs": [
+      "Conceptos",
+      "<span class='chapter-number'>5</span>  <span class='chapter-title'>Publicaciones</span>"
+    ]
+  },
+  {
+    "objectID": "chapters/04-publications/index.html#estrategia-direct",
+    "href": "chapters/04-publications/index.html#estrategia-direct",
+    "title": "5  Publicaciones",
+    "section": "5.5 Estrategia direct",
+    "text": "5.5 Estrategia direct\ndirect trata cada documento .qmd como un capítulo.\nchapters/\n├── 01-concepts/\n│   ├── 01-model.qmd\n│   └── 02-context.qmd\n└── 02-usage/\n    ├── 01-build.qmd\n    └── 02-publish.qmd\nEl libro contiene cuatro capítulos consecutivos. Las carpetas ayudan a organizar los fuentes, pero no crean por sí mismas Partes.\npublication:\n  strategy: direct",
+    "crumbs": [
+      "Conceptos",
+      "<span class='chapter-number'>5</span>  <span class='chapter-title'>Publicaciones</span>"
+    ]
+  },
+  {
+    "objectID": "chapters/04-publications/index.html#front-matter-y-back-matter",
+    "href": "chapters/04-publications/index.html#front-matter-y-back-matter",
+    "title": "5  Publicaciones",
+    "section": "5.6 Front matter y back matter",
+    "text": "5.6 Front matter y back matter\nUn libro puede reservar carpetas para contenido anterior y posterior al cuerpo principal:\npublication:\n  front-matter: front-matter\n  content-dir: chapters\n  back-matter: back-matter\nEstas carpetas se integran en la estructura del libro al construirlo.\nLa estrategia elegida sigue determinando cómo se interpreta el contenido principal.",
+    "crumbs": [
+      "Conceptos",
+      "<span class='chapter-number'>5</span>  <span class='chapter-title'>Publicaciones</span>"
+    ]
+  },
+  {
+    "objectID": "chapters/04-publications/index.html#landing-page-html",
+    "href": "chapters/04-publications/index.html#landing-page-html",
+    "title": "5  Publicaciones",
+    "section": "5.7 Landing page HTML",
+    "text": "5.7 Landing page HTML\nUn libro puede pedir que su salida HTML se trate como Website:\npublication:\n  html:\n    landing-page: true\nEsta opción solo es válida para proyectos Quarto de tipo book.",
+    "crumbs": [
+      "Conceptos",
+      "<span class='chapter-number'>5</span>  <span class='chapter-title'>Publicaciones</span>"
+    ]
+  },
+  {
+    "objectID": "chapters/05-formats/index.html",
+    "href": "chapters/05-formats/index.html",
+    "title": "6  Formatos",
     "section": "",
-    "text": "7.1 Trabajar con varias publicaciones\nUn multiproyecto permite mantener varias publicaciones IASI Quarto bajo una misma raíz. Las publicaciones pueden estar agrupadas físicamente en directorios como docs/; cada una sigue siendo una unidad de construcción independiente.\nEjemplo:\nDesde la raíz puede operar sobre el conjunto:",
+    "text": "6.1 Perfiles disponibles\nIASI Quarto construye perfiles Quarto declarados por el proyecto para los que dispone de soporte.\nLos perfiles habituales son:\nUn Website utiliza el perfil web. Una guía o libro utiliza html para su salida HTML.",
     "crumbs": [
-      "Definiciones",
-      "<span class='chapter-number'>7</span>  <span class='chapter-title'>Multiproyectos</span>"
+      "Conceptos",
+      "<span class='chapter-number'>6</span>  <span class='chapter-title'>Formatos</span>"
     ]
   },
   {
-    "objectID": "chapters/06-multiproject/index.html#trabajar-con-varias-publicaciones",
-    "href": "chapters/06-multiproject/index.html#trabajar-con-varias-publicaciones",
-    "title": "7  Multiproyectos",
+    "objectID": "chapters/05-formats/index.html#perfiles-disponibles",
+    "href": "chapters/05-formats/index.html#perfiles-disponibles",
+    "title": "6  Formatos",
     "section": "",
-    "text": "workspace/\n├── docs/\n│   ├── 01-user-guide/\n│   │   ├── _quarto.yml\n│   │   ├── _iasi.yml\n│   │   └── _outputs/\n│   ├── 02-developer-guide/\n│   │   ├── _quarto.yml\n│   │   ├── _iasi.yml\n│   │   └── _outputs/\n│   └── 03-reference/\n│       ├── _quarto.yml\n│       ├── _iasi.yml\n│       └── _outputs/\n└── _publish/\n    ├── user-guide/\n    ├── developer-guide/\n    └── reference/\n\nprepare(path = \".\")\nbuild(path = \".\")\npublish(path = \".\")\ndeploy(path = \".\")",
+    "text": "Perfil\nResultado\n\n\n\n\nweb\nWebsite\n\n\nhtml\nLibro HTML\n\n\npdf\nPDF\n\n\npdfua\nPDF/UA mediante Typst\n\n\nepub\nEPUB\n\n\ndocx\nDOCX\n\n\nodt\nODT\n\n\ngit\nEstructura preparada para GitBook",
     "crumbs": [
-      "Definiciones",
-      "<span class='chapter-number'>7</span>  <span class='chapter-title'>Multiproyectos</span>"
+      "Conceptos",
+      "<span class='chapter-number'>6</span>  <span class='chapter-title'>Formatos</span>"
     ]
   },
   {
-    "objectID": "chapters/06-multiproject/index.html#seleccionar-una-publicación",
-    "href": "chapters/06-multiproject/index.html#seleccionar-una-publicación",
-    "title": "7  Multiproyectos",
-    "section": "7.2 Seleccionar una publicación",
-    "text": "7.2 Seleccionar una publicación\nPuede seleccionar una publicación con book:\nbuild(\n  path = \".\",\n  book = \"user-guide\"\n)\nTambién puede combinar selección y formato:\nbuild(\n  path = \".\",\n  book = \"user-guide\",\n  format = \"html\"\n)\nLa selección puede utilizar el nombre de la publicación, su ruta relativa, su directorio completo o su prefijo numérico cuando corresponda.",
+    "objectID": "chapters/05-formats/index.html#declarar-perfiles",
+    "href": "chapters/05-formats/index.html#declarar-perfiles",
+    "title": "6  Formatos",
+    "section": "6.2 Declarar perfiles",
+    "text": "6.2 Declarar perfiles\nUn proyecto puede declarar sus perfiles en _quarto.yml:\nprofile:\n  default: html\n  group:\n    - [html, pdf, epub]\ny configurar cada uno en su fichero:\n_quarto-html.yml\n_quarto-pdf.yml\n_quarto-epub.yml",
     "crumbs": [
-      "Definiciones",
-      "<span class='chapter-number'>7</span>  <span class='chapter-title'>Multiproyectos</span>"
+      "Conceptos",
+      "<span class='chapter-number'>6</span>  <span class='chapter-title'>Formatos</span>"
     ]
   },
   {
-    "objectID": "chapters/06-multiproject/index.html#un-único-árbol-de-publicación",
-    "href": "chapters/06-multiproject/index.html#un-único-árbol-de-publicación",
-    "title": "7  Multiproyectos",
-    "section": "7.3 Un único árbol de publicación",
-    "text": "7.3 Un único árbol de publicación\nCuando la operación se ejecuta desde la raíz de un multiproyecto, IASI Quarto utiliza un único _publish/ común.\nEl nombre del subdirectorio se deriva del nombre físico de la publicación eliminando únicamente el prefijo numérico inicial:\n01-user-guide       → _publish/user-guide/\n02-developer-guide  → _publish/developer-guide/\nPublicar una sola unidad recrea únicamente su destino:\npublish(\n  path = \".\",\n  book = \"user-guide\"\n)\nLa operación anterior sustituye _publish/user-guide/ y no modifica _publish/developer-guide/.\nSi dos publicaciones distintas resolvieran el mismo nombre de destino, la operación se detiene antes de modificar _publish/.\nCuando path apunta directamente a una publicación individual, esa publicación es el workspace seleccionado y su salida se materializa en su propio _publish/.\nEsta separación mantiene tres niveles distintos:\nfuentes\n→ _outputs/   construcción local de cada publicación\n→ _publish/   árbol publicable del workspace\n→ release     distribución o congelación posterior",
+    "objectID": "chapters/05-formats/index.html#construir-un-formato",
+    "href": "chapters/05-formats/index.html#construir-un-formato",
+    "title": "6  Formatos",
+    "section": "6.3 Construir un formato",
+    "text": "6.3 Construir un formato\nbuild(format = \"html\")\nVarios formatos:\nbuild(format = c(\"html\", \"pdf\"))\nTodos los perfiles declarados que tengan soporte:\nbuild()\nSi solicita un perfil que el proyecto no ha declarado, IASI Quarto lo ignora con un aviso.",
     "crumbs": [
-      "Definiciones",
-      "<span class='chapter-number'>7</span>  <span class='chapter-title'>Multiproyectos</span>"
+      "Conceptos",
+      "<span class='chapter-number'>6</span>  <span class='chapter-title'>Formatos</span>"
     ]
   },
   {
-    "objectID": "chapters/07-problems/index.html",
-    "href": "chapters/07-problems/index.html",
-    "title": "8  Problemas frecuentes",
+    "objectID": "chapters/05-formats/index.html#gitbook",
+    "href": "chapters/05-formats/index.html#gitbook",
+    "title": "6  Formatos",
+    "section": "6.4 GitBook",
+    "text": "6.4 GitBook\nEl perfil git genera la estructura que espera GitBook, incluido:\nREADME.md\nSUMMARY.md\n.gitbook.yaml",
+    "crumbs": [
+      "Conceptos",
+      "<span class='chapter-number'>6</span>  <span class='chapter-title'>Formatos</span>"
+    ]
+  },
+  {
+    "objectID": "chapters/05-formats/index.html#html-y-exportaciones",
+    "href": "chapters/05-formats/index.html#html-y-exportaciones",
+    "title": "6  Formatos",
+    "section": "6.5 HTML y exportaciones",
+    "text": "6.5 HTML y exportaciones\nCuando se construye HTML junto con otros formatos, IASI Quarto puede generar la información necesaria para que la publicación HTML ofrezca enlaces a PDF, EPUB, DOCX, ODT o GitBook disponibles.",
+    "crumbs": [
+      "Conceptos",
+      "<span class='chapter-number'>6</span>  <span class='chapter-title'>Formatos</span>"
+    ]
+  },
+  {
+    "objectID": "chapters/06-operations/index.html",
+    "href": "chapters/06-operations/index.html",
+    "title": "7  Operaciones",
     "section": "",
-    "text": "8.1 La publicación no se reconoce\nCompruebe primero que se encuentra en la ruta correcta y que la publicación contiene la configuración de Quarto y _iasi.yml.\nEjecute:",
+    "text": "7.1 validate()\nUse validate() para comprobar que los proyectos están correctamente configurados:\nO desde otra ruta:\nPara publicaciones comprueba, entre otras cosas, la estructura editorial y la configuración.\nPara paquetes R comprueba que el proyecto tiene los elementos necesarios, como DESCRIPTION.\nNo construye artefactos.",
     "crumbs": [
-      "Definiciones",
-      "<span class='chapter-number'>8</span>  <span class='chapter-title'>Problemas frecuentes</span>"
+      "Conceptos",
+      "<span class='chapter-number'>7</span>  <span class='chapter-title'>Operaciones</span>"
     ]
   },
   {
-    "objectID": "chapters/07-problems/index.html#la-publicación-no-se-reconoce",
-    "href": "chapters/07-problems/index.html#la-publicación-no-se-reconoce",
-    "title": "8  Problemas frecuentes",
+    "objectID": "chapters/06-operations/index.html#validate",
+    "href": "chapters/06-operations/index.html#validate",
+    "title": "7  Operaciones",
     "section": "",
-    "text": "validate()",
+    "text": "validate()\n\nvalidate(path = \"docs/01-user-guide\")",
     "crumbs": [
-      "Definiciones",
-      "<span class='chapter-number'>8</span>  <span class='chapter-title'>Problemas frecuentes</span>"
+      "Conceptos",
+      "<span class='chapter-number'>7</span>  <span class='chapter-title'>Operaciones</span>"
     ]
   },
   {
-    "objectID": "chapters/07-problems/index.html#un-formato-no-se-genera",
-    "href": "chapters/07-problems/index.html#un-formato-no-se-genera",
-    "title": "8  Problemas frecuentes",
-    "section": "8.2 Un formato no se genera",
-    "text": "8.2 Un formato no se genera\nCompruebe que existe su perfil Quarto, por ejemplo:\n_quarto-pdf.yml\nTambién debe disponer de las dependencias que necesite el formato. PDF, por ejemplo, puede requerir una instalación TeX funcional.",
+    "objectID": "chapters/06-operations/index.html#build",
+    "href": "chapters/06-operations/index.html#build",
+    "title": "7  Operaciones",
+    "section": "7.2 build()",
+    "text": "7.2 build()\nbuild() construye siempre que se invoca.\nbuild()\nPara una publicación Quarto deja los resultados en:\n_outputs/\nseparados por perfil:\n_outputs/\n├── html/\n├── pdf/\n└── epub/\nDurante la edición es habitual construir solo lo que se está revisando:\nbuild(format = \"html\")\nPara un Website:\nbuild(format = \"web\")\nPara un r-package, build() ejecuta la construcción del paquete fuente y del paquete binario soportado por la plataforma.",
     "crumbs": [
-      "Definiciones",
-      "<span class='chapter-number'>8</span>  <span class='chapter-title'>Problemas frecuentes</span>"
+      "Conceptos",
+      "<span class='chapter-number'>7</span>  <span class='chapter-title'>Operaciones</span>"
     ]
   },
   {
-    "objectID": "chapters/07-problems/index.html#he-cambiado-la-herramienta-pero-no-los-fuentes",
-    "href": "chapters/07-problems/index.html#he-cambiado-la-herramienta-pero-no-los-fuentes",
-    "title": "8  Problemas frecuentes",
-    "section": "8.3 He cambiado la herramienta pero no los fuentes",
-    "text": "8.3 He cambiado la herramienta pero no los fuentes\nEl estado incremental puede considerar que los fuentes están al día aunque una nueva versión de iasi.quarto cambie el resultado o el postprocesado.\nEn ese caso utilice:\ndeploy(force = TRUE)",
+    "objectID": "chapters/06-operations/index.html#publish",
+    "href": "chapters/06-operations/index.html#publish",
+    "title": "7  Operaciones",
+    "section": "7.3 publish()",
+    "text": "7.3 publish()\npublish() no vuelve a renderizar los fuentes.\nToma exclusivamente lo que ya existe en:\n_outputs/\ny prepara una publicación local:\n_publish/\npublish()\nAntes de repetir el trabajo compara el contenido construido con la última publicación. Si no ha cambiado, puede terminar sin rehacer _publish/.\nPara obligar a repetir la publicación:\npublish(force = TRUE)\nLa nueva publicación se prepara primero en un directorio temporal. La publicación anterior no se sustituye hasta que la nueva está completa.\nEn una publicación con HTML y PDF puede quedar, por ejemplo:\n_publish/\n├── index.html\n├── chapters/\n└── pdf/\n    └── guide.pdf\nEl contenido pensado para navegador ocupa la raíz y los formatos alternativos quedan como exportaciones.",
     "crumbs": [
-      "Definiciones",
-      "<span class='chapter-number'>8</span>  <span class='chapter-title'>Problemas frecuentes</span>"
+      "Conceptos",
+      "<span class='chapter-number'>7</span>  <span class='chapter-title'>Operaciones</span>"
     ]
   },
   {
-    "objectID": "chapters/07-problems/index.html#quiero-reconstruir-sin-publicar",
-    "href": "chapters/07-problems/index.html#quiero-reconstruir-sin-publicar",
-    "title": "8  Problemas frecuentes",
-    "section": "8.4 Quiero reconstruir sin publicar",
-    "text": "8.4 Quiero reconstruir sin publicar\nUtilice:\nbuild()",
+    "objectID": "chapters/06-operations/index.html#release",
+    "href": "chapters/06-operations/index.html#release",
+    "title": "7  Operaciones",
+    "section": "7.4 release()",
+    "text": "7.4 release()\nrelease() reúne los entregables locales:\nrelease()\nNo renderiza de nuevo y no despliega a Internet.\nPara una guía o website toma el contenido ya preparado por publish().\nPara un paquete R recoge los artefactos construidos por build().\nEl destino predeterminado es:\nrelease/\nSi varios proyectos comparten un paths.release definido en una carpeta superior, una guía se coloca en un subdirectorio derivado del nombre del proyecto. Los prefijos numéricos organizativos se eliminan:\n01-user-guide  → release/user-guide/\n02-developer-guide → release/developer-guide/",
     "crumbs": [
-      "Definiciones",
-      "<span class='chapter-number'>8</span>  <span class='chapter-title'>Problemas frecuentes</span>"
+      "Conceptos",
+      "<span class='chapter-number'>7</span>  <span class='chapter-title'>Operaciones</span>"
     ]
   },
   {
-    "objectID": "chapters/07-problems/index.html#quiero-publicar-lo-que-ya-está-construido",
-    "href": "chapters/07-problems/index.html#quiero-publicar-lo-que-ya-está-construido",
-    "title": "8  Problemas frecuentes",
-    "section": "8.5 Quiero publicar lo que ya está construido",
-    "text": "8.5 Quiero publicar lo que ya está construido\nUtilice:\npublish()",
+    "objectID": "chapters/06-operations/index.html#flujo-recomendado",
+    "href": "chapters/06-operations/index.html#flujo-recomendado",
+    "title": "7  Operaciones",
+    "section": "7.5 Flujo recomendado",
+    "text": "7.5 Flujo recomendado\nDurante la edición:\nbuild(format = \"html\")\nCuando quiera construir todos los perfiles declarados:\nbuild()\nDespués:\npublish()\nrelease()\nEn resumen:\nvalidate  → comprobar\nbuild     → construir\npublish   → preparar\nrelease   → reunir",
     "crumbs": [
-      "Definiciones",
-      "<span class='chapter-number'>8</span>  <span class='chapter-title'>Problemas frecuentes</span>"
+      "Conceptos",
+      "<span class='chapter-number'>7</span>  <span class='chapter-title'>Operaciones</span>"
     ]
   },
   {
-    "objectID": "chapters/07-problems/index.html#quiero-mantener-la-publicación-al-día-automáticamente",
-    "href": "chapters/07-problems/index.html#quiero-mantener-la-publicación-al-día-automáticamente",
-    "title": "8  Problemas frecuentes",
-    "section": "8.6 Quiero mantener la publicación al día automáticamente",
-    "text": "8.6 Quiero mantener la publicación al día automáticamente\nUtilice:\ndeploy()",
+    "objectID": "chapters/07-workspaces/index.html",
+    "href": "chapters/07-workspaces/index.html",
+    "title": "8  Trabajar con varios proyectos",
+    "section": "",
+    "text": "8.1 Descubrimiento desde una carpeta\nEl argumento path define desde dónde buscar proyectos IASI.\nIASI Quarto recorre esa carpeta y sus subcarpetas y encuentra proyectos marcados con _iasi.yml o .iasi.yml.\nLos directorios intermedios no necesitan ser proyectos IASI.\nEjemplo:\nDesde la raíz:\nse aplican a los proyectos para los que cada operación tiene sentido.",
     "crumbs": [
-      "Definiciones",
-      "<span class='chapter-number'>8</span>  <span class='chapter-title'>Problemas frecuentes</span>"
+      "Conceptos",
+      "<span class='chapter-number'>8</span>  <span class='chapter-title'>Trabajar con varios proyectos</span>"
+    ]
+  },
+  {
+    "objectID": "chapters/07-workspaces/index.html#descubrimiento-desde-una-carpeta",
+    "href": "chapters/07-workspaces/index.html#descubrimiento-desde-una-carpeta",
+    "title": "8  Trabajar con varios proyectos",
+    "section": "",
+    "text": "build(path = \".\")\n\n\n\niasi-quarto/\n├── _iasi.yml                 # type: repository\n├── docs/\n│   ├── 01-user-guide/\n│   │   ├── _iasi.yml\n│   │   └── _quarto.yml\n│   ├── 02-developer-guide/\n│   │   ├── _iasi.yml\n│   │   └── _quarto.yml\n│   └── 03-technical-guide/\n│       ├── _iasi.yml\n│       └── _quarto.yml\n└── software/\n    └── iasi-quarto/\n        ├── _iasi.yml\n        └── DESCRIPTION\n\nvalidate(path = \".\")\nbuild(path = \".\")\nrelease(path = \".\")",
+    "crumbs": [
+      "Conceptos",
+      "<span class='chapter-number'>8</span>  <span class='chapter-title'>Trabajar con varios proyectos</span>"
+    ]
+  },
+  {
+    "objectID": "chapters/07-workspaces/index.html#trabajar-solo-con-uno",
+    "href": "chapters/07-workspaces/index.html#trabajar-solo-con-uno",
+    "title": "8  Trabajar con varios proyectos",
+    "section": "8.2 Trabajar solo con uno",
+    "text": "8.2 Trabajar solo con uno\nNo necesita un selector especial. Indique su carpeta:\nbuild(path = \"docs/01-user-guide\", format = \"html\")",
+    "crumbs": [
+      "Conceptos",
+      "<span class='chapter-number'>8</span>  <span class='chapter-title'>Trabajar con varios proyectos</span>"
+    ]
+  },
+  {
+    "objectID": "chapters/07-workspaces/index.html#publicación-de-varios-proyectos",
+    "href": "chapters/07-workspaces/index.html#publicación-de-varios-proyectos",
+    "title": "8  Trabajar con varios proyectos",
+    "section": "8.3 Publicación de varios proyectos",
+    "text": "8.3 Publicación de varios proyectos\npublish(path = \".\") puede preparar varias publicaciones encontradas bajo esa raíz, pero cada proyecto conserva su propio destino de publicación.\nCon los valores predeterminados:\ndocs/01-user-guide/_publish/\ndocs/02-developer-guide/_publish/\ndocs/03-technical-guide/_publish/\nNo existe un único _publish/ de multiproyecto.\nLa reunión de entregables corresponde a release().",
+    "crumbs": [
+      "Conceptos",
+      "<span class='chapter-number'>8</span>  <span class='chapter-title'>Trabajar con varios proyectos</span>"
+    ]
+  },
+  {
+    "objectID": "chapters/07-workspaces/index.html#configuración-común",
+    "href": "chapters/07-workspaces/index.html#configuración-común",
+    "title": "8  Trabajar con varios proyectos",
+    "section": "8.4 Configuración común",
+    "text": "8.4 Configuración común\nUna raíz repository puede aportar defaults:\ntype: repository\n\npaths:\n  release: release\nLos proyectos hijos heredan los valores que no hayan definido por sí mismos.\nEsto permite, por ejemplo, reunir varias guías bajo un único árbol release/ sin obligarlas a compartir _publish/.",
+    "crumbs": [
+      "Conceptos",
+      "<span class='chapter-number'>8</span>  <span class='chapter-title'>Trabajar con varios proyectos</span>"
+    ]
+  },
+  {
+    "objectID": "chapters/08-configuration/index.html",
+    "href": "chapters/08-configuration/index.html",
+    "title": "9  Configuración",
+    "section": "",
+    "text": "9.1 _iasi.yml\nEl fichero _iasi.yml describe las decisiones propias de IASI.\nEjemplo de una guía:",
+    "crumbs": [
+      "Conceptos",
+      "<span class='chapter-number'>9</span>  <span class='chapter-title'>Configuración</span>"
+    ]
+  },
+  {
+    "objectID": "chapters/08-configuration/index.html#iasi.yml",
+    "href": "chapters/08-configuration/index.html#iasi.yml",
+    "title": "9  Configuración",
+    "section": "",
+    "text": "type: guide\n\npublication:\n  strategy: parted\n  content-dir: chapters\n  numbered: true\n\npaths:\n  publish: _publish\n  release: release",
+    "crumbs": [
+      "Conceptos",
+      "<span class='chapter-number'>9</span>  <span class='chapter-title'>Configuración</span>"
+    ]
+  },
+  {
+    "objectID": "chapters/08-configuration/index.html#publication",
+    "href": "chapters/08-configuration/index.html#publication",
+    "title": "9  Configuración",
+    "section": "9.2 publication",
+    "text": "9.2 publication\nPara libros puede utilizar:\npublication:\n  strategy: regular\n  front-matter: front-matter\n  content-dir: chapters\n  back-matter: back-matter\n  numbered: true\n  html:\n    landing-page: false\nLos valores predeterminados de un libro son regular, front-matter, chapters, back-matter y numbered: true.",
+    "crumbs": [
+      "Conceptos",
+      "<span class='chapter-number'>9</span>  <span class='chapter-title'>Configuración</span>"
+    ]
+  },
+  {
+    "objectID": "chapters/08-configuration/index.html#paths",
+    "href": "chapters/08-configuration/index.html#paths",
+    "title": "9  Configuración",
+    "section": "9.3 paths",
+    "text": "9.3 paths\nLos paths principales son:\npaths:\n  publish: _publish\n  release: release\nLa clave correcta es:\npaths.release\nNo utilice la forma antigua paths.releases.",
+    "crumbs": [
+      "Conceptos",
+      "<span class='chapter-number'>9</span>  <span class='chapter-title'>Configuración</span>"
+    ]
+  },
+  {
+    "objectID": "chapters/08-configuration/index.html#configuración-heredada",
+    "href": "chapters/08-configuration/index.html#configuración-heredada",
+    "title": "9  Configuración",
+    "section": "9.4 Configuración heredada",
+    "text": "9.4 Configuración heredada\nSi una carpeta superior también tiene configuración IASI, sus valores sirven como defaults para los proyectos situados debajo.\nEjemplo:\nrepository/\n├── _iasi.yml\n└── docs/\n    └── 01-user-guide/\n        └── _iasi.yml\nSi la raíz define paths.release y la guía no lo redefine, la guía utiliza ese valor.\nSi la guía sí lo define, gana el valor local.",
+    "crumbs": [
+      "Conceptos",
+      "<span class='chapter-number'>9</span>  <span class='chapter-title'>Configuración</span>"
+    ]
+  },
+  {
+    "objectID": "chapters/08-configuration/index.html#exclude",
+    "href": "chapters/08-configuration/index.html#exclude",
+    "title": "9  Configuración",
+    "section": "9.5 exclude",
+    "text": "9.5 exclude\nPuede excluir nombres que no deben participar en la estructura editorial:\nexclude:\n  - drafts\n  - archive",
+    "crumbs": [
+      "Conceptos",
+      "<span class='chapter-number'>9</span>  <span class='chapter-title'>Configuración</span>"
+    ]
+  },
+  {
+    "objectID": "chapters/08-configuration/index.html#quarto.yml",
+    "href": "chapters/08-configuration/index.html#quarto.yml",
+    "title": "9  Configuración",
+    "section": "9.6 _quarto.yml",
+    "text": "9.6 _quarto.yml\nIASI Quarto complementa a Quarto, no lo sustituye.\nLos perfiles, formatos, tema, título, filtros y demás opciones propias de Quarto siguen configurándose mediante _quarto.yml y sus perfiles _quarto-*.yml.",
+    "crumbs": [
+      "Conceptos",
+      "<span class='chapter-number'>9</span>  <span class='chapter-title'>Configuración</span>"
+    ]
+  },
+  {
+    "objectID": "chapters/09-problems/index.html",
+    "href": "chapters/09-problems/index.html",
+    "title": "10  Problemas frecuentes",
+    "section": "",
+    "text": "10.1 El proyecto no se reconoce\nCompruebe que la carpeta contiene exactamente uno de estos ficheros:\nPara una guía o website también debe existir _quarto.yml.\nPara un paquete R debe existir DESCRIPTION.\nPruebe:",
+    "crumbs": [
+      "Conceptos",
+      "<span class='chapter-number'>10</span>  <span class='chapter-title'>Problemas frecuentes</span>"
+    ]
+  },
+  {
+    "objectID": "chapters/09-problems/index.html#el-proyecto-no-se-reconoce",
+    "href": "chapters/09-problems/index.html#el-proyecto-no-se-reconoce",
+    "title": "10  Problemas frecuentes",
+    "section": "",
+    "text": "_iasi.yml\n.iasi.yml\n\n\n\nvalidate(path = \"ruta/del/proyecto\")",
+    "crumbs": [
+      "Conceptos",
+      "<span class='chapter-number'>10</span>  <span class='chapter-title'>Problemas frecuentes</span>"
+    ]
+  },
+  {
+    "objectID": "chapters/09-problems/index.html#tengo-_iasi.yml-y-.iasi.yml",
+    "href": "chapters/09-problems/index.html#tengo-_iasi.yml-y-.iasi.yml",
+    "title": "10  Problemas frecuentes",
+    "section": "10.2 Tengo _iasi.yml y .iasi.yml",
+    "text": "10.2 Tengo _iasi.yml y .iasi.yml\nNo utilice los dos en la misma carpeta. La configuración sería ambigua.",
+    "crumbs": [
+      "Conceptos",
+      "<span class='chapter-number'>10</span>  <span class='chapter-title'>Problemas frecuentes</span>"
+    ]
+  },
+  {
+    "objectID": "chapters/09-problems/index.html#un-formato-no-se-construye",
+    "href": "chapters/09-problems/index.html#un-formato-no-se-construye",
+    "title": "10  Problemas frecuentes",
+    "section": "10.3 Un formato no se construye",
+    "text": "10.3 Un formato no se construye\nCompruebe dos cosas:\n\nque el perfil está declarado por el proyecto;\nque dispone de las herramientas externas que necesita.\n\nEjemplo:\n_quarto-pdf.yml\nPara un Website recuerde que el perfil IASI esperado es web.",
+    "crumbs": [
+      "Conceptos",
+      "<span class='chapter-number'>10</span>  <span class='chapter-title'>Problemas frecuentes</span>"
+    ]
+  },
+  {
+    "objectID": "chapters/09-problems/index.html#build-vuelve-a-construir",
+    "href": "chapters/09-problems/index.html#build-vuelve-a-construir",
+    "title": "10  Problemas frecuentes",
+    "section": "10.4 build() vuelve a construir",
+    "text": "10.4 build() vuelve a construir\nEs el comportamiento esperado.\nUna llamada a:\nbuild()\nsignifica construir ahora.",
+    "crumbs": [
+      "Conceptos",
+      "<span class='chapter-number'>10</span>  <span class='chapter-title'>Problemas frecuentes</span>"
+    ]
+  },
+  {
+    "objectID": "chapters/09-problems/index.html#publish-dice-que-no-hay-nada-que-hacer",
+    "href": "chapters/09-problems/index.html#publish-dice-que-no-hay-nada-que-hacer",
+    "title": "10  Problemas frecuentes",
+    "section": "10.5 publish() dice que no hay nada que hacer",
+    "text": "10.5 publish() dice que no hay nada que hacer\nSi _outputs/ no ha cambiado desde la última publicación, publish() puede omitir el trabajo.\nPara repetirlo expresamente:\npublish(force = TRUE)",
+    "crumbs": [
+      "Conceptos",
+      "<span class='chapter-number'>10</span>  <span class='chapter-title'>Problemas frecuentes</span>"
+    ]
+  },
+  {
+    "objectID": "chapters/09-problems/index.html#publish-no-construye-mis-cambios",
+    "href": "chapters/09-problems/index.html#publish-no-construye-mis-cambios",
+    "title": "10  Problemas frecuentes",
+    "section": "10.6 publish() no construye mis cambios",
+    "text": "10.6 publish() no construye mis cambios\npublish() no renderiza.\nPrimero:\nbuild()\ny después:\npublish()",
+    "crumbs": [
+      "Conceptos",
+      "<span class='chapter-number'>10</span>  <span class='chapter-title'>Problemas frecuentes</span>"
+    ]
+  },
+  {
+    "objectID": "chapters/09-problems/index.html#release-no-genera-una-publicación-nueva",
+    "href": "chapters/09-problems/index.html#release-no-genera-una-publicación-nueva",
+    "title": "10  Problemas frecuentes",
+    "section": "10.7 release() no genera una publicación nueva",
+    "text": "10.7 release() no genera una publicación nueva\nTambién es intencionado.\nrelease() reúne lo que ya fue construido o publicado. Para una guía:\nbuild()\npublish()\nrelease()",
+    "crumbs": [
+      "Conceptos",
+      "<span class='chapter-number'>10</span>  <span class='chapter-title'>Problemas frecuentes</span>"
+    ]
+  },
+  {
+    "objectID": "chapters/09-problems/index.html#no-aparece-una-carpeta-en-un-libro-numbered",
+    "href": "chapters/09-problems/index.html#no-aparece-una-carpeta-en-un-libro-numbered",
+    "title": "10  Problemas frecuentes",
+    "section": "10.8 No aparece una carpeta en un libro numbered",
+    "text": "10.8 No aparece una carpeta en un libro numbered\nCuando numbered: true, las carpetas y documentos que participan en el orden editorial deben seguir la convención numérica que espera la estrategia.\nPor ejemplo:\n01-introduction\n02-architecture\n03-usage\nEn parted, no repita el mismo prefijo numérico entre un capítulo directo y una carpeta de capítulo dentro de la misma Parte.",
+    "crumbs": [
+      "Conceptos",
+      "<span class='chapter-number'>10</span>  <span class='chapter-title'>Problemas frecuentes</span>"
+    ]
+  },
+  {
+    "objectID": "chapters/09-problems/index.html#quiero-desplegar-a-github-pages-u-otro-servicio",
+    "href": "chapters/09-problems/index.html#quiero-desplegar-a-github-pages-u-otro-servicio",
+    "title": "10  Problemas frecuentes",
+    "section": "10.9 Quiero desplegar a GitHub Pages u otro servicio",
+    "text": "10.9 Quiero desplegar a GitHub Pages u otro servicio\nEso queda fuera de iasi.quarto.\niasi.quarto termina en release(). Utilice la herramienta responsable del despliegue, por ejemplo iasi-dev.",
+    "crumbs": [
+      "Conceptos",
+      "<span class='chapter-number'>10</span>  <span class='chapter-title'>Problemas frecuentes</span>"
     ]
   }
 ]

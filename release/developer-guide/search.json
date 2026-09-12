@@ -1,0 +1,13 @@
+[
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "IASI Quarto",
+    "section": "",
+    "text": "1 Introducción\nEsta guía está dirigida a quien va a entender, mantener o evolucionar iasi.quarto.\nNo es la guía de usuario y tampoco pretende enumerar cada función privada. Explica el sistema desde la perspectiva de desarrollo: qué problemas resuelve, cuáles son sus principios, cómo se reparten las responsabilidades, qué contratos conviene conservar y cómo incorporar cambios sin erosionar el modelo.\nLa implementación de referencia para esta edición corresponde a iasi.quarto 0.10.2 y al refactor actual incluido en el código fuente suministrado.\nEl mapa conceptual puede resumirse así:\nproyectos IASI\n     ↓\ndescubrimiento + configuración\n     ↓\nvalidate / build / publish / release\n     ↓\nmaterializaciones locales\nEl objetivo de un desarrollador no es memorizar funciones. Es comprender qué capa debe cambiar cuando aparece una necesidad nueva.",
+    "crumbs": [
+      "Inicio",
+      "<span class='chapter-number'>1</span>  <span class='chapter-title'>IASI Quarto</span>"
+    ]
+  }
+]

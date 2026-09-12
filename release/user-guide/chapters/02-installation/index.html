@@ -5,7 +5,7 @@
 <meta charset="utf-8">
 <meta name="generator" content="quarto-1.10.18">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-<title>3  Instalación – IASI Quarto User Guide</title>
+<title>3  Instalación – IASI Quarto</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -61,8 +61,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 }
 </style>
 <script src="../../site_libs/quarto-nav/quarto-nav.js"></script><script src="../../site_libs/clipboard/clipboard.min.js"></script><script src="../../site_libs/quarto-search/autocomplete.umd.js"></script><script src="../../site_libs/quarto-search/fuse.min.js"></script><script src="../../site_libs/quarto-search/quarto-search.js"></script><meta name="quarto:offset" content="../../">
-<link href="../../chapters/03-publications/index.html" rel="next">
-<link href="../../chapters/01-definitions/index.html" rel="prev">
+<link href="../../chapters/03-projects/index.html" rel="next">
+<link href="../../chapters/01-concepts/index.html" rel="prev">
 <script src="../../site_libs/quarto-html/quarto.js" type="module"></script><script src="../../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script><script src="../../site_libs/quarto-html/popper.min.js"></script><script src="../../site_libs/quarto-html/tippy.umd.min.js"></script><script src="../../site_libs/quarto-html/anchor.min.js"></script><link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
 <link href="../../site_libs/quarto-html/quarto-syntax-highlighting-64a204ab8560d761af7679ceaba22944.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="../../site_libs/bootstrap/bootstrap.min.js"></script><link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
@@ -94,25 +94,15 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     "search-label": "Search"
   }
 }</script><script>
-
 document.addEventListener("DOMContentLoaded", () => {
-
   const banner = document.querySelector("#quarto-announcement .iasi-ants-image");
-
   const bootstrap = document.querySelector("link#quarto-bootstrap");
-
-
 
   if (!banner || !bootstrap) return;
 
-
-
   const siteRoot = bootstrap.href.replace(/site_libs\/bootstrap\/[^/]+$/i, "");
-
   banner.src = new URL("resources/images/ants.png", siteRoot).href;
-
 });
-
 </script>
 </head>
 <body class="nav-sidebar floating nav-fixed quarto-light">
@@ -134,31 +124,39 @@ document.addEventListener("DOMContentLoaded", () => {
           <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav navbar-nav-scroll me-auto">
 <li class="nav-item">
-    <a class="nav-link active" href="../../chapters/01-definitions/index.html" aria-current="page"> 
-<span class="menu-text">Definiciones</span></a>
+    <a class="nav-link active" href="../../chapters/01-concepts/index.html" aria-current="page"> 
+<span class="menu-text">Conceptos</span></a>
   </li>  
   <li class="nav-item">
     <a class="nav-link" href="../../chapters/02-installation/index.html"> 
 <span class="menu-text">Instalación</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="../../chapters/03-publications/index.html"> 
+    <a class="nav-link" href="../../chapters/03-projects/index.html"> 
+<span class="menu-text">Proyectos</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../chapters/04-publications/index.html"> 
 <span class="menu-text">Publicaciones</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="../../chapters/04-formats/index.html"> 
+    <a class="nav-link" href="../../chapters/05-formats/index.html"> 
 <span class="menu-text">Formatos</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="../../chapters/05-operations/index.html"> 
-<span class="menu-text">Construir y publicar</span></a>
+    <a class="nav-link" href="../../chapters/06-operations/index.html"> 
+<span class="menu-text">Operaciones</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="../../chapters/06-multiproject/index.html"> 
-<span class="menu-text">Multiproyectos</span></a>
+    <a class="nav-link" href="../../chapters/07-workspaces/index.html"> 
+<span class="menu-text">Varios proyectos</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="../../chapters/07-problems/index.html"> 
+    <a class="nav-link" href="../../chapters/08-configuration/index.html"> 
+<span class="menu-text">Configuración</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../chapters/09-problems/index.html"> 
 <span class="menu-text">Problemas</span></a>
   </li>  
 </ul>
@@ -202,20 +200,27 @@ document.addEventListener("DOMContentLoaded", () => {
 <!-- sidebar -->
   <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto"><div class="sidebar-menu-container"> 
     <ul class="list-unstyled mt-1">
-<li class="sidebar-item">
+<li class="sidebar-item sidebar-item-section">
   <div class="sidebar-item-container"> 
   <a href="../../index.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">1</span>  <span class="chapter-title">IASI Quarto User Guide</span></span></a>
-  </div>
+ <span class="menu-text"><span class="chapter-number">1</span>  <span class="chapter-title">IASI Quarto</span></span></a>
+  <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#iasi-sidebar--index-html" role="navigation" aria-expanded="false" aria-controls="iasi-sidebar--index-html" aria-label="Toggle section"><i class="bi bi-chevron-right ms-2"></i></a>
+</div>
+<ul id="iasi-sidebar--index-html" class="collapse list-unstyled sidebar-section depth2">
+<li><a href="../../index.html#introducci%C3%B3n" id="toc-introducción" class="nav-link active" data-scroll-target="#introducción"><span class="header-section-number">1</span> Introducción</a></li>
+  </ul>
 </li>
         <li class="sidebar-item sidebar-item-section">
   <div class="sidebar-item-container"> 
-  <a href="../../chapters/01-definitions/index.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">2</span>  <span class="chapter-title">Definiciones y conceptos</span></span></a>
-  <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#iasi-sidebar--chapters-01-definitions-index-html" role="navigation" aria-expanded="false" aria-controls="iasi-sidebar--chapters-01-definitions-index-html" aria-label="Toggle section"><i class="bi bi-chevron-right ms-2"></i></a>
+  <a href="../../chapters/01-concepts/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>  <span class="chapter-title">Conceptos</span></span></a>
+  <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#iasi-sidebar--chapters-01-concepts-index-html" role="navigation" aria-expanded="false" aria-controls="iasi-sidebar--chapters-01-concepts-index-html" aria-label="Toggle section"><i class="bi bi-chevron-right ms-2"></i></a>
 </div>
-<ul id="iasi-sidebar--chapters-01-definitions-index-html" class="collapse list-unstyled sidebar-section depth2">
-<li><a href="../../chapters/01-definitions/index.html#definiciones-y-conceptos" id="toc-definiciones-y-conceptos" class="nav-link active" data-scroll-target="#definiciones-y-conceptos"><span class="header-section-number">2.1</span> Definiciones y conceptos</a></li>
+<ul id="iasi-sidebar--chapters-01-concepts-index-html" class="collapse list-unstyled sidebar-section depth2">
+<li><a href="../../chapters/01-concepts/index.html#las-ideas-b%C3%A1sicas" id="toc-las-ideas-básicas" class="nav-link active" data-scroll-target="#las-ideas-básicas"><span class="header-section-number">2.1</span> Las ideas básicas</a></li>
+  <li><a href="../../chapters/01-concepts/index.html#cuatro-tipos-de-proyecto" id="toc-cuatro-tipos-de-proyecto" class="nav-link" data-scroll-target="#cuatro-tipos-de-proyecto"><span class="header-section-number">2.2</span> Cuatro tipos de proyecto</a></li>
+  <li><a href="../../chapters/01-concepts/index.html#tipo-y-estrategia-no-son-lo-mismo" id="toc-tipo-y-estrategia-no-son-lo-mismo" class="nav-link" data-scroll-target="#tipo-y-estrategia-no-son-lo-mismo"><span class="header-section-number">2.3</span> Tipo y estrategia no son lo mismo</a></li>
+  <li><a href="../../chapters/01-concepts/index.html#tres-niveles-de-materializaci%C3%B3n" id="toc-tres-niveles-de-materialización" class="nav-link" data-scroll-target="#tres-niveles-de-materialización"><span class="header-section-number">2.4</span> Tres niveles de materialización</a></li>
   </ul>
 </li>
         <li class="sidebar-item sidebar-item-section">
@@ -226,86 +231,112 @@ document.addEventListener("DOMContentLoaded", () => {
 </div>
 <ul id="iasi-sidebar--chapters-02-installation-index-html" class="collapse list-unstyled sidebar-section depth2">
 <li><a href="../../chapters/02-installation/index.html#requisitos" id="toc-requisitos" class="nav-link active" data-scroll-target="#requisitos"><span class="header-section-number">3.1</span> Requisitos</a></li>
-  <li><a href="../../chapters/02-installation/index.html#instalar-iasi.quarto" id="toc-instalar-iasi.quarto" class="nav-link" data-scroll-target="#instalar-iasi.quarto"><span class="header-section-number">3.2</span> Instalar <code>iasi.quarto</code></a></li>
-  <li><a href="../../chapters/02-installation/index.html#comprobar-la-instalaci%C3%B3n" id="toc-comprobar-la-instalación" class="nav-link" data-scroll-target="#comprobar-la-instalación"><span class="header-section-number">3.3</span> Comprobar la instalación</a></li>
+  <li><a href="../../chapters/02-installation/index.html#instalar-el-paquete" id="toc-instalar-el-paquete" class="nav-link" data-scroll-target="#instalar-el-paquete"><span class="header-section-number">3.2</span> Instalar el paquete</a></li>
+  <li><a href="../../chapters/02-installation/index.html#primera-comprobaci%C3%B3n" id="toc-primera-comprobación" class="nav-link" data-scroll-target="#primera-comprobación"><span class="header-section-number">3.3</span> Primera comprobación</a></li>
   </ul>
 </li>
         <li class="sidebar-item sidebar-item-section">
   <div class="sidebar-item-container"> 
-  <a href="../../chapters/03-publications/index.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">4</span>  <span class="chapter-title">Tipos de publicación</span></span></a>
-  <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#iasi-sidebar--chapters-03-publications-index-html" role="navigation" aria-expanded="false" aria-controls="iasi-sidebar--chapters-03-publications-index-html" aria-label="Toggle section"><i class="bi bi-chevron-right ms-2"></i></a>
+  <a href="../../chapters/03-projects/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>  <span class="chapter-title">Proyectos IASI</span></span></a>
+  <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#iasi-sidebar--chapters-03-projects-index-html" role="navigation" aria-expanded="false" aria-controls="iasi-sidebar--chapters-03-projects-index-html" aria-label="Toggle section"><i class="bi bi-chevron-right ms-2"></i></a>
 </div>
-<ul id="iasi-sidebar--chapters-03-publications-index-html" class="collapse list-unstyled sidebar-section depth2">
-<li><a href="../../chapters/03-publications/index.html#estrategias-soportadas" id="toc-estrategias-soportadas" class="nav-link active" data-scroll-target="#estrategias-soportadas"><span class="header-section-number">4.1</span> Estrategias soportadas</a></li>
-  <li><a href="../../chapters/03-publications/index.html#configuraci%C3%B3n-de-una-publicaci%C3%B3n" id="toc-configuración-de-una-publicación" class="nav-link" data-scroll-target="#configuración-de-una-publicación"><span class="header-section-number">4.2</span> Configuración de una publicación</a></li>
-  <li><a href="../../chapters/03-publications/index.html#crear-un-website" id="toc-crear-un-website" class="nav-link" data-scroll-target="#crear-un-website"><span class="header-section-number">4.3</span> Crear un Website</a></li>
-  <li><a href="../../chapters/03-publications/index.html#crear-un-book-regular" id="toc-crear-un-book-regular" class="nav-link" data-scroll-target="#crear-un-book-regular"><span class="header-section-number">4.4</span> Crear un Book Regular</a></li>
-  <li><a href="../../chapters/03-publications/index.html#crear-un-book-structured" id="toc-crear-un-book-structured" class="nav-link" data-scroll-target="#crear-un-book-structured"><span class="header-section-number">4.5</span> Crear un Book Structured</a></li>
-  <li><a href="../../chapters/03-publications/index.html#crear-un-book-direct" id="toc-crear-un-book-direct" class="nav-link" data-scroll-target="#crear-un-book-direct"><span class="header-section-number">4.6</span> Crear un Book Direct</a></li>
-  <li><a href="../../chapters/03-publications/index.html#elegir-una-estrategia" id="toc-elegir-una-estrategia" class="nav-link" data-scroll-target="#elegir-una-estrategia"><span class="header-section-number">4.7</span> Elegir una estrategia</a></li>
+<ul id="iasi-sidebar--chapters-03-projects-index-html" class="collapse list-unstyled sidebar-section depth2">
+<li><a href="../../chapters/03-projects/index.html#marcar-un-proyecto" id="toc-marcar-un-proyecto" class="nav-link active" data-scroll-target="#marcar-un-proyecto"><span class="header-section-number">4.1</span> Marcar un proyecto</a></li>
+  <li><a href="../../chapters/03-projects/index.html#una-gu%C3%ADa-quarto" id="toc-una-guía-quarto" class="nav-link" data-scroll-target="#una-guía-quarto"><span class="header-section-number">4.2</span> Una guía Quarto</a></li>
+  <li><a href="../../chapters/03-projects/index.html#un-sitio-web" id="toc-un-sitio-web" class="nav-link" data-scroll-target="#un-sitio-web"><span class="header-section-number">4.3</span> Un sitio web</a></li>
+  <li><a href="../../chapters/03-projects/index.html#un-paquete-r" id="toc-un-paquete-r" class="nav-link" data-scroll-target="#un-paquete-r"><span class="header-section-number">4.4</span> Un paquete R</a></li>
+  <li><a href="../../chapters/03-projects/index.html#una-ra%C3%ADz-com%C3%BAn" id="toc-una-raíz-común" class="nav-link" data-scroll-target="#una-raíz-común"><span class="header-section-number">4.5</span> Una raíz común</a></li>
   </ul>
 </li>
         <li class="sidebar-item sidebar-item-section">
   <div class="sidebar-item-container"> 
-  <a href="../../chapters/04-formats/index.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">5</span>  <span class="chapter-title">Formatos</span></span></a>
-  <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#iasi-sidebar--chapters-04-formats-index-html" role="navigation" aria-expanded="false" aria-controls="iasi-sidebar--chapters-04-formats-index-html" aria-label="Toggle section"><i class="bi bi-chevron-right ms-2"></i></a>
+  <a href="../../chapters/04-publications/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>  <span class="chapter-title">Publicaciones</span></span></a>
+  <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#iasi-sidebar--chapters-04-publications-index-html" role="navigation" aria-expanded="false" aria-controls="iasi-sidebar--chapters-04-publications-index-html" aria-label="Toggle section"><i class="bi bi-chevron-right ms-2"></i></a>
 </div>
-<ul id="iasi-sidebar--chapters-04-formats-index-html" class="collapse list-unstyled sidebar-section depth2">
-<li><a href="../../chapters/04-formats/index.html#formatos-disponibles" id="toc-formatos-disponibles" class="nav-link active" data-scroll-target="#formatos-disponibles"><span class="header-section-number">5.1</span> Formatos disponibles</a></li>
-  <li><a href="../../chapters/04-formats/index.html#configurar-un-formato" id="toc-configurar-un-formato" class="nav-link" data-scroll-target="#configurar-un-formato"><span class="header-section-number">5.2</span> Configurar un formato</a></li>
-  <li><a href="../../chapters/04-formats/index.html#construir-un-formato" id="toc-construir-un-formato" class="nav-link" data-scroll-target="#construir-un-formato"><span class="header-section-number">5.3</span> Construir un formato</a></li>
-  <li><a href="../../chapters/04-formats/index.html#construcci%C3%B3n-predeterminada" id="toc-construcción-predeterminada" class="nav-link" data-scroll-target="#construcción-predeterminada"><span class="header-section-number">5.4</span> Construcción predeterminada</a></li>
+<ul id="iasi-sidebar--chapters-04-publications-index-html" class="collapse list-unstyled sidebar-section depth2">
+<li><a href="../../chapters/04-publications/index.html#las-cuatro-estrategias-de-libro" id="toc-las-cuatro-estrategias-de-libro" class="nav-link active" data-scroll-target="#las-cuatro-estrategias-de-libro"><span class="header-section-number">5.1</span> Las cuatro estrategias de libro</a></li>
+  <li><a href="../../chapters/04-publications/index.html#estrategia-regular" id="toc-estrategia-regular" class="nav-link" data-scroll-target="#estrategia-regular"><span class="header-section-number">5.2</span> Estrategia <code>regular</code></a></li>
+  <li><a href="../../chapters/04-publications/index.html#estrategia-structured" id="toc-estrategia-structured" class="nav-link" data-scroll-target="#estrategia-structured"><span class="header-section-number">5.3</span> Estrategia <code>structured</code></a></li>
+  <li><a href="../../chapters/04-publications/index.html#estrategia-parted" id="toc-estrategia-parted" class="nav-link" data-scroll-target="#estrategia-parted"><span class="header-section-number">5.4</span> Estrategia <code>parted</code></a></li>
+  <li><a href="../../chapters/04-publications/index.html#estrategia-direct" id="toc-estrategia-direct" class="nav-link" data-scroll-target="#estrategia-direct"><span class="header-section-number">5.5</span> Estrategia <code>direct</code></a></li>
+  <li><a href="../../chapters/04-publications/index.html#front-matter-y-back-matter" id="toc-front-matter-y-back-matter" class="nav-link" data-scroll-target="#front-matter-y-back-matter"><span class="header-section-number">5.6</span> Front matter y back matter</a></li>
+  <li><a href="../../chapters/04-publications/index.html#landing-page-html" id="toc-landing-page-html" class="nav-link" data-scroll-target="#landing-page-html"><span class="header-section-number">5.7</span> Landing page HTML</a></li>
   </ul>
 </li>
         <li class="sidebar-item sidebar-item-section">
   <div class="sidebar-item-container"> 
-  <a href="../../chapters/05-operations/index.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">6</span>  <span class="chapter-title">Construir y publicar</span></span></a>
-  <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#iasi-sidebar--chapters-05-operations-index-html" role="navigation" aria-expanded="false" aria-controls="iasi-sidebar--chapters-05-operations-index-html" aria-label="Toggle section"><i class="bi bi-chevron-right ms-2"></i></a>
+  <a href="../../chapters/05-formats/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>  <span class="chapter-title">Formatos</span></span></a>
+  <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#iasi-sidebar--chapters-05-formats-index-html" role="navigation" aria-expanded="false" aria-controls="iasi-sidebar--chapters-05-formats-index-html" aria-label="Toggle section"><i class="bi bi-chevron-right ms-2"></i></a>
 </div>
-<ul id="iasi-sidebar--chapters-05-operations-index-html" class="collapse list-unstyled sidebar-section depth2">
-<li class="sidebar-item-section">
-<a href="../../chapters/05-operations/index.html#operaciones-principales" id="toc-operaciones-principales" class="nav-link active" data-scroll-target="#operaciones-principales"><span class="header-section-number">6.1</span> Operaciones principales</a>
-  <ul class="collapse list-unstyled sidebar-section depth3" id="iasi-sidebar--chapters-05-operations-index-html-1">
-<li><a href="../../chapters/05-operations/index.html#validar" id="toc-validar" class="nav-link" data-scroll-target="#validar"><span class="header-section-number">6.1.1</span> Validar</a></li>
-  <li><a href="../../chapters/05-operations/index.html#preparar" id="toc-preparar" class="nav-link" data-scroll-target="#preparar"><span class="header-section-number">6.1.2</span> Preparar</a></li>
-  <li><a href="../../chapters/05-operations/index.html#construir" id="toc-construir" class="nav-link" data-scroll-target="#construir"><span class="header-section-number">6.1.3</span> Construir</a></li>
-  <li><a href="../../chapters/05-operations/index.html#publicar" id="toc-publicar" class="nav-link" data-scroll-target="#publicar"><span class="header-section-number">6.1.4</span> Publicar</a></li>
-  <li><a href="../../chapters/05-operations/index.html#desplegar" id="toc-desplegar" class="nav-link" data-scroll-target="#desplegar"><span class="header-section-number">6.1.5</span> Desplegar</a></li>
-  </ul>
-<a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#iasi-sidebar--chapters-05-operations-index-html-1" role="navigation" aria-expanded="false" aria-controls="iasi-sidebar--chapters-05-operations-index-html-1" aria-label="Toggle section"><i class="bi bi-chevron-right ms-2"></i></a>
-</li>
-  <li><a href="../../chapters/05-operations/index.html#forzar-una-operaci%C3%B3n" id="toc-forzar-una-operación" class="nav-link" data-scroll-target="#forzar-una-operación"><span class="header-section-number">6.2</span> Forzar una operación</a></li>
-  <li><a href="../../chapters/05-operations/index.html#flujo-recomendado" id="toc-flujo-recomendado" class="nav-link" data-scroll-target="#flujo-recomendado"><span class="header-section-number">6.3</span> Flujo recomendado</a></li>
+<ul id="iasi-sidebar--chapters-05-formats-index-html" class="collapse list-unstyled sidebar-section depth2">
+<li><a href="../../chapters/05-formats/index.html#perfiles-disponibles" id="toc-perfiles-disponibles" class="nav-link active" data-scroll-target="#perfiles-disponibles"><span class="header-section-number">6.1</span> Perfiles disponibles</a></li>
+  <li><a href="../../chapters/05-formats/index.html#declarar-perfiles" id="toc-declarar-perfiles" class="nav-link" data-scroll-target="#declarar-perfiles"><span class="header-section-number">6.2</span> Declarar perfiles</a></li>
+  <li><a href="../../chapters/05-formats/index.html#construir-un-formato" id="toc-construir-un-formato" class="nav-link" data-scroll-target="#construir-un-formato"><span class="header-section-number">6.3</span> Construir un formato</a></li>
+  <li><a href="../../chapters/05-formats/index.html#gitbook" id="toc-gitbook" class="nav-link" data-scroll-target="#gitbook"><span class="header-section-number">6.4</span> GitBook</a></li>
+  <li><a href="../../chapters/05-formats/index.html#html-y-exportaciones" id="toc-html-y-exportaciones" class="nav-link" data-scroll-target="#html-y-exportaciones"><span class="header-section-number">6.5</span> HTML y exportaciones</a></li>
   </ul>
 </li>
         <li class="sidebar-item sidebar-item-section">
   <div class="sidebar-item-container"> 
-  <a href="../../chapters/06-multiproject/index.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">7</span>  <span class="chapter-title">Multiproyectos</span></span></a>
-  <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#iasi-sidebar--chapters-06-multiproject-index-html" role="navigation" aria-expanded="false" aria-controls="iasi-sidebar--chapters-06-multiproject-index-html" aria-label="Toggle section"><i class="bi bi-chevron-right ms-2"></i></a>
+  <a href="../../chapters/06-operations/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>  <span class="chapter-title">Operaciones</span></span></a>
+  <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#iasi-sidebar--chapters-06-operations-index-html" role="navigation" aria-expanded="false" aria-controls="iasi-sidebar--chapters-06-operations-index-html" aria-label="Toggle section"><i class="bi bi-chevron-right ms-2"></i></a>
 </div>
-<ul id="iasi-sidebar--chapters-06-multiproject-index-html" class="collapse list-unstyled sidebar-section depth2">
-<li><a href="../../chapters/06-multiproject/index.html#trabajar-con-varias-publicaciones" id="toc-trabajar-con-varias-publicaciones" class="nav-link active" data-scroll-target="#trabajar-con-varias-publicaciones"><span class="header-section-number">7.1</span> Trabajar con varias publicaciones</a></li>
-  <li><a href="../../chapters/06-multiproject/index.html#seleccionar-una-publicaci%C3%B3n" id="toc-seleccionar-una-publicación" class="nav-link" data-scroll-target="#seleccionar-una-publicación"><span class="header-section-number">7.2</span> Seleccionar una publicación</a></li>
-  <li><a href="../../chapters/06-multiproject/index.html#un-%C3%BAnico-%C3%A1rbol-de-publicaci%C3%B3n" id="toc-un-único-árbol-de-publicación" class="nav-link" data-scroll-target="#un-único-árbol-de-publicación"><span class="header-section-number">7.3</span> Un único árbol de publicación</a></li>
+<ul id="iasi-sidebar--chapters-06-operations-index-html" class="collapse list-unstyled sidebar-section depth2">
+<li><a href="../../chapters/06-operations/index.html#validate" id="toc-validate" class="nav-link active" data-scroll-target="#validate"><span class="header-section-number">7.1</span> <code>validate()</code></a></li>
+  <li><a href="../../chapters/06-operations/index.html#build" id="toc-build" class="nav-link" data-scroll-target="#build"><span class="header-section-number">7.2</span> <code>build()</code></a></li>
+  <li><a href="../../chapters/06-operations/index.html#publish" id="toc-publish" class="nav-link" data-scroll-target="#publish"><span class="header-section-number">7.3</span> <code>publish()</code></a></li>
+  <li><a href="../../chapters/06-operations/index.html#release" id="toc-release" class="nav-link" data-scroll-target="#release"><span class="header-section-number">7.4</span> <code>release()</code></a></li>
+  <li><a href="../../chapters/06-operations/index.html#flujo-recomendado" id="toc-flujo-recomendado" class="nav-link" data-scroll-target="#flujo-recomendado"><span class="header-section-number">7.5</span> Flujo recomendado</a></li>
   </ul>
 </li>
         <li class="sidebar-item sidebar-item-section">
   <div class="sidebar-item-container"> 
-  <a href="../../chapters/07-problems/index.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">8</span>  <span class="chapter-title">Problemas frecuentes</span></span></a>
-  <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#iasi-sidebar--chapters-07-problems-index-html" role="navigation" aria-expanded="false" aria-controls="iasi-sidebar--chapters-07-problems-index-html" aria-label="Toggle section"><i class="bi bi-chevron-right ms-2"></i></a>
+  <a href="../../chapters/07-workspaces/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>  <span class="chapter-title">Trabajar con varios proyectos</span></span></a>
+  <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#iasi-sidebar--chapters-07-workspaces-index-html" role="navigation" aria-expanded="false" aria-controls="iasi-sidebar--chapters-07-workspaces-index-html" aria-label="Toggle section"><i class="bi bi-chevron-right ms-2"></i></a>
 </div>
-<ul id="iasi-sidebar--chapters-07-problems-index-html" class="collapse list-unstyled sidebar-section depth2">
-<li><a href="../../chapters/07-problems/index.html#la-publicaci%C3%B3n-no-se-reconoce" id="toc-la-publicación-no-se-reconoce" class="nav-link active" data-scroll-target="#la-publicación-no-se-reconoce"><span class="header-section-number">8.1</span> La publicación no se reconoce</a></li>
-  <li><a href="../../chapters/07-problems/index.html#un-formato-no-se-genera" id="toc-un-formato-no-se-genera" class="nav-link" data-scroll-target="#un-formato-no-se-genera"><span class="header-section-number">8.2</span> Un formato no se genera</a></li>
-  <li><a href="../../chapters/07-problems/index.html#he-cambiado-la-herramienta-pero-no-los-fuentes" id="toc-he-cambiado-la-herramienta-pero-no-los-fuentes" class="nav-link" data-scroll-target="#he-cambiado-la-herramienta-pero-no-los-fuentes"><span class="header-section-number">8.3</span> He cambiado la herramienta pero no los fuentes</a></li>
-  <li><a href="../../chapters/07-problems/index.html#quiero-reconstruir-sin-publicar" id="toc-quiero-reconstruir-sin-publicar" class="nav-link" data-scroll-target="#quiero-reconstruir-sin-publicar"><span class="header-section-number">8.4</span> Quiero reconstruir sin publicar</a></li>
-  <li><a href="../../chapters/07-problems/index.html#quiero-publicar-lo-que-ya-est%C3%A1-construido" id="toc-quiero-publicar-lo-que-ya-está-construido" class="nav-link" data-scroll-target="#quiero-publicar-lo-que-ya-está-construido"><span class="header-section-number">8.5</span> Quiero publicar lo que ya está construido</a></li>
-  <li><a href="../../chapters/07-problems/index.html#quiero-mantener-la-publicaci%C3%B3n-al-d%C3%ADa-autom%C3%A1ticamente" id="toc-quiero-mantener-la-publicación-al-día-automáticamente" class="nav-link" data-scroll-target="#quiero-mantener-la-publicación-al-día-automáticamente"><span class="header-section-number">8.6</span> Quiero mantener la publicación al día automáticamente</a></li>
+<ul id="iasi-sidebar--chapters-07-workspaces-index-html" class="collapse list-unstyled sidebar-section depth2">
+<li><a href="../../chapters/07-workspaces/index.html#descubrimiento-desde-una-carpeta" id="toc-descubrimiento-desde-una-carpeta" class="nav-link active" data-scroll-target="#descubrimiento-desde-una-carpeta"><span class="header-section-number">8.1</span> Descubrimiento desde una carpeta</a></li>
+  <li><a href="../../chapters/07-workspaces/index.html#trabajar-solo-con-uno" id="toc-trabajar-solo-con-uno" class="nav-link" data-scroll-target="#trabajar-solo-con-uno"><span class="header-section-number">8.2</span> Trabajar solo con uno</a></li>
+  <li><a href="../../chapters/07-workspaces/index.html#publicaci%C3%B3n-de-varios-proyectos" id="toc-publicación-de-varios-proyectos" class="nav-link" data-scroll-target="#publicación-de-varios-proyectos"><span class="header-section-number">8.3</span> Publicación de varios proyectos</a></li>
+  <li><a href="../../chapters/07-workspaces/index.html#configuraci%C3%B3n-com%C3%BAn" id="toc-configuración-común" class="nav-link" data-scroll-target="#configuración-común"><span class="header-section-number">8.4</span> Configuración común</a></li>
+  </ul>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+  <div class="sidebar-item-container"> 
+  <a href="../../chapters/08-configuration/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">9</span>  <span class="chapter-title">Configuración</span></span></a>
+  <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#iasi-sidebar--chapters-08-configuration-index-html" role="navigation" aria-expanded="false" aria-controls="iasi-sidebar--chapters-08-configuration-index-html" aria-label="Toggle section"><i class="bi bi-chevron-right ms-2"></i></a>
+</div>
+<ul id="iasi-sidebar--chapters-08-configuration-index-html" class="collapse list-unstyled sidebar-section depth2">
+<li><a href="../../chapters/08-configuration/index.html#iasi.yml" id="toc-iasi.yml" class="nav-link active" data-scroll-target="#iasi.yml"><span class="header-section-number">9.1</span> <code>_iasi.yml</code></a></li>
+  <li><a href="../../chapters/08-configuration/index.html#publication" id="toc-publication" class="nav-link" data-scroll-target="#publication"><span class="header-section-number">9.2</span> <code>publication</code></a></li>
+  <li><a href="../../chapters/08-configuration/index.html#paths" id="toc-paths" class="nav-link" data-scroll-target="#paths"><span class="header-section-number">9.3</span> <code>paths</code></a></li>
+  <li><a href="../../chapters/08-configuration/index.html#configuraci%C3%B3n-heredada" id="toc-configuración-heredada" class="nav-link" data-scroll-target="#configuración-heredada"><span class="header-section-number">9.4</span> Configuración heredada</a></li>
+  <li><a href="../../chapters/08-configuration/index.html#exclude" id="toc-exclude" class="nav-link" data-scroll-target="#exclude"><span class="header-section-number">9.5</span> <code>exclude</code></a></li>
+  <li><a href="../../chapters/08-configuration/index.html#quarto.yml" id="toc-quarto.yml" class="nav-link" data-scroll-target="#quarto.yml"><span class="header-section-number">9.6</span> <code>_quarto.yml</code></a></li>
+  </ul>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+  <div class="sidebar-item-container"> 
+  <a href="../../chapters/09-problems/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">10</span>  <span class="chapter-title">Problemas frecuentes</span></span></a>
+  <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#iasi-sidebar--chapters-09-problems-index-html" role="navigation" aria-expanded="false" aria-controls="iasi-sidebar--chapters-09-problems-index-html" aria-label="Toggle section"><i class="bi bi-chevron-right ms-2"></i></a>
+</div>
+<ul id="iasi-sidebar--chapters-09-problems-index-html" class="collapse list-unstyled sidebar-section depth2">
+<li><a href="../../chapters/09-problems/index.html#el-proyecto-no-se-reconoce" id="toc-el-proyecto-no-se-reconoce" class="nav-link active" data-scroll-target="#el-proyecto-no-se-reconoce"><span class="header-section-number">10.1</span> El proyecto no se reconoce</a></li>
+  <li><a href="../../chapters/09-problems/index.html#tengo-_iasi.yml-y-.iasi.yml" id="toc-tengo-_iasi.yml-y-.iasi.yml" class="nav-link" data-scroll-target="#tengo-_iasi.yml-y-.iasi.yml"><span class="header-section-number">10.2</span> Tengo <code>_iasi.yml</code> y <code>.iasi.yml</code></a></li>
+  <li><a href="../../chapters/09-problems/index.html#un-formato-no-se-construye" id="toc-un-formato-no-se-construye" class="nav-link" data-scroll-target="#un-formato-no-se-construye"><span class="header-section-number">10.3</span> Un formato no se construye</a></li>
+  <li><a href="../../chapters/09-problems/index.html#build-vuelve-a-construir" id="toc-build-vuelve-a-construir" class="nav-link" data-scroll-target="#build-vuelve-a-construir"><span class="header-section-number">10.4</span> <code>build()</code> vuelve a construir</a></li>
+  <li><a href="../../chapters/09-problems/index.html#publish-dice-que-no-hay-nada-que-hacer" id="toc-publish-dice-que-no-hay-nada-que-hacer" class="nav-link" data-scroll-target="#publish-dice-que-no-hay-nada-que-hacer"><span class="header-section-number">10.5</span> <code>publish()</code> dice que no hay nada que hacer</a></li>
+  <li><a href="../../chapters/09-problems/index.html#publish-no-construye-mis-cambios" id="toc-publish-no-construye-mis-cambios" class="nav-link" data-scroll-target="#publish-no-construye-mis-cambios"><span class="header-section-number">10.6</span> <code>publish()</code> no construye mis cambios</a></li>
+  <li><a href="../../chapters/09-problems/index.html#release-no-genera-una-publicaci%C3%B3n-nueva" id="toc-release-no-genera-una-publicación-nueva" class="nav-link" data-scroll-target="#release-no-genera-una-publicación-nueva"><span class="header-section-number">10.7</span> <code>release()</code> no genera una publicación nueva</a></li>
+  <li><a href="../../chapters/09-problems/index.html#no-aparece-una-carpeta-en-un-libro-numbered" id="toc-no-aparece-una-carpeta-en-un-libro-numbered" class="nav-link" data-scroll-target="#no-aparece-una-carpeta-en-un-libro-numbered"><span class="header-section-number">10.8</span> No aparece una carpeta en un libro <code>numbered</code></a></li>
+  <li><a href="../../chapters/09-problems/index.html#quiero-desplegar-a-github-pages-u-otro-servicio" id="toc-quiero-desplegar-a-github-pages-u-otro-servicio" class="nav-link" data-scroll-target="#quiero-desplegar-a-github-pages-u-otro-servicio"><span class="header-section-number">10.9</span> Quiero desplegar a GitHub Pages u otro servicio</a></li>
   </ul>
 </li>
     </ul>
@@ -317,8 +348,8 @@ document.addEventListener("DOMContentLoaded", () => {
    
   <ul>
 <li><a href="#requisitos" id="toc-requisitos" class="nav-link active" data-scroll-target="#requisitos"><span class="header-section-number">3.1</span> Requisitos</a></li>
-  <li><a href="#instalar-iasi.quarto" id="toc-instalar-iasi.quarto" class="nav-link" data-scroll-target="#instalar-iasi.quarto"><span class="header-section-number">3.2</span> Instalar <code>iasi.quarto</code></a></li>
-  <li><a href="#comprobar-la-instalaci%C3%B3n" id="toc-comprobar-la-instalación" class="nav-link" data-scroll-target="#comprobar-la-instalación"><span class="header-section-number">3.3</span> Comprobar la instalación</a></li>
+  <li><a href="#instalar-el-paquete" id="toc-instalar-el-paquete" class="nav-link" data-scroll-target="#instalar-el-paquete"><span class="header-section-number">3.2</span> Instalar el paquete</a></li>
+  <li><a href="#primera-comprobaci%C3%B3n" id="toc-primera-comprobación" class="nav-link" data-scroll-target="#primera-comprobación"><span class="header-section-number">3.3</span> Primera comprobación</a></li>
   </ul></nav>
 </div>
 <!-- main -->
@@ -328,44 +359,49 @@ document.addEventListener("DOMContentLoaded", () => {
 <span class="header-section-number">3.1</span> Requisitos</h2>
 <p>Para utilizar <code>iasi.quarto</code> necesita:</p>
 <ul>
-<li>R;</li>
+<li>R 4.2 o posterior;</li>
 <li>Quarto;</li>
-<li>acceso a los formatos adicionales que quiera generar, por ejemplo una instalación TeX para PDF;</li>
-<li>Git si va a instalar el paquete directamente desde GitHub.</li>
+<li>Git si instala el paquete directamente desde GitHub;</li>
+<li>las herramientas adicionales que exija cada formato.</li>
 </ul>
-<p>Puede comprobar R y Quarto desde una terminal:</p>
+<p>Por ejemplo, un PDF puede necesitar una instalación TeX funcional.</p>
+<p>Compruebe R y Quarto:</p>
 <div class="code-copy-outer-scaffold">
 <div class="sourceCode" id="cb1"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">R</span> <span class="at">--version</span></span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="ex">quarto</span> <span class="at">--version</span></span></code></pre></div>
 <button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button>
 </div>
-</section><section id="instalar-iasi.quarto" class="level2" data-number="3.2"><h2 data-number="3.2" class="anchored" data-anchor-id="instalar-iasi.quarto">
-<span class="header-section-number">3.2</span> Instalar <code>iasi.quarto</code>
-</h2>
-<p>Una forma sencilla de instalar la versión disponible en GitHub es utilizar <code>remotes</code>:</p>
+</section><section id="instalar-el-paquete" class="level2" data-number="3.2"><h2 data-number="3.2" class="anchored" data-anchor-id="instalar-el-paquete">
+<span class="header-section-number">3.2</span> Instalar el paquete</h2>
+<p>Puede instalarlo desde GitHub con <code>remotes</code>:</p>
 <div class="code-copy-outer-scaffold">
 <div class="sourceCode" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">"remotes"</span>)</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>remotes<span class="sc">::</span><span class="fu">install_github</span>(<span class="st">"iasi-org/iasi-quarto"</span>)</span></code></pre></div>
 <button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button>
 </div>
-<p>Después puede cargar el paquete:</p>
+<p>Después:</p>
 <div class="code-copy-outer-scaffold">
 <div class="sourceCode" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(iasi.quarto)</span></code></pre></div>
 <button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button>
 </div>
-</section><section id="comprobar-la-instalación" class="level2" data-number="3.3"><h2 data-number="3.3" class="anchored" data-anchor-id="comprobar-la-instalación">
-<span class="header-section-number">3.3</span> Comprobar la instalación</h2>
 <p>Compruebe la versión instalada:</p>
 <div class="code-copy-outer-scaffold">
 <div class="sourceCode" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">packageVersion</span>(<span class="st">"iasi.quarto"</span>)</span></code></pre></div>
 <button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button>
 </div>
-<p>Y, desde una publicación IASI Quarto, ejecute:</p>
+</section><section id="primera-comprobación" class="level2" data-number="3.3"><h2 data-number="3.3" class="anchored" data-anchor-id="primera-comprobación">
+<span class="header-section-number">3.3</span> Primera comprobación</h2>
+<p>Sitúese en un proyecto IASI y ejecute:</p>
 <div class="code-copy-outer-scaffold">
 <div class="sourceCode" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">validate</span>()</span></code></pre></div>
 <button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button>
 </div>
-<p>Si el proyecto es válido, IASI Quarto lo reconocerá sin construir todavía ningún formato.</p>
+<p><code>validate()</code> comprueba el proyecto sin construirlo.</p>
+<p>Si trabaja desde otra carpeta puede indicar la ruta:</p>
+<div class="code-copy-outer-scaffold">
+<div class="sourceCode" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">validate</span>(<span class="at">path =</span> <span class="st">"docs/01-user-guide"</span>)</span></code></pre></div>
+<button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button>
+</div>
 
 
 </section></main><!-- /main --><script id="quarto-html-after-body" type="application/javascript">
@@ -768,13 +804,13 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
   </script><nav class="page-navigation"><div class="nav-page nav-page-previous">
-      <a href="../../chapters/01-definitions/index.html" class="pagination-link" aria-label="Definiciones y conceptos">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">2</span>  <span class="chapter-title">Definiciones y conceptos</span></span>
+      <a href="../../chapters/01-concepts/index.html" class="pagination-link" aria-label="Conceptos">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">2</span>  <span class="chapter-title">Conceptos</span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="../../chapters/03-publications/index.html" class="pagination-link" aria-label="Tipos de publicación">
-        <span class="nav-page-text"><span class="chapter-number">4</span>  <span class="chapter-title">Tipos de publicación</span></span> <i class="bi bi-arrow-right-short"></i>
+      <a href="../../chapters/03-projects/index.html" class="pagination-link" aria-label="Proyectos IASI">
+        <span class="nav-page-text"><span class="chapter-number">4</span>  <span class="chapter-title">Proyectos IASI</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>
@@ -787,7 +823,7 @@ document.addEventListener("DOMContentLoaded", () => {
        
     </div>
     <div class="nav-footer-right">
-<p><span id="iasi-publish-date">Publicado: 09/09/2026</span></p>
+<p><span id="iasi-publish-date">Publicado: 13/09/2026</span></p>
 </div>
   </div>
 </footer>
