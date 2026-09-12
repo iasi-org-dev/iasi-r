@@ -1,0 +1,15 @@
+book:
+  chapters:
+    - index.qmd
+    - chapters/01-topologia-y-api.qmd
+    - chapters/02-contexto-rc-y-errores.qmd
+    - chapters/03-descubrimiento-y-seleccion.qmd
+    - chapters/04-configuracion-y-modelos.qmd
+    - chapters/05-validacion.qmd
+    - chapters/06-build-y-render.qmd
+    - chapters/07-preparacion-editorial.qmd
+    - chapters/08-formatos-y-gitbook.qmd
+    - chapters/09-publish.qmd
+    - chapters/10-release-y-paths.qmd
+    - chapters/11-publicacion-y-normalizacion-html.qmd
+    - chapters/12-pruebas-deuda-y-fronteras.qmd

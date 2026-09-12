@@ -1,0 +1,107 @@
+## El proyecto no se reconoce
+
+Compruebe que la carpeta contiene exactamente uno de estos ficheros:
+
+```text
+_iasi.yml
+.iasi.yml
+```
+
+Para una guía o website también debe existir `_quarto.yml`.
+
+Para un paquete R debe existir `DESCRIPTION`.
+
+Pruebe:
+
+```r
+validate(path = "ruta/del/proyecto")
+```
+
+## Tengo `_iasi.yml` y `.iasi.yml`
+
+No utilice los dos en la misma carpeta. La configuración sería ambigua.
+
+## Un formato no se construye
+
+Compruebe dos cosas:
+
+1. que el perfil está declarado por el proyecto;
+2. que dispone de las herramientas externas que necesita.
+
+Ejemplo:
+
+```text
+_quarto-pdf.yml
+```
+
+Para un Website recuerde que el perfil IASI esperado es `web`.
+
+## `build()` vuelve a construir
+
+Es el comportamiento esperado.
+
+Una llamada a:
+
+```r
+build()
+```
+
+significa **construir ahora**.
+
+## `publish()` dice que no hay nada que hacer
+
+Si `_outputs/` no ha cambiado desde la última publicación, `publish()` puede omitir el trabajo.
+
+Para repetirlo expresamente:
+
+```r
+publish(force = TRUE)
+```
+
+## `publish()` no construye mis cambios
+
+`publish()` no renderiza.
+
+Primero:
+
+```r
+build()
+```
+
+y después:
+
+```r
+publish()
+```
+
+## `release()` no genera una publicación nueva
+
+También es intencionado.
+
+`release()` reúne lo que ya fue construido o publicado. Para una guía:
+
+```r
+build()
+publish()
+release()
+```
+
+## No aparece una carpeta en un libro `numbered`
+
+Cuando `numbered: true`, las carpetas y documentos que participan en el orden editorial deben seguir la convención numérica que espera la estrategia.
+
+Por ejemplo:
+
+```text
+01-introduction
+02-architecture
+03-usage
+```
+
+En `parted`, no repita el mismo prefijo numérico entre un capítulo directo y una carpeta de capítulo dentro de la misma Parte.
+
+## Quiero desplegar a GitHub Pages u otro servicio
+
+Eso queda fuera de `iasi.quarto`.
+
+`iasi.quarto` termina en `release()`. Utilice la herramienta responsable del despliegue, por ejemplo `iasi-dev`.

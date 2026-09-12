@@ -1,0 +1,33 @@
+project:
+  type: book
+  output-dir: _outputs
+
+profile:
+  default: html
+  group:
+    - [html, pdf]
+
+metadata-files:
+  - _book-structure.yml
+
+lang: es
+
+book:
+  title: "IASI Quarto"
+  subtitle: "Guía de desarrollo"
+  author: "IASI Project"
+  output-file: "iasi-quarto-developer-guide"
+
+format:
+  html:
+    toc: true
+    number-sections: true
+
+  pdf:
+    documentclass: scrreprt
+    toc: true
+    number-sections: true
+    colorlinks: false
+
+execute:
+  freeze: auto

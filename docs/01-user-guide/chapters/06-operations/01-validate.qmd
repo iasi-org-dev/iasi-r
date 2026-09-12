@@ -1,0 +1,19 @@
+## `validate()`
+
+Use `validate()` para comprobar que los proyectos están correctamente configurados:
+
+```r
+validate()
+```
+
+O desde otra ruta:
+
+```r
+validate(path = "docs/01-user-guide")
+```
+
+Para publicaciones comprueba, entre otras cosas, la estructura editorial y la configuración.
+
+Para paquetes R comprueba que el proyecto tiene los elementos necesarios, como `DESCRIPTION`.
+
+No construye artefactos.

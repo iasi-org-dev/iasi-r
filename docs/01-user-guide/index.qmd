@@ -1,0 +1,32 @@
+---
+title: "IASI Quarto"
+subtitle: "Guía de usuario"
+---
+
+# Introducción
+
+`iasi.quarto` es un paquete R que ayuda a **validar, construir, preparar para publicación y reunir entregables** de proyectos IASI basados en Quarto y de paquetes R.
+
+Su objetivo es que el usuario pueda concentrarse en el contenido y en la configuración del proyecto sin tener que reconstruir manualmente la navegación, los artefactos auxiliares o el proceso de publicación cada vez.
+
+La API pública es pequeña:
+
+```r
+validate()
+build()
+publish()
+release()
+```
+
+Cada operación tiene una responsabilidad distinta:
+
+```text
+validate  → comprobar
+build     → construir
+publish   → preparar una publicación local
+release   → reunir entregables locales
+```
+
+`iasi.quarto` **no despliega a servicios externos**. Esa responsabilidad corresponde a herramientas de nivel superior, como `iasi-dev`.
+
+Esta guía describe el uso de `iasi.quarto` 0.10.2. No necesita conocer su arquitectura interna para seguirla.

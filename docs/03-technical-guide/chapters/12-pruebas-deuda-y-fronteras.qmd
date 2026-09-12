@@ -1,0 +1,57 @@
+# Pruebas, deuda y fronteras actuales
+
+## Tests presentes
+
+El snapshot incluye pruebas para:
+
+- visibilidad de RC en API pública;
+- ausencia de `deploy`;
+- constantes de status;
+- dispatch temprano de build;
+- escritura LF mediante `.write_if_changed()`.
+
+La cobertura todavía es pequeña respecto a la superficie real del motor.
+
+## Test histórico inconsistente
+
+`test-build-dispatch.R` todavía consulta:
+
+```r
+.IASI$targets
+```
+
+La estructura `.IASI$targets` no existe en `constants.R` actual.
+
+Esto indica que el test pertenece a una fase anterior del refactor. Debe actualizarse para comprobar la aplicabilidad vigente sin acoplarse a una estructura retirada.
+
+## Fronteras eliminadas
+
+El refactor ha eliminado de forma intencionada:
+
+- `deploy()`;
+- staging/render Pandoc propio;
+- formato custom `single`;
+- `book` como selector público;
+- `source` en publish;
+- `force` en build y release;
+- plan/report legacy;
+- engine state de frescura para build.
+
+## Decisiones todavía visibles
+
+Existe cierta distancia entre algunos documentos de intención y el código final. Un ejemplo es la idea de que toda selección por acción pertenezca a `prepare_context()`: en el código actual `repository` se filtra allí, mientras `publish` todavía filtra `r-package` en su engine.
+
+La guía técnica documenta el código vigente y señala estas diferencias cuando afectan al mantenimiento.
+
+## Herramientas externas
+
+El motor depende de:
+
+- R;
+- Quarto;
+- `yaml`;
+- `xml2`;
+- filesystem local;
+- toolchain necesaria para formatos concretos.
+
+La ausencia de una dependencia externa debe producir un fallo visible en la fase que realmente la necesita, no convertir silenciosamente el resultado en éxito.

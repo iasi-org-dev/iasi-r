@@ -1,0 +1,58 @@
+# Validación técnica
+
+## Dos niveles
+
+La validación opera en dos niveles:
+
+1. validación IASI por tipo;
+2. validación Quarto/editorial para proyectos publicables.
+
+`.engine_validate()` prepara el contexto y llama a `.validate_project()`.
+
+## Paquetes R
+
+Para `r-package` la validación comprueba condiciones propias del paquete. Un requisito básico es `DESCRIPTION`.
+
+No es necesario construir el paquete para validarlo.
+
+## Proyectos Quarto
+
+`.as_quarto_project()` transforma el proyecto y `.ensure_checked_project()` ejecuta `.check_project()`.
+
+El resultado de check contiene:
+
+```text
+valid
+errors
+warnings
+```
+
+Los errores acumulados se imprimen antes de abortar.
+
+## Estrategias soportadas
+
+`.supported_publication_strategies()` define:
+
+```text
+website -> regular
+book    -> regular, structured, parted, direct
+```
+
+## Reglas estructurales
+
+Entre las comprobaciones están:
+
+- existencia de `index.qmd` raíz;
+- validez de strategy;
+- validez de `front-matter`, `content-dir`, `back-matter`;
+- `numbered` lógico;
+- compatibilidad de `html.landing-page`;
+- existencia de content cuando corresponde;
+- numeración y duplicados;
+- estructura específica de `parted`.
+
+## Paths IASI
+
+La validación considera `paths` extensible, pero valida convenciones relevantes.
+
+`paths.releases` se detecta expresamente como obsoleto. La clave canónica es `paths.release`.

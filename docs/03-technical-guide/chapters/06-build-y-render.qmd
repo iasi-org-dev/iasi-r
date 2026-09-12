@@ -1,0 +1,87 @@
+# Build y render
+
+## Orquestación
+
+`.engine_build()`:
+
+1. prepara el contexto;
+2. anuncia cuántos proyectos va a procesar;
+3. llama a `.build_project()` por proyecto.
+
+`.build_project()` resuelve configuración heredada y hace dispatch por tipo IASI.
+
+```text
+r-package -> .build_package_project()
+otros     -> .build_quarto_project()
+```
+
+El dispatch sucede **antes** de resolver formatos Quarto.
+
+## Build de paquete R
+
+El paquete se construye en dos fases:
+
+```text
+R CMD build .
+      ↓
+source .tar.gz
+      ↓
+R CMD INSTALL --build <source.tar.gz>
+      ↓
+binary package
+```
+
+`.latest_package_source()` elige el `.tar.gz` más reciente.
+
+Los artefactos permanecen en la raíz del proyecto hasta `release()`.
+
+## Build Quarto
+
+`.build_quarto_project()` sigue:
+
+```text
+resolver selección de formatos
+      ↓
+.as_quarto_project()
+      ↓
+.ensure_checked_project()
+      ↓
+.prepare_project()
+      ↓
+.render_build_project()
+```
+
+## Resolución de formatos
+
+`format = NULL` se normaliza como `"all"`.
+
+Los formatos seleccionados deben estar declarados por el proyecto y disponer de renderer.
+
+Los perfiles declarados se obtienen preferentemente de `profile.group`; si no existe, se utiliza `profile.default`.
+
+## Outputs
+
+La precedencia del output dir es:
+
+1. `project.output-dir` del perfil específico;
+2. `project.output-dir` común + nombre del perfil;
+3. `_outputs/<profile>`.
+
+Para no reescribir la configuración del autor, el output dir se inyecta mediante un perfil Quarto temporal.
+
+## Renderers
+
+La tabla conceptual vigente es:
+
+```text
+html   -> html
+pdf    -> pdf
+pdfua  -> typst
+epub   -> epub
+docx   -> docx
+odt    -> odt
+git    -> commonmark + preparación GitBook
+web    -> website
+```
+
+El renderer usa `quarto render` y perfiles temporales cuando debe imponer tipo de proyecto u output dir.

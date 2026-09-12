@@ -1,0 +1,71 @@
+## Perfiles disponibles
+
+IASI Quarto construye perfiles Quarto declarados por el proyecto para los que dispone de soporte.
+
+Los perfiles habituales son:
+
+| Perfil | Resultado |
+|---|---|
+| `web` | Website |
+| `html` | Libro HTML |
+| `pdf` | PDF |
+| `pdfua` | PDF/UA mediante Typst |
+| `epub` | EPUB |
+| `docx` | DOCX |
+| `odt` | ODT |
+| `git` | Estructura preparada para GitBook |
+
+Un Website utiliza el perfil `web`. Una guía o libro utiliza `html` para su salida HTML.
+
+## Declarar perfiles
+
+Un proyecto puede declarar sus perfiles en `_quarto.yml`:
+
+```yaml
+profile:
+  default: html
+  group:
+    - [html, pdf, epub]
+```
+
+y configurar cada uno en su fichero:
+
+```text
+_quarto-html.yml
+_quarto-pdf.yml
+_quarto-epub.yml
+```
+
+## Construir un formato
+
+```r
+build(format = "html")
+```
+
+Varios formatos:
+
+```r
+build(format = c("html", "pdf"))
+```
+
+Todos los perfiles declarados que tengan soporte:
+
+```r
+build()
+```
+
+Si solicita un perfil que el proyecto no ha declarado, IASI Quarto lo ignora con un aviso.
+
+## GitBook
+
+El perfil `git` genera la estructura que espera GitBook, incluido:
+
+```text
+README.md
+SUMMARY.md
+.gitbook.yaml
+```
+
+## HTML y exportaciones
+
+Cuando se construye HTML junto con otros formatos, IASI Quarto puede generar la información necesaria para que la publicación HTML ofrezca enlaces a PDF, EPUB, DOCX, ODT o GitBook disponibles.

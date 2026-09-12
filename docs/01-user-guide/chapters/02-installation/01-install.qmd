@@ -1,0 +1,54 @@
+## Requisitos
+
+Para utilizar `iasi.quarto` necesita:
+
+- R 4.2 o posterior;
+- Quarto;
+- Git si instala el paquete directamente desde GitHub;
+- las herramientas adicionales que exija cada formato.
+
+Por ejemplo, un PDF puede necesitar una instalación TeX funcional.
+
+Compruebe R y Quarto:
+
+```bash
+R --version
+quarto --version
+```
+
+## Instalar el paquete
+
+Puede instalarlo desde GitHub con `remotes`:
+
+```r
+install.packages("remotes")
+remotes::install_github("iasi-org/iasi-quarto")
+```
+
+Después:
+
+```r
+library(iasi.quarto)
+```
+
+Compruebe la versión instalada:
+
+```r
+packageVersion("iasi.quarto")
+```
+
+## Primera comprobación
+
+Sitúese en un proyecto IASI y ejecute:
+
+```r
+validate()
+```
+
+`validate()` comprueba el proyecto sin construirlo.
+
+Si trabaja desde otra carpeta puede indicar la ruta:
+
+```r
+validate(path = "docs/01-user-guide")
+```

@@ -1,0 +1,59 @@
+# Contexto, RC y errores
+
+## Contexto mutable
+
+`.new_context(...)` convierte los argumentos de una acción en un environment con padre vacío.
+
+El contexto añade:
+
+```r
+context$rc = 0x00
+```
+
+Durante la ejecución se incorporan bits mediante `.rc_add()`.
+
+El uso de environment permite que las capas internas acumulen estado sin reconstruir y devolver estructuras en cada paso.
+
+## Bitmask
+
+Los bits vigentes son:
+
+| Código | Significado |
+|---:|---|
+| `0x00` | OK |
+| `0x01` | NothingToDo |
+| `0x02` | Info |
+| `0x04` | Warning |
+| `0x08` | Attention |
+| `0x10` | Error |
+| `0x20` | Severe |
+| `0x40` | Fatal |
+
+El low nibble contiene condiciones no erróneas; el high nibble contiene errores.
+
+La acumulación se realiza con OR bit a bit:
+
+```text
+0x01 OR 0x08 = 0x09
+0x04 OR 0x10 = 0x14
+```
+
+## Contrato de error
+
+Una operación que no puede continuar usa errores R para desenrollar la ejecución.
+
+Antes de terminar debe existir un bit de error. `.run_action()` actúa como red de seguridad para errores no clasificados.
+
+## `NothingToDo`
+
+No implica fallo.
+
+Se utiliza cuando la operación es válida pero no requiere trabajo efectivo, por ejemplo:
+
+- no hay proyectos aplicables;
+- una publicación no cambió;
+- no existen artefactos que liberar.
+
+## `Attention`
+
+Se utiliza para configuraciones que merecen revisión pero que no deben abortar el descubrimiento completo, por ejemplo un proyecto marcado con un tipo ausente o inválido.

@@ -1,0 +1,89 @@
+# Publish
+
+## Entrada canónica
+
+`publish()` siempre consume:
+
+```text
+<project>/_outputs
+```
+
+No existe parámetro público `source`.
+
+## Selección
+
+`.engine_publish()` prepara el contexto y elimina paquetes R de la lista publicable.
+
+Para cada proyecto:
+
+```text
+config heredada
+   ↓
+modelo Quarto
+   ↓
+validación
+   ↓
+.publish_project()
+```
+
+## Hash
+
+`.publish_hash()`:
+
+1. enumera todos los ficheros no directorio de `_outputs`;
+2. ordena rutas;
+3. calcula MD5 por fichero;
+4. genera un manifiesto `ruta<TAB>hash`;
+5. calcula MD5 del manifiesto.
+
+El resultado identifica determinísticamente el contenido construido.
+
+## Skip por contenido
+
+`.publish_unchanged()` compara el hash actual con `.publish/hash`.
+
+Si coincide y `force = FALSE`, añade `NothingToDo`.
+
+## Destino
+
+`.publish_destination()` obtiene `paths.publish`, encuentra mediante `.config_base()` dónde fue definido y resuelve el path respecto a esa base.
+
+Cada proyecto posee su propio árbol de publicación. La agregación de varios entregables no pertenece a publish.
+
+## Atomicidad
+
+La publicación limpia usa:
+
+```text
+_publish.work
+```
+
+Flujo:
+
+```text
+_outputs
+   ↓ copy
+_publish.work
+   ↓ normalización / postprocesado
+   ↓ metadata
+replace
+   ↓
+_publish
+```
+
+Si falla antes del reemplazo, el `on.exit()` elimina el work tree y conserva la publicación anterior.
+
+## Postprocesado
+
+`.prepare_publish_tree()` realiza:
+
+- copia del build;
+- detección de formatos no vacíos;
+- normalización específica de estrategia;
+- movimiento del perfil principal a la raíz;
+- organización de exports;
+- sincronización de anchors;
+- metadatos de publicación;
+- escritura de `.publish`.
+
+El árbol fuente `_outputs` nunca se modifica.

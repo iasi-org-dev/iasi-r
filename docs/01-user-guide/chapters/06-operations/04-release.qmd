@@ -1,0 +1,56 @@
+## `release()`
+
+`release()` reúne los entregables locales:
+
+```r
+release()
+```
+
+No renderiza de nuevo y no despliega a Internet.
+
+Para una guía o website toma el contenido ya preparado por `publish()`.
+
+Para un paquete R recoge los artefactos construidos por `build()`.
+
+El destino predeterminado es:
+
+```text
+release/
+```
+
+Si varios proyectos comparten un `paths.release` definido en una carpeta superior, una guía se coloca en un subdirectorio derivado del nombre del proyecto. Los prefijos numéricos organizativos se eliminan:
+
+```text
+01-user-guide  → release/user-guide/
+02-developer-guide → release/developer-guide/
+```
+
+## Flujo recomendado
+
+Durante la edición:
+
+```r
+build(format = "html")
+```
+
+Cuando quiera construir todos los perfiles declarados:
+
+```r
+build()
+```
+
+Después:
+
+```r
+publish()
+release()
+```
+
+En resumen:
+
+```text
+validate  → comprobar
+build     → construir
+publish   → preparar
+release   → reunir
+```

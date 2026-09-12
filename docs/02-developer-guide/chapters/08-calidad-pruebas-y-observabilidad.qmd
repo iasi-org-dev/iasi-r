@@ -1,0 +1,43 @@
+# Calidad, pruebas y observabilidad
+
+## Qué debe probarse
+
+Las pruebas deberían concentrarse en contratos, no en la forma textual exacta de una función salvo que esa forma sea el propio contrato.
+
+Áreas prioritarias:
+
+- API pública y visibilidad de retornos;
+- descubrimiento de proyectos;
+- herencia de configuración;
+- dispatch por tipo;
+- validación por estrategia;
+- materialización de artefactos derivados;
+- resolución de formatos y paths;
+- atomicidad de publish;
+- RC acumulativos;
+- release por tipo.
+
+## Códigos de retorno
+
+Las funciones públicas devuelven invisiblemente un bitmask acumulativo.
+
+Esto permite expresar simultáneamente condiciones como warning y error, o attention y nothing-to-do.
+
+El error R sigue utilizándose para abortar un flujo que no puede continuar, pero antes de salir debe quedar marcado el bit de error correspondiente.
+
+## Consola
+
+La consola debe explicar el trabajo que el usuario necesita conocer:
+
+- inicio de una operación;
+- proyecto en curso;
+- fase de paquete fuente/binario;
+- mensajes de Quarto y R útiles para diagnóstico.
+
+No debe volcar listas internas de proyectos descubiertos o seleccionados como ruido habitual.
+
+## Deuda detectada
+
+El snapshot actual conserva al menos una prueba histórica que referencia una antigua estructura `.IASI$targets` que ya no existe en las constantes vigentes.
+
+Ese tipo de test debe actualizarse para verificar comportamiento observable o la arquitectura actual, no una estructura eliminada por el refactor.

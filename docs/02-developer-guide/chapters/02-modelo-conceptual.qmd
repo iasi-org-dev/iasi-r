@@ -1,0 +1,81 @@
+# Modelo conceptual
+
+## Proyecto IASI
+
+Un proyecto IASI es un directorio marcado por `_iasi.yml` o `.iasi.yml`.
+
+Los tipos vigentes son:
+
+| Tipo | Función | Build | Publish | Release |
+|---|---|---:|---:|---:|
+| `repository` | Contenedor y configuración heredable | No | No | No |
+| `guide` | Publicación documental | Sí | Sí | Sí |
+| `web` | Publicación web | Sí | Sí | Sí |
+| `r-package` | Software empaquetado en R | Sí | No | Sí |
+
+`repository` es una frontera de configuración, no un entregable.
+
+## Tipo y estrategia
+
+`type` y `strategy` son dimensiones distintas.
+
+`type` responde a **qué clase de proyecto es**.
+
+`strategy` responde a **cómo se interpreta y prepara una publicación Quarto**.
+
+Para libros existen actualmente cuatro estrategias:
+
+| Estrategia | Idea principal |
+|---|---|
+| `regular` | Una carpeta editorial se materializa como una unidad y puede combinar varios fuentes. |
+| `structured` | Las carpetas superiores representan Partes y sus documentos representan Capítulos. |
+| `parted` | Expresa una Parte con capítulos directos o subcarpetas de capítulo y admite una estructura más rica. |
+| `direct` | Cada documento se convierte directamente en capítulo; la carpeta es principalmente organización física. |
+
+Los websites utilizan `regular`.
+
+No debe añadirse un nuevo `type` para resolver un problema puramente editorial ni una nueva `strategy` para representar una nueva clase de artefacto.
+
+## Ciclo de vida
+
+El ciclo de vida canónico es:
+
+```text
+validate
+   ↓
+build
+   ↓
+publish
+   ↓
+release
+```
+
+Cada fase crea o valida una materialización diferente.
+
+Para publicaciones:
+
+```text
+fuentes
+  ↓ build
+_outputs/
+  ↓ publish
+_publish/
+  ↓ release
+release/
+```
+
+Para paquetes R:
+
+```text
+fuentes
+  ↓ build
+*.tar.gz + *.zip
+  ↓ release
+release/
+```
+
+## Publicación local
+
+`publish()` no significa desplegar a Internet.
+
+Significa preparar un árbol local de publicación a partir del build ya materializado. Esta distinción es central: construir, preparar una publicación y desplegar son responsabilidades distintas.

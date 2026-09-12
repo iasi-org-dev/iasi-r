@@ -1,0 +1,59 @@
+# Estrategias y formatos
+
+## Por qué existen estrategias
+
+Una estrategia permite que distintos autores organicen físicamente sus fuentes de maneras diferentes sin cambiar el tipo de proyecto.
+
+La preparación editorial convierte esa estructura física en una estructura Quarto materializable.
+
+## `regular`
+
+Adecuada cuando una carpeta representa una unidad editorial compuesta por varios fragmentos.
+
+Puede generar el `index.qmd` de la carpeta a partir de los documentos contenidos y de `front-matter.quarto`.
+
+## `structured`
+
+Representa explícitamente Partes y Capítulos. La estructura se refleja directamente en `_book-structure.yml`.
+
+## `parted`
+
+Amplía el modelo de Partes para admitir capítulos directos y capítulos representados mediante subcarpetas, además de reglas de numeración y normalización específicas.
+
+Es una estrategia deliberadamente más rica. Las reglas específicas deben permanecer encapsuladas, evitando contaminar las estrategias simples.
+
+## `direct`
+
+Cada `.qmd` participa directamente como capítulo. Es útil cuando los documentos fuente ya son unidades editoriales completas.
+
+## Formatos
+
+Los formatos son perfiles de salida, no estrategias.
+
+Actualmente el motor contempla, entre otros:
+
+```text
+html
+pdf
+pdfua
+epub
+docx
+odt
+git
+web
+```
+
+Los perfiles declarados por Quarto se cruzan con los renderers disponibles.
+
+Un perfil no declarado se ignora con aviso cuando se solicita expresamente. Un formato sin renderer disponible también se ignora con aviso.
+
+## Añadir una estrategia
+
+Una nueva estrategia debería necesitar, como mínimo:
+
+1. reglas de validación propias;
+2. una preparación editorial claramente distinta;
+3. una razón por la que no pueda expresarse como configuración de una estrategia existente;
+4. tests que demuestren el contrato.
+
+No debería añadirse una estrategia solo para cambiar estilos visuales.

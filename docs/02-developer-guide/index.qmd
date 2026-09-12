@@ -1,0 +1,26 @@
+---
+title: "IASI Quarto"
+subtitle: "Guía de desarrollo"
+---
+
+# Introducción
+
+Esta guía está dirigida a quien va a **entender, mantener o evolucionar** `iasi.quarto`.
+
+No es la guía de usuario y tampoco pretende enumerar cada función privada. Explica el sistema desde la perspectiva de desarrollo: qué problemas resuelve, cuáles son sus principios, cómo se reparten las responsabilidades, qué contratos conviene conservar y cómo incorporar cambios sin erosionar el modelo.
+
+La implementación de referencia para esta edición corresponde a `iasi.quarto` **0.10.2** y al refactor actual incluido en el código fuente suministrado.
+
+El mapa conceptual puede resumirse así:
+
+```text
+proyectos IASI
+     ↓
+descubrimiento + configuración
+     ↓
+validate / build / publish / release
+     ↓
+materializaciones locales
+```
+
+El objetivo de un desarrollador no es memorizar funciones. Es comprender **qué capa debe cambiar cuando aparece una necesidad nueva**.

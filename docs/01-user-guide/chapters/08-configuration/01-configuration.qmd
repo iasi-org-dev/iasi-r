@@ -1,0 +1,87 @@
+## `_iasi.yml`
+
+El fichero `_iasi.yml` describe las decisiones propias de IASI.
+
+Ejemplo de una guía:
+
+```yaml
+type: guide
+
+publication:
+  strategy: parted
+  content-dir: chapters
+  numbered: true
+
+paths:
+  publish: _publish
+  release: release
+```
+
+## `publication`
+
+Para libros puede utilizar:
+
+```yaml
+publication:
+  strategy: regular
+  front-matter: front-matter
+  content-dir: chapters
+  back-matter: back-matter
+  numbered: true
+  html:
+    landing-page: false
+```
+
+Los valores predeterminados de un libro son `regular`, `front-matter`, `chapters`, `back-matter` y `numbered: true`.
+
+## `paths`
+
+Los paths principales son:
+
+```yaml
+paths:
+  publish: _publish
+  release: release
+```
+
+La clave correcta es:
+
+```text
+paths.release
+```
+
+No utilice la forma antigua `paths.releases`.
+
+## Configuración heredada
+
+Si una carpeta superior también tiene configuración IASI, sus valores sirven como defaults para los proyectos situados debajo.
+
+Ejemplo:
+
+```text
+repository/
+├── _iasi.yml
+└── docs/
+    └── 01-user-guide/
+        └── _iasi.yml
+```
+
+Si la raíz define `paths.release` y la guía no lo redefine, la guía utiliza ese valor.
+
+Si la guía sí lo define, gana el valor local.
+
+## `exclude`
+
+Puede excluir nombres que no deben participar en la estructura editorial:
+
+```yaml
+exclude:
+  - drafts
+  - archive
+```
+
+## `_quarto.yml`
+
+IASI Quarto complementa a Quarto, no lo sustituye.
+
+Los perfiles, formatos, tema, título, filtros y demás opciones propias de Quarto siguen configurándose mediante `_quarto.yml` y sus perfiles `_quarto-*.yml`.

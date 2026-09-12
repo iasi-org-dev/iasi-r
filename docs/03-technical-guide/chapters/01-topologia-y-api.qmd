@@ -1,0 +1,56 @@
+# Topología del paquete y API
+
+## Paquete
+
+El snapshot documentado declara:
+
+```text
+Package: iasi.quarto
+Version: 0.10.2
+```
+
+La API exportada por `NAMESPACE` es:
+
+```r
+validate()
+build()
+publish()
+release()
+```
+
+También se exportan los métodos `print()` de los modelos de proyecto y publicación.
+
+`deploy()` ya no forma parte de la API pública.
+
+## Wrapper de ejecución
+
+Cada acción crea un contexto mediante `.new_context()` y delega la ejecución a `.run_action()`.
+
+La forma general es:
+
+```text
+función pública
+   ↓
+.new_context(...)
+   ↓
+.run_action(context, engine)
+   ↓
+.engine_*(context)
+   ↓
+invisible(context$rc)
+```
+
+`.run_action()` captura errores. Si un error escapa sin haber marcado previamente ningún bit de error, añade `ERROR` al RC acumulado antes de finalizar.
+
+## Engines públicos
+
+La correspondencia es directa:
+
+| API | Engine |
+|---|---|
+| `validate()` | `.engine_validate()` |
+| `build()` | `.engine_build()` |
+| `publish()` | `.engine_publish()` |
+| `release()` | `.engine_release()` |
+
+No existe una capa de `engine_action_*`: fue eliminada para evitar forwarding sin responsabilidad propia.

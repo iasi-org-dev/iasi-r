@@ -1,0 +1,50 @@
+# Normalización de publicación
+
+## Responsabilidad
+
+El render Quarto genera artefactos correctos para Quarto.
+
+La fase de publish puede reorganizar esos artefactos para cumplir el contrato de publicación IASI.
+
+Por eso la normalización ocurre **después** del render y sobre un árbol temporal.
+
+## Perfil principal
+
+`.move_publish_primary_to_root()` utiliza una prioridad de perfiles browser-facing:
+
+```text
+web
+html
+```
+
+El contenido del perfil principal se mueve a la raíz del árbol publicable.
+
+Los demás formatos permanecen como subdirectorios/exportaciones.
+
+## Exports
+
+Los formatos alternativos conocidos incluyen:
+
+```text
+PDF
+PDF/UA
+EPUB
+DOCX
+ODT
+GitBook
+```
+
+`.sync_export_anchors()` localiza anchors en HTML y los sustituye por el bloque de exportación correspondiente.
+
+## Estrategias
+
+La normalización se despacha por estrategia.
+
+`parted`, por ejemplo, modifica DOM HTML con `xml2` para:
+
+- corregir numeración;
+- agrupar elementos del sidebar;
+- representar jerarquías de capítulo;
+- normalizar contenido.
+
+La regla técnica es importante: estas transformaciones pertenecen a publicación, no a los fuentes del autor ni al build output canónico.

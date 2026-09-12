@@ -1,0 +1,53 @@
+# Acciones públicas
+
+## `validate()`
+
+La validación comprueba proyectos seleccionados sin materializar nuevos entregables.
+
+Para un proyecto Quarto valida configuración y estructura.
+
+Para un `r-package` valida las condiciones propias del paquete, como la presencia de `DESCRIPTION`.
+
+La validación debe seguir siendo una operación segura para inspección. No debe convertirse en un build encubierto.
+
+## `build()`
+
+`build()` significa **construir ahora**.
+
+No existe lógica de frescura en build. La llamada no pregunta si cambió algo: si el usuario pidió build, se construye.
+
+El dispatch se realiza primero por tipo IASI. Esto es importante porque un `r-package` no debe pasar por resolución de formatos Quarto.
+
+Los proyectos Quarto:
+
+1. se convierten al modelo Quarto interno;
+2. se validan;
+3. se preparan según su estrategia;
+4. se renderizan en los perfiles solicitados.
+
+## `publish()`
+
+`publish()` consume exclusivamente `<project>/_outputs`.
+
+Calcula una huella del contenido. Si coincide con la publicación anterior y `force = FALSE`, puede devolver `NothingToDo`.
+
+La publicación se prepara en un árbol temporal hermano y solo sustituye el destino final cuando todo termina correctamente.
+
+## `release()`
+
+`release()` reúne entregables locales.
+
+Para paquetes R mueve los artefactos construidos al directorio de release.
+
+Para proyectos publicables copia la publicación local ya preparada.
+
+No debe volver a renderizar ni volver a publicar.
+
+## Regla de evolución
+
+Cuando aparezca una nueva necesidad, antes de añadir un parámetro a una acción existente hay que preguntar:
+
+1. ¿La información ya existe en la configuración del proyecto?
+2. ¿La necesidad corresponde a otra fase del lifecycle?
+3. ¿Es una nueva clase de proyecto, una estrategia o solo un formato?
+4. ¿La responsabilidad pertenece realmente a `iasi.quarto`?

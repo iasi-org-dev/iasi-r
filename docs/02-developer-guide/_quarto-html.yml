@@ -1,0 +1,19 @@
+format:
+  html:
+    theme:
+      - cosmo
+      - resources/css/iasi.scss
+      - resources/css/book.scss
+    toc: true
+    number-sections: true
+
+book:
+  navbar:
+    title: "Guía de desarrollo"
+    pinned: true
+    left:
+      - text: "Inicio"
+        href: index.qmd
+  page-footer:
+    left: "© 2026 Javier G. Grandez · IASI Rocks 🤘"
+    right: '<span id="iasi-publish-date"></span>'

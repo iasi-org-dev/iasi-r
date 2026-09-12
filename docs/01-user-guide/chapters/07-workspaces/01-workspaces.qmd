@@ -1,0 +1,81 @@
+## Descubrimiento desde una carpeta
+
+El argumento `path` define desde dónde buscar proyectos IASI.
+
+```r
+build(path = ".")
+```
+
+IASI Quarto recorre esa carpeta y sus subcarpetas y encuentra proyectos marcados con `_iasi.yml` o `.iasi.yml`.
+
+Los directorios intermedios no necesitan ser proyectos IASI.
+
+Ejemplo:
+
+```text
+iasi-quarto/
+├── _iasi.yml                 # type: repository
+├── docs/
+│   ├── 01-user-guide/
+│   │   ├── _iasi.yml
+│   │   └── _quarto.yml
+│   ├── 02-developer-guide/
+│   │   ├── _iasi.yml
+│   │   └── _quarto.yml
+│   └── 03-technical-guide/
+│       ├── _iasi.yml
+│       └── _quarto.yml
+└── software/
+    └── iasi-quarto/
+        ├── _iasi.yml
+        └── DESCRIPTION
+```
+
+Desde la raíz:
+
+```r
+validate(path = ".")
+build(path = ".")
+release(path = ".")
+```
+
+se aplican a los proyectos para los que cada operación tiene sentido.
+
+## Trabajar solo con uno
+
+No necesita un selector especial. Indique su carpeta:
+
+```r
+build(path = "docs/01-user-guide", format = "html")
+```
+
+## Publicación de varios proyectos
+
+`publish(path = ".")` puede preparar varias publicaciones encontradas bajo esa raíz, pero **cada proyecto conserva su propio destino de publicación**.
+
+Con los valores predeterminados:
+
+```text
+docs/01-user-guide/_publish/
+docs/02-developer-guide/_publish/
+docs/03-technical-guide/_publish/
+```
+
+No existe un único `_publish/` de multiproyecto.
+
+La reunión de entregables corresponde a `release()`.
+
+## Configuración común
+
+Una raíz `repository` puede aportar defaults:
+
+```yaml
+type: repository
+
+paths:
+  release: release
+```
+
+Los proyectos hijos heredan los valores que no hayan definido por sí mismos.
+
+Esto permite, por ejemplo, reunir varias guías bajo un único árbol `release/` sin obligarlas a compartir `_publish/`.

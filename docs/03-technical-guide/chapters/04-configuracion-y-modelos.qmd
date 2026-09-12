@@ -1,0 +1,73 @@
+# Configuración y modelos
+
+## Herencia IASI
+
+`.prepare_project_config()` llama a `.resolve_config()`.
+
+La resolución empieza por la configuración local y asciende por los padres. Cada configuración heredada pasa por `.merge_missing()`.
+
+Regla:
+
+```text
+local gana
+padre completa huecos
+```
+
+La mezcla es recursiva para listas anidadas.
+
+## Defaults de paths
+
+Después de resolver herencia se aplican defaults:
+
+```text
+paths.publish = "_publish"
+paths.release = "release"
+```
+
+Para `r-package`:
+
+```text
+paths.output = "."
+```
+
+## Base de un path heredado
+
+No basta con conocer el valor de un path. También importa **dónde fue definido**.
+
+`.config_base(project$path, key)` asciende hasta encontrar el fichero IASI que define `paths.<key>`.
+
+Así, un `paths.release` heredado de la raíz se interpreta respecto a la raíz que lo declaró, no respecto al hijo que lo consume.
+
+## Modelo Quarto
+
+`.as_quarto_project()` exige `_quarto.yml`, llama a `.discover_project()` y une el modelo Quarto con la configuración IASI ya resuelta.
+
+El objeto `iasi_quarto_project` contiene, entre otros:
+
+- `path`;
+- `type` Quarto;
+- `strategy`;
+- `front_matter_*`;
+- `content_*`;
+- `back_matter_*`;
+- `numbered`;
+- `exclude`;
+- `quarto`;
+- `iasi`.
+
+## Modelo de publicación
+
+`.new_publication()` crea un `iasi_quarto_publication` con:
+
+```text
+path
+type
+strategy
+chapters
+artifacts
+changed
+rendered
+profiles
+```
+
+Este modelo representa la publicación preparada antes y durante el render.

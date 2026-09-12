@@ -1,0 +1,71 @@
+# Arquitectura
+
+## Capas principales
+
+La arquitectura actual puede leerse de fuera hacia dentro:
+
+```text
+API pública
+    ↓
+contexto de ejecución
+    ↓
+descubrimiento y selección
+    ↓
+resolución de configuración
+    ↓
+engine de la acción
+    ↓
+implementación por tipo / estrategia / formato
+    ↓
+R, Quarto y filesystem
+```
+
+La API pública vive en `R/api.R`.
+
+La infraestructura compartida se concentra en `core_*`.
+
+Las operaciones públicas se implementan mediante engines:
+
+```text
+.engine_validate()
+.engine_build()
+.engine_publish()
+.engine_release()
+```
+
+Cada engine debe ser la primera función de su fichero.
+
+## Contexto
+
+Cada llamada pública crea un contexto mutable. El contexto contiene la intención de la ejecución y acumula el código de retorno.
+
+El contexto es infraestructura de ejecución, no un objeto de dominio que deba filtrarse por todas las capas sin necesidad.
+
+## Descubrimiento
+
+`prepare_context()` tiene la responsabilidad de descubrir proyectos debajo de `path` y convertirlos en proyectos IASI seleccionables.
+
+La selección no depende de estrategias editoriales. Primero se descubre qué hay; después cada engine decide qué comportamiento corresponde al tipo seleccionado.
+
+## Configuración heredada
+
+`prepare_project_config()` resuelve configuración heredada ascendiendo por los directorios padre.
+
+La regla es aditiva:
+
+> El valor local gana. El padre solo completa lo que falta.
+
+Eso permite que un proyecto `repository` aporte defaults sin convertir todos los directorios intermedios en proyectos IASI.
+
+## Engines
+
+Los engines deben contener **orquestación**, no convertirse en cajones de utilidades.
+
+Cuando una responsabilidad es sustancial puede separarse, por ejemplo:
+
+- `engine_build.R`: orquestación de build y dispatch por tipo;
+- `engine_build_package.R`: build de paquetes R;
+- `engine_build_quarto.R`: build de proyectos Quarto;
+- `engine_publish_quarto.R`: materialización y postprocesado de publicaciones Quarto.
+
+La separación debe seguir responsabilidades reales, no el deseo de tener muchos ficheros pequeños.

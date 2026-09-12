@@ -1,0 +1,57 @@
+# Organización del código
+
+## Convenciones
+
+Los ficheros R usan `snake_case`.
+
+Las funciones internas también usan nombres con guion bajo. Las funciones públicas mantienen nombres breves y estables.
+
+En el código R del proyecto se prefiere `=` frente a `<-`.
+
+Las llamadas, asignaciones y condiciones simples permanecen en una sola línea mientras sigan siendo legibles. El formato vertical se reserva para expresiones realmente complejas.
+
+## Mapa de responsabilidades
+
+| Área | Ficheros principales |
+|---|---|
+| API pública | `api.R` |
+| Constantes | `constants.R` |
+| Contexto y configuración | `core_context.R` |
+| Descubrimiento | `core_discover.R` |
+| Modelo Quarto | `core_quarto.R` |
+| Validación | `engine_validate.R`, `engine_check*.R` |
+| Build | `engine_build*.R`, `engine_render.R` |
+| Preparación editorial | `engine_prepare*.R`, `engine_navbar.R`, `engine_matter.R` |
+| Artefactos generados | `engine_artifacts.R`, `engine_generated.R` |
+| Publicación | `engine_publish*.R` |
+| Release | `engine_release.R` |
+| Paths | `engine_paths.R` |
+| I/O | `io.R` |
+
+## API mínima
+
+Un principio del refactor ha sido eliminar parámetros que repetían información ya conocida por el proyecto.
+
+Se han eliminado, entre otros:
+
+- `book`;
+- `source` en `publish()`;
+- `force` en `build()`;
+- `force` en `release()`;
+- `deploy()` completo.
+
+`publish(force = TRUE)` permanece porque expresa una intención real: volver a materializar una publicación incluso cuando el contenido construido no cambió.
+
+## Artefactos derivados
+
+Un fichero derivable debe tratarse como tal.
+
+Ejemplos:
+
+- `_book-structure.yml`;
+- índices generados en estrategia `regular`;
+- `_generated/navbar-left.yml`;
+- `exports.json`;
+- estructuras GitBook derivadas.
+
+La implementación debe intentar escribirlos solo cuando su contenido cambia. Esto reduce ruido en Git y hace visible la diferencia entre conocimiento fuente y materialización.

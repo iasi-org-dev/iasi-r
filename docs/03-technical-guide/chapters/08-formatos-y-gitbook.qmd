@@ -1,0 +1,56 @@
+# Formatos y GitBook
+
+## Perfiles temporales
+
+El renderer compone el perfil solicitado por el autor con perfiles runtime creados por `iasi.quarto`.
+
+Existen dos usos principales:
+
+- forzar temporalmente el tipo de proyecto necesario para un formato;
+- inyectar `project.output-dir`.
+
+Los perfiles temporales se eliminan mediante `on.exit()`.
+
+## Websites
+
+`.render_website()` llama a:
+
+```text
+quarto render --profile <profiles>
+```
+
+Para cada perfil puede añadir el perfil temporal de output.
+
+## Books
+
+`.render_profile()` llama a:
+
+```text
+quarto render --profile <runtime,author,output> --to <format>
+```
+
+## GitBook
+
+El perfil lógico `git` renderiza CommonMark y después ejecuta `.prepare_gitbook()`.
+
+Se producen al menos:
+
+```text
+README.md
+SUMMARY.md
+.gitbook.yaml
+```
+
+`SUMMARY.md` se deriva de `_book-structure.yml`.
+
+Los títulos se intentan obtener en este orden:
+
+1. heading renderizado;
+2. `title` del front matter del fuente;
+3. nombre de fichero.
+
+## Exports HTML
+
+Cuando se construye HTML, `.write_html_exports()` descubre los demás perfiles construidos y genera `exports.json`.
+
+Esto permite que una publicación HTML conozca los artefactos alternativos disponibles sin codificar rutas manualmente.

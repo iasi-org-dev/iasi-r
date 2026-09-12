@@ -1,0 +1,49 @@
+## Las ideas básicas
+
+Antes de empezar conviene distinguir unas pocas palabras que aparecen continuamente.
+
+| Término | Significado |
+|---|---|
+| **Proyecto IASI** | Carpeta que contiene `_iasi.yml` o `.iasi.yml`. |
+| **Proyecto Quarto** | Proyecto que Quarto reconoce mediante `_quarto.yml`. |
+| **Tipo IASI** | Indica qué clase de proyecto es para IASI: `repository`, `guide`, `web` o `r-package`. |
+| **Estrategia** | Indica cómo interpretar la organización editorial de un libro. |
+| **Formato / perfil** | Salida que se quiere construir, por ejemplo `html`, `pdf`, `epub` o `git`. |
+| **Build** | Construcción de los artefactos en `_outputs/`, o de los paquetes R. |
+| **Publish** | Preparación local de una publicación a partir de `_outputs/`. |
+| **Release** | Reunión de los entregables locales ya construidos o publicados. |
+
+## Cuatro tipos de proyecto
+
+| Tipo | Para qué sirve | Build | Publish | Release |
+|---|---|:---:|:---:|:---:|
+| `repository` | Raíz o contenedor común |  |  |  |
+| `guide` | Libro o guía Quarto | ✓ | ✓ | ✓ |
+| `web` | Sitio web Quarto | ✓ | ✓ | ✓ |
+| `r-package` | Paquete R | ✓ |  | ✓ |
+
+Un proyecto `repository` puede proporcionar configuración común a proyectos situados debajo, pero no se construye como entregable.
+
+## Tipo y estrategia no son lo mismo
+
+Un `guide` indica **qué es el proyecto**.
+
+La estrategia (`regular`, `structured`, `parted` o `direct`) indica **cómo está organizado editorialmente el libro**.
+
+Por ejemplo, dos proyectos pueden ser ambos `guide` y utilizar estrategias distintas sin dejar de ser guías.
+
+## Tres niveles de materialización
+
+Para una publicación Quarto:
+
+```text
+fuentes
+   ↓ build()
+_outputs/
+   ↓ publish()
+_publish/
+   ↓ release()
+release/
+```
+
+Los tres directorios representan estados diferentes. No son copias intercambiables.

@@ -1,0 +1,59 @@
+# Descubrimiento y selección
+
+## `prepare_context()`
+
+La preparación compartida realiza tres pasos:
+
+```text
+normalizar path
+     ↓
+.discover()
+     ↓
+.select_projects()
+```
+
+Además calcula `context$current`, que indica si la selección efectiva consiste en un único proyecto situado exactamente en `path`.
+
+## Recorrido
+
+`.discover()` obtiene el directorio raíz y todos sus descendientes mediante `list.dirs(recursive = TRUE)`.
+
+Después excluye ramas conocidas:
+
+```text
+.git
+tests
+.Rcheck
+.Rproj.user
+.quarto
+_freeze
+_generated
+_outputs
+```
+
+Un directorio se considera candidato IASI cuando contiene `_iasi.yml` o `.iasi.yml`.
+
+Los directorios intermedios no necesitan marcador IASI.
+
+## Ambigüedad de configuración
+
+`.iasi_file()` admite los dos nombres de configuración, pero si ambos existen simultáneamente en el mismo proyecto aborta con error de ambigüedad.
+
+## Lectura de proyecto
+
+`.read_iasi_project()`:
+
+1. localiza el fichero;
+2. carga YAML;
+3. valida `type`;
+4. crea un objeto clase `iasi_project`.
+
+Los tipos ausentes o inválidos producen `ATTENTION` y el proyecto no entra en la selección.
+
+## Selección
+
+La implementación actual elimina de `context$projects` los proyectos `repository`.
+
+La aplicabilidad adicional se resuelve en los engines, por ejemplo `publish` descarta paquetes R.
+
+Este detalle es relevante porque los documentos de diseño describen la intención de centralizar más selección en `prepare_context()`. El código vigente todavía conserva parte del filtrado por acción dentro de los engines.

@@ -1,0 +1,49 @@
+# Propósito y fronteras
+
+## Qué es `iasi.quarto`
+
+`iasi.quarto` es el motor de ingeniería documental que descubre, valida, construye, publica y libera proyectos IASI.
+
+No pretende sustituir a Quarto. Quarto continúa siendo el renderer y conserva su propio modelo de perfiles, formatos y configuración. `iasi.quarto` añade una capa de ingeniería alrededor de ese motor: organización editorial, convenciones, artefactos derivados, publicación local reproducible y un ciclo de vida común para distintos tipos de proyecto.
+
+La API pública actual es deliberadamente pequeña:
+
+```r
+validate(path = ".")
+build(format = NULL, path = ".")
+publish(path = ".", force = FALSE)
+release(path = ".")
+```
+
+El diseño parte de una decisión importante: **cada operación expresa una intención distinta**. No existe una operación pública `deploy()`. El despliegue a sistemas externos pertenece a herramientas de nivel superior, por ejemplo `iasi-dev`.
+
+## Qué problema resuelve
+
+El paquete permite que un mismo árbol de trabajo contenga publicaciones Quarto, paquetes R y proyectos contenedores sin obligar a todos a compartir la misma forma física.
+
+El modelo separa cuatro preguntas:
+
+1. ¿Qué clase de proyecto es?
+2. ¿Cómo está organizado editorialmente?
+3. ¿Qué acción se quiere ejecutar?
+4. ¿Qué artefacto corresponde a esa fase del ciclo de vida?
+
+Esta separación evita que conceptos diferentes terminen codificados en un único conjunto de excepciones.
+
+## Frontera con Quarto
+
+`iasi.quarto` decide y prepara; Quarto renderiza.
+
+Entre ambas capas existe un contrato sencillo:
+
+- la configuración Quarto sigue viviendo en `_quarto.yml` y en sus perfiles;
+- la configuración IASI vive en `_iasi.yml` o `.iasi.yml`;
+- `iasi.quarto` genera artefactos auxiliares cuando son derivables;
+- el render final se delega a `quarto render`;
+- los resultados de build se materializan en `_outputs/`.
+
+## Frontera con `iasi-dev`
+
+`iasi.quarto` termina en `release()`.
+
+`iasi-dev` puede orquestar acciones sobre varios repositorios, hacer commits, promociones, restauraciones y desplegar o materializar estados de organización. Esa división evita convertir el paquete R en un gestor de repositorios y evita que el CLI tenga que conocer la ingeniería editorial interna.

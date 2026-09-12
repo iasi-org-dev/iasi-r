@@ -1,0 +1,32 @@
+---
+title: "IASI Quarto"
+subtitle: "Guía técnica"
+---
+
+# Introducción
+
+Esta guía describe **cómo está construido y cómo funciona internamente** `iasi.quarto`.
+
+Su referencia es el snapshot de código `0.10.2` suministrado junto con los documentos de refactor actuales. No sustituye a la User Guide ni a la Developer Guide:
+
+- la **User Guide** responde a “¿cómo lo uso?”;
+- la **Developer Guide** responde a “¿cómo entiendo y evoluciono el diseño?”;
+- esta **Technical Guide** responde a “¿qué hace exactamente el motor por dentro?”.
+
+La cadena principal es:
+
+```text
+API
+ ↓
+contexto + RC
+ ↓
+discovery + configuración
+ ↓
+engine
+ ↓
+preparación / render / postprocesado
+ ↓
+filesystem
+```
+
+El foco está en contratos, algoritmos, estructuras internas e invariantes de materialización.

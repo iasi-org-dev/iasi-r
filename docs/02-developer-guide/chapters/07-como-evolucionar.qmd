@@ -1,0 +1,53 @@
+# Cómo evolucionar `iasi.quarto`
+
+## Añadir un nuevo tipo
+
+Un nuevo tipo representa una clase de proyecto con lifecycle propio.
+
+Antes de incorporarlo hay que definir:
+
+- si valida;
+- si construye;
+- si publica;
+- si libera;
+- qué artefactos produce;
+- qué configuración necesita;
+- qué relación mantiene con Quarto.
+
+Después se incorpora al dispatch de las acciones aplicables.
+
+## Añadir un formato
+
+Un formato debe declararse mediante perfiles Quarto y necesita un renderer coherente.
+
+El renderer debe producir su artefacto dentro del árbol de build correspondiente, no inventar un nuevo lifecycle.
+
+Si el formato tiene que aparecer como export de HTML, debe participar también en el descubrimiento de exports.
+
+## Añadir lógica de publicación
+
+El postprocesado debe aplicarse al árbol temporal de publicación, nunca directamente sobre la última publicación válida.
+
+Si falla el postprocesado, `_publish` debe seguir representando la última publicación correcta.
+
+## Añadir configuración
+
+La configuración local tiene precedencia y la heredada solo completa valores ausentes.
+
+Una clave nueva debe tener una responsabilidad clara y, cuando represente un path, debe definir también desde qué base se resuelve.
+
+## Evitar APIs ceremoniales
+
+No se debe exponer un parámetro porque resulte cómodo internamente.
+
+La API pública es un contrato. Cuantos más parámetros refleja detalles de implementación, más difícil será evolucionar el motor sin romper a sus usuarios.
+
+## Compatibilidad
+
+Cuando una decisión antigua se elimina, debe quedar claro si:
+
+- se mantiene compatibilidad;
+- se emite un error explícito;
+- se considera configuración obsoleta.
+
+Por ejemplo, `paths.releases` se considera obsoleto y la clave canónica es `paths.release`.

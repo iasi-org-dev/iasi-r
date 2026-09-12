@@ -1,0 +1,21 @@
+format:
+  pdf:
+    toc: true
+    number-sections: true
+    documentclass: scrreprt
+    classoption:
+      - twoside
+      - open=right
+    papersize: a4
+    colorlinks: true
+    linkcolor: black
+    urlcolor: blue
+    citecolor: blue
+    geometry:
+      - top=22mm
+      - bottom=22mm
+      - left=25mm
+      - right=25mm
+      - headheight=15pt
+      - headsep=8mm
+      - footskip=10mm

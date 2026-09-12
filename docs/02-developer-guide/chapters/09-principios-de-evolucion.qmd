@@ -1,0 +1,37 @@
+# Principios de evolución
+
+La evolución reciente de `iasi.quarto` deja una serie de principios que conviene conservar.
+
+## Separar intención y materialización
+
+`build`, `publish` y `release` no son sinónimos con distinto nombre.
+
+Cada uno materializa un estado diferente y debe poder razonarse de forma independiente.
+
+## El source code no es la única fuente
+
+Parte del comportamiento deriva de configuración y estructura de proyecto. La API debe consumir ese conocimiento en lugar de obligar al usuario a repetirlo como argumentos.
+
+## Descubrir primero, actuar después
+
+La selección del ámbito debe ser coherente entre acciones. La semántica particular pertenece al engine, no al algoritmo de recorrido del filesystem.
+
+## Heredar sin sobreescribir
+
+La configuración de padres proporciona defaults. No convierte una configuración global en una autoridad que pueda pisar decisiones locales.
+
+## Derivar lo derivable
+
+Estructuras de navegación, índices y ficheros de soporte deben generarse cuando pueden deducirse del conocimiento fuente.
+
+## Proteger el último estado válido
+
+La publicación temporal y el reemplazo al final son ejemplos de una regla más general:
+
+> una nueva materialización incompleta no debe destruir la última materialización correcta.
+
+## Mantener las fronteras
+
+`iasi.quarto` hace ingeniería de publicaciones.
+
+No debe absorber responsabilidades de Git, promoción de organizaciones o despliegue externo solo porque técnicamente pueda invocar esos comandos.

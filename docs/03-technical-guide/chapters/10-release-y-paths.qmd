@@ -1,0 +1,53 @@
+# Release y resolución de paths
+
+## Release por tipo
+
+`.engine_release()` recorre proyectos seleccionados y llama a `.release_project()`.
+
+Después de resolver configuración:
+
+```text
+r-package -> .release_package()
+otros     -> .release_published()
+```
+
+## Paquetes R
+
+`.release_package()` busca en la raíz:
+
+```text
+*.tar.*
+*.zip
+```
+
+Si no encuentra artefactos añade `NothingToDo`.
+
+Si existen, crea el directorio de release y **mueve** los artefactos.
+
+## Publicaciones
+
+`.release_published()` toma como fuente el `_publish` resuelto para el proyecto.
+
+Si no existe o está vacío devuelve `NothingToDo`.
+
+Para un proyecto `web`, el destino es directamente el release configurado.
+
+Para otras publicaciones, el destino incluye un subdirectorio derivado del nombre del proyecto, eliminando prefijos numéricos organizativos.
+
+## Path base
+
+`.release_path()` resuelve:
+
+```text
+paths.release
+```
+
+La base se calcula con `.config_base(project$path, "release")`.
+
+Esto permite declarar un release compartido en una configuración de ancestro y hacer que los hijos materialicen en esa ubicación común.
+
+## Solapamientos
+
+Publish valida que source y destination sean árboles disjuntos.
+
+La comparación se hace con paths normalizados y case-insensitive para evitar autocopias recursivas o publicar dentro de `_outputs`.
