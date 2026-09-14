@@ -1,0 +1,13 @@
+[
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "IASI Quarto",
+    "section": "",
+    "text": "1 Introducción\nEsta guía describe cómo está construido y cómo funciona internamente iasi.quarto.\nSu referencia es el snapshot de código 0.10.2 suministrado junto con los documentos de refactor actuales. No sustituye a la User Guide ni a la Developer Guide:\n\nla User Guide responde a “¿cómo lo uso?”;\nla Developer Guide responde a “¿cómo entiendo y evoluciono el diseño?”;\nesta Technical Guide responde a “¿qué hace exactamente el motor por dentro?”.\n\nLa cadena principal es:\nAPI\n ↓\ncontexto + RC\n ↓\ndiscovery + configuración\n ↓\nengine\n ↓\npreparación / render / postprocesado\n ↓\nfilesystem\nEl foco está en contratos, algoritmos, estructuras internas e invariantes de materialización.",
+    "crumbs": [
+      "Inicio",
+      "<span class='chapter-number'>1</span>  <span class='chapter-title'>IASI Quarto</span>"
+    ]
+  }
+]

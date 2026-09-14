@@ -30,7 +30,7 @@
   types = list(
     repo  = "repository",
     guide = "guide",
-    web   = "web",
+    web   = "website",
     pkg   = "r-package",
     book  = "book"
   )

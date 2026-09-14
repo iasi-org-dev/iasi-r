@@ -86,9 +86,10 @@
 
   publication = .publication_info(project)
 
-  message(sprintf("- Normalizando salida [%s]...", project$strategy))
-
-  .normalise_publish_tree(path = destination, project = project, formats = formats)
+  if (!is.null(project$strategy)) {
+    message(sprintf("- Normalizando salida [%s]...", project$strategy))
+    .normalise_publish_tree(path = destination, project = project, formats = formats)
+  }
 
   message("- Organizando formatos...")
 
@@ -388,6 +389,8 @@
 # copied. Each strategy may provide format-specific normalisers.
 
 .normalise_publish_tree = function(path, project, formats) {
+   if (is.null(project$strategy)) return(invisible(TRUE))
+
    name = paste0(".normalise_", project$strategy)
 
    if (!exists(name, mode = "function")) return(invisible(TRUE))

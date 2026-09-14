@@ -14,10 +14,12 @@ print.iasi_quarto_project = function(x, ...) {
     "Type       : %s\n",
     .display_discovered_value(x$type)
   ))
-  cat(sprintf(
-    "Strategy   : %s\n",
-    .display_discovered_value(x$strategy)
-  ))
+  if (!is.null(x$strategy)) {
+    cat(sprintf(
+      "Strategy   : %s\n",
+      .display_discovered_value(x$strategy)
+    ))
+  }
   cat(sprintf(
     "Content dir: %s\n",
     .display_discovered_value(x$content_dir)
