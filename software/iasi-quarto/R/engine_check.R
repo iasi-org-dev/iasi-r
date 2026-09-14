@@ -181,32 +181,22 @@
 
   supported_strategies = .supported_publication_strategies(project)
 
-  if (length(supported_strategies)) {
-    if (
-      !is.character(project$strategy) ||
-        length(project$strategy) != 1L ||
-        is.na(project$strategy) ||
-        !project$strategy %in% supported_strategies
-    ) {
-      errors = c(
-        errors,
-        sprintf(
-          "Invalid publication strategy for project type '%s': %s. Supported strategies are: %s.",
-          .display_checked_value(project$type),
-          .display_checked_value(project$strategy),
-          paste(
-            supported_strategies,
-            collapse = ", "
-          )
-        )
-      )
-    }
-  } else if (!is.null(project$strategy)) {
+  if (
+    !is.character(project$strategy) ||
+      length(project$strategy) != 1L ||
+      is.na(project$strategy) ||
+      !project$strategy %in% supported_strategies
+  ) {
     errors = c(
       errors,
       sprintf(
-        "Publication strategy is not supported for project type '%s'.",
-        .display_checked_value(project$type)
+        "Invalid publication strategy for project type '%s': %s. Supported strategies are: %s.",
+        .display_checked_value(project$type),
+        .display_checked_value(project$strategy),
+        paste(
+          supported_strategies,
+          collapse = ", "
+        )
       )
     )
   }
@@ -324,6 +314,7 @@
 .supported_publication_strategies = function(project) {
   switch(
     project$type,
+    website = "regular",
     book = c(
       "regular",
       "structured",

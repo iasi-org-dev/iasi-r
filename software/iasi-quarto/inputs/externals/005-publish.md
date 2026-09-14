@@ -5,7 +5,7 @@
 Public API intent:
 
 ```r
-publish(path = ".", force = FALSE)
+publish(format = NULL, path = ".")
 ```
 
 Publish always consumes:
@@ -22,9 +22,9 @@ Each project owns its own publication tree:
 <project>/_publish
 ```
 
-Before publishing, the `_outputs` tree is fingerprinted. If the fingerprint matches the previous successful publication and `force = FALSE`, publication may be skipped.
+Before publishing, the selected `_outputs/<format>` materializations are fingerprinted. If the fingerprint matches the previous successful publication, publication is skipped.
 
-`force = TRUE` means publish again even when the build-output content did not change.
+`format = NULL` publishes every available built format. An explicit `format` selection publishes only those built materializations.
 
 Publication is prepared in a temporary sibling work tree:
 
@@ -35,7 +35,7 @@ _publish.work
 Pipeline:
 
 ```text
-_outputs
+_outputs/<selected formats>
   -> fingerprint
   -> copy to temporary work tree
   -> post-process

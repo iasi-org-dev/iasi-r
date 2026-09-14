@@ -1,0 +1,74 @@
+## Definiciones y conceptos
+
+En este documento se utilizan los siguientes términos y conceptos. Las definiciones se presentan en orden alfabético para facilitar su consulta.
+
+```{r}
+#| echo: false
+#| warning: false
+#| message: false
+
+definitions = data.frame(
+  Término = c(
+    "Build",
+    "Capítulo",
+    "Direct",
+    "Estrategia",
+    "Formato",
+    "GitBook",
+    "Guide",
+    "Libro",
+    "Multiproyecto",
+    "Parte",
+    "Parted",
+    "Proyecto IASI",
+    "Proyecto Quarto",
+    "Publicación",
+    "Publish",
+    "Quarto",
+    "Regular",
+    "Release",
+    "Repository",
+    "R package",
+    "Sección",
+    "Structured",
+    "Validate",
+    "Web"
+  ),
+  Definición = c(
+    "Operación que construye los artefactos de los proyectos seleccionados. En publicaciones Quarto materializa perfiles en _outputs/; en paquetes R genera los artefactos fuente y binario. Se ejecuta siempre que se invoca.",
+    "Unidad principal de contenido de un libro. Puede estar organizado en secciones.",
+    "Estrategia de libro en la que cada documento .qmd del contenido se publica como capítulo y las carpetas se utilizan únicamente para organizar físicamente los archivos. Véase: Estrategia.",
+    "Regla que determina cómo interpreta IASI Quarto la organización física y el postprocesado de una publicación. Un mismo tipo de proyecto puede admitir distintas estrategias.",
+    "Perfil de salida que puede generar una publicación, por ejemplo HTML, PDF, EPUB, DOCX u ODT.",
+    "Formato de publicación para generar un libro destinado a GitBook. Se selecciona mediante el perfil `git`.",
+    "Tipo IASI correspondiente a una guía publicable gestionada mediante Quarto.",
+    "Publicación Quarto de tipo book. Su estrategia puede determinar cómo se organiza y prepara su contenido.",
+    "Ámbito que contiene varios proyectos IASI y permite descubrirlos y operar sobre los tipos aplicables desde una raíz común.",
+    "División de alto nivel de un libro utilizada para agrupar capítulos relacionados.",
+    "Estrategia de libro en la que cada carpeta superior representa una Parte y puede contener capítulos directos o subcarpetas de capítulo con su propio index.qmd y documentos asociados.",
+    "Directorio marcado por _iasi.yml o .iasi.yml y con un type IASI válido.",
+    "Proyecto reconocido por Quarto mediante su configuración habitual, incluida _quarto.yml.",
+    "Resultado preparado por publish() a partir de los artefactos construidos en _outputs/.",
+    "Operación que toma _outputs/, calcula su firma y materializa _publish/ mediante un árbol temporal y postprocesado. No vuelve a renderizar.",
+    "Motor que procesa los documentos y genera los formatos finales de las publicaciones.",
+    "Estrategia de libro en la que cada carpeta de contenido se convierte en una unidad o capítulo y los documentos .qmd que contiene se combinan en el index.qmd generado de esa carpeta.",
+    "Operación que reúne entregables locales en release/. Para software recoge artefactos construidos; para publicaciones recoge el contenido preparado por publish().",
+    "Tipo IASI usado como raíz o contenedor de otros proyectos. Puede aportar configuración heredable, pero no se construye ni publica directamente.",
+    "Tipo IASI para un paquete R. build() genera el paquete fuente y binario; release() recoge esos artefactos.",
+    "División principal dentro de un capítulo.",
+    "Estrategia de libro en la que cada carpeta de contenido representa una Parte y sus documentos .qmd directos son capítulos de esa Parte.",
+    "Operación que comprueba los proyectos IASI seleccionados sin construir, publicar ni liberar artefactos.",
+    "Tipo IASI correspondiente a una publicación web."
+  ),
+  check.names = FALSE
+)
+
+if (knitr::is_html_output() && requireNamespace("kableExtra", quietly = TRUE)) {
+  knitr::kable(definitions, format = "html", align = c("l", "l")) |>
+    kableExtra::kable_styling(full_width = TRUE) |>
+    kableExtra::column_spec(1, width = "18%", bold = TRUE) |>
+    kableExtra::column_spec(2, width = "82%")
+} else {
+  knitr::kable(definitions, align = c("l", "l"))
+}
+```

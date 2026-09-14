@@ -1,0 +1,121 @@
+## Operaciones principales
+
+La API pública de `iasi.quarto` gira alrededor de cuatro operaciones:
+
+```r
+validate()
+build()
+publish()
+release()
+```
+
+Las cuatro utilizan la misma infraestructura de descubrimiento y selección. A partir de `path`, IASI recorre el árbol, descubre los proyectos IASI y selecciona únicamente los tipos a los que aplica la operación solicitada.
+
+### Validar
+
+```r
+validate()
+```
+
+`validate()` comprueba los proyectos IASI seleccionados.
+
+Para publicaciones Quarto valida su configuración y estructura. Para paquetes R comprueba, entre otras condiciones, la existencia de `DESCRIPTION`.
+
+No construye, publica ni libera artefactos.
+
+### Construir
+
+```r
+build()
+```
+
+`build()` construye siempre que se invoca. No intenta decidir si los fuentes han cambiado.
+
+Para publicaciones Quarto, los resultados se materializan en `_outputs/`, separados por perfil/formato:
+
+```text
+publication/
+└── _outputs/
+    ├── html/
+    ├── pdf/
+    ├── epub/
+    └── ...
+```
+
+Durante la edición puede construirse un formato concreto:
+
+```r
+build(format = "html")
+```
+
+Si no se indica `format`, se construyen los perfiles declarados por el proyecto para los que exista renderer.
+
+Para un proyecto `r-package`, `build()` genera los dos artefactos del paquete en su raíz:
+
+```text
+package/
+├── package_version.tar.gz
+└── package_version.zip
+```
+
+El primero es el paquete fuente y el segundo el paquete binario en Windows.
+
+### Publicar
+
+```r
+publish()
+```
+
+`publish()` trabaja únicamente con proyectos publicables. Toma siempre como entrada el árbol `_outputs/`; no vuelve a renderizar las fuentes.
+
+Sin `format`, publica todos los formatos construidos disponibles. También puede seleccionar uno o varios:
+
+```r
+publish(format = "html")
+publish(format = c("html", "pdf"))
+```
+
+Antes de publicar calcula una firma de los formatos seleccionados. Si coincide con la firma de la última publicación, la operación se omite.
+
+La preparación se realiza sobre un árbol temporal `.work`. Solo cuando la copia y el postprocesado terminan correctamente se sustituye el destino final. Si el proceso falla, la publicación anterior permanece intacta.
+
+En una publicación individual:
+
+```text
+publication/
+├── _outputs/
+└── _publish/
+    ├── index.html
+    ├── chapters/
+    ├── pdf/
+    │   └── libro.pdf
+    └── epub/
+        └── libro.epub
+```
+
+El contenido HTML ocupa la raíz del árbol publicable; los demás formatos permanecen como exports.
+
+La metadata `.publish` conserva el timestamp y la firma del contenido que originó la publicación.
+
+### Liberar
+
+```r
+release()
+```
+
+`release()` reúne los entregables locales. No despliega nada en servicios externos.
+
+Para un `r-package`, mueve a `release/` los artefactos construidos (`*.tar.*` y `*.zip`).
+
+Para proyectos publicables, copia a `release/` el contenido previamente materializado por `publish()`.
+
+Por tanto, el ciclo queda separado deliberadamente:
+
+```text
+validate  → comprobar
+build     → construir artefactos
+publish   → preparar publicaciones
+release   → reunir entregables
+```
+
+`iasi.quarto` termina aquí. El despliegue a sistemas externos pertenece a herramientas de nivel superior, como `iasi-dev`.

@@ -140,7 +140,7 @@
 
   defaults = list(
     publication = list(
-      strategy = if (is_book) "regular" else NULL,
+      strategy = "regular",
       `front-matter` = if (is_book) "front-matter" else NULL,
       `content-dir` = if (is_book) "chapters" else NULL,
       `back-matter` = if (is_book) "back-matter" else NULL,

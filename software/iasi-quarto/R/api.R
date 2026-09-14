@@ -44,15 +44,18 @@ build = function(format = NULL, path = ".") {
 
 #' Publish built IASI projects locally
 #'
-#' Publishes selected build outputs from `_outputs` only when their content
-#' changed, unless `force = TRUE`.
+#' Publishes one or more already-built formats from `_outputs` into the local
+#' publication tree. `publish()` never renders sources again.
 #'
+#' When `format` is `NULL`, every available built format is published. When one
+#' or more formats are supplied, only those existing build outputs are used.
+#'
+#' @param format Optional built format/profile selection.
 #' @param path Directory from which IASI projects are discovered.
-#' @param force Publish even when the build-output hash has not changed.
 #' @return Numeric status bitmask.
 #' @export
-publish = function(path = ".", force = FALSE) {
-  context = .new_context(action = "publish", path = path, force = force)
+publish = function(format = NULL, path = ".") {
+  context = .new_context(action = "publish", format = format, path = path)
   .run_action(context, .engine_publish)
 }
 

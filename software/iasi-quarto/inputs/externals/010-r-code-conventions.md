@@ -14,6 +14,6 @@ Avoid ceremonial vertical formatting.
 
 Public APIs should stay minimal. Do not expose parameters that duplicate configuration already known by the project.
 
-Parameters deliberately removed during the current refactor include `book`, `source`, build `force`, and release `force`.
+Parameters deliberately removed during the current refactor include `book`, `source`, and `force` from the public build, publish, and release APIs.
 
-Publish `force` remains because it has explicit semantics.
+`publish()` exposes only `format` and `path`; freshness remains an internal content-hash decision.

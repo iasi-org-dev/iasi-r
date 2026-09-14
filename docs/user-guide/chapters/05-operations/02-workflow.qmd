@@ -1,0 +1,39 @@
+## Flujo recomendado
+
+Durante la edición, construya únicamente el formato que necesita revisar:
+
+```r
+build(format = "html")
+```
+
+Cuando quiera materializar todos los perfiles declarados:
+
+```r
+build()
+```
+
+Cuando el resultado construido sea publicable:
+
+```r
+publish()
+```
+
+Una segunda llamada a `publish()` no repite trabajo si los formatos seleccionados de `_outputs/` no han cambiado. Para publicar solo un formato ya construido:
+
+```r
+publish(format = "html")
+```
+
+Cuando quiera reunir los entregables locales:
+
+```r
+release()
+```
+
+La regla práctica es:
+
+```text
+build    → construye siempre
+publish  → publica los formatos seleccionados si cambiaron
+release  → recoge lo ya construido/publicado
+```

@@ -10,20 +10,9 @@
 
 .publish_root_profiles = c("web", "html")
 
-# A multiproject publishes each child publication into a stable slot. Numeric
-# prefixes are organisational metadata and are deliberately omitted.
-
-# `_publish` belongs to the workspace selected by the public operation, not to
-# an individual Quarto output directory.
-
-# A current publication owns `_publish` directly. In a multiproject, every
-# selected publication owns one child slot below the single workspace root.
-
-# Resolve all destinations before modifying the filesystem so name collisions
-# fail atomically instead of overwriting another publication.
-
-# Each project owns its publication tree. release() is responsible for
-# assembling project publications into a repository-level release layout.
+# Each project owns its publication tree. The destination is resolved from the
+# project/configuration root only; build-format directories never participate in
+# destination resolution. release() assembles project publications later.
 .publish_destination = function(project) {
   value = project$config$paths$publish
   base = .config_base(project$path, "publish")
@@ -34,14 +23,14 @@
 
 # Materialise one publication atomically. The source tree is never modified:
 # work happens in a sibling `.work` directory and replaces only this target.
-.publish_project_to = function(project, destination, hash, clean = TRUE) {
+.publish_project_to = function(project, destination, hash, formats, clean = TRUE) {
   source_path = file.path(project$path, .IASI$dirs$output)
 
   .check_publish_tree(source = source_path, destination = destination, project = project$name)
 
-  source_formats = .publish_format_directories(source_path)
+  source_formats = intersect(formats, .publish_format_directories(source_path))
 
-  if (!length(source_formats)) stop(sprintf("Publish source contains no non-empty format directories for project '%s': %s.", project$name, source_path), call. = FALSE)
+  if (!length(source_formats)) stop(sprintf("Publish source contains no selected non-empty format directories for project '%s': %s.", project$name, source_path), call. = FALSE)
 
   if (clean) {
     work_path = paste0(destination, ".work")
@@ -56,7 +45,7 @@
       add = TRUE
    )
 
-    .prepare_publish_tree(source = source_path, destination = work_path, project = project, hash = hash)
+    .prepare_publish_tree(source = source_path, destination = work_path, project = project, hash = hash, formats = source_formats)
 
     .replace_publish_tree(work = work_path, destination = destination)
 
@@ -64,7 +53,7 @@
   } else {
     dir.create(destination, recursive = TRUE, showWarnings = FALSE)
 
-    .prepare_publish_tree(source = source_path, destination = destination, project = project, hash = hash)
+    .prepare_publish_tree(source = source_path, destination = destination, project = project, hash = hash, formats = source_formats)
   }
 
   project$publish_path = .normalise_project_path(destination)
@@ -77,19 +66,20 @@
 
 # Copy one complete build tree, apply strategy-specific normalisation, move
 # the preferred browser-facing profile into the publication root, and stamp metadata.
-.prepare_publish_tree = function(source, destination, project, hash) {
+.prepare_publish_tree = function(source, destination, project, hash, formats) {
   message("- Preparando árbol de publicación...")
 
-  .copy_directory_contents(from = source, to = destination)
+  available = .publish_format_directories(source)
+  excluded = file.path(source, setdiff(available, formats))
+  .copy_directory_contents(from = source, to = destination, exclude = excluded)
 
   formats = .publish_format_directories(destination)
 
   publication = .publication_info(project)
 
-  if (!is.null(project$strategy)) {
-    message(sprintf("- Normalizando salida [%s]...", project$strategy))
-    .normalise_publish_tree(path = destination, project = project, formats = formats)
-  }
+  message(sprintf("- Normalizando salida [%s]...", project$strategy))
+
+  .normalise_publish_tree(path = destination, project = project, formats = formats)
 
   message("- Organizando formatos...")
 
@@ -389,8 +379,6 @@
 # copied. Each strategy may provide format-specific normalisers.
 
 .normalise_publish_tree = function(path, project, formats) {
-   if (is.null(project$strategy)) return(invisible(TRUE))
-
    name = paste0(".normalise_", project$strategy)
 
    if (!exists(name, mode = "function")) return(invisible(TRUE))

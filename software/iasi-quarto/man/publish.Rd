@@ -4,17 +4,21 @@
 \alias{publish}
 \title{Publish built IASI projects locally}
 \usage{
-publish(path = ".", force = FALSE)
+publish(format = NULL, path = ".")
 }
 \arguments{
-\item{path}{Directory from which IASI projects are discovered.}
+\item{format}{Optional built format/profile selection.}
 
-\item{force}{Publish even when the build-output hash has not changed.}
+\item{path}{Directory from which IASI projects are discovered.}
 }
 \value{
 Numeric status bitmask.
 }
 \description{
-Publishes selected build outputs from \verb{_outputs} only when their content
-changed, unless \code{force = TRUE}.
+Publishes one or more already-built formats from \verb{_outputs} into the local
+publication tree. \code{publish()} never renders sources again.
+}
+\details{
+When \code{format} is \code{NULL}, every available built format is published. When one
+or more formats are supplied, only those existing build outputs are used.
 }

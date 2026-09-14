@@ -31,20 +31,48 @@
 }
 
 
-# Publish one target from its `_outputs` directory unless unchanged.
+# Publish one target from its `_outputs` directory unless the selected
+# materialization is unchanged.
 .publish_project = function(context, project) {
   source = file.path(project$path, .IASI$dirs$output)
-  destination = .publish_destination(project)
-  hash = .publish_hash(source)
+  formats = .resolve_publish_formats(source, context$format)
 
-  if (!isTRUE(context$force) && .publish_unchanged(destination, hash)) {
+  if (!length(formats)) {
+    message("No matching built formats to publish: ", project$path)
+    .rc_add(context, .IASI$status$NOTHING_TO_DO)
+    return(invisible(context$rc))
+  }
+
+  destination = .publish_destination(project)
+  hash = .publish_hash(source, formats)
+
+  if (.publish_unchanged(destination, hash)) {
     message("Publication unchanged: ", project$path)
     .rc_add(context, .IASI$status$NOTHING_TO_DO)
     return(invisible(context$rc))
   }
 
-  .publish_project_to(project = project, destination = destination, hash = hash, clean = TRUE)
+  .publish_project_to(project = project, destination = destination, hash = hash, formats = formats, clean = TRUE)
   invisible(context$rc)
+}
+
+
+# Resolve the public format selection against materializations that actually
+# exist under `_outputs`. NULL means every available built format.
+.resolve_publish_formats = function(source, format = NULL) {
+  if (!dir.exists(source)) return(character())
+
+  available = .publish_format_directories(source)
+  selection = .normalise_build_selection(format, "format")
+
+  if (identical(selection, "all")) return(available)
+
+  missing = selection[!selection %in% available]
+  if (length(missing)) {
+    for (name in missing) warning(sprintf("Ignoring '%s': no built output is available.", name), call. = FALSE)
+  }
+
+  unique(selection[selection %in% available])
 }
 
 
@@ -72,9 +100,15 @@
 }
 
 
-.publish_hash = function(path) {
+.publish_hash = function(path, formats) {
   path = normalizePath(path, winslash = "/", mustWork = TRUE)
-  files = list.files(path, recursive = TRUE, full.names = TRUE, all.files = TRUE, no.. = TRUE)
+  roots = file.path(path, formats)
+  roots = roots[dir.exists(roots)]
+
+  files = unlist(
+    lapply(roots, function(root) list.files(root, recursive = TRUE, full.names = TRUE, all.files = TRUE, no.. = TRUE)),
+    use.names = FALSE
+  )
   files = sort(files[file.exists(files) & !dir.exists(files)])
 
   relative = if (length(files)) substring(normalizePath(files, winslash = "/", mustWork = TRUE), nchar(path) + 2L) else character()

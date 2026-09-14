@@ -1,0 +1,67 @@
+## El proyecto no se reconoce
+
+Compruebe que se encuentra en la ruta correcta y que el proyecto contiene `_iasi.yml` o `.iasi.yml`.
+
+Ejecute:
+
+```r
+validate()
+```
+
+Para una publicación Quarto también debe existir `_quarto.yml`; para un `r-package`, `DESCRIPTION`.
+
+## Un proyecto hijo no se descubre
+
+Los directorios intermedios no necesitan una marca IASI. El descubrimiento desciende por el árbol hasta encontrar proyectos, excepto dentro de ramas excluidas.
+
+Compruebe que el directorio del proyecto contiene directamente `_iasi.yml` o `.iasi.yml` y que no está bajo una ruta excluida.
+
+## Un formato no se genera
+
+Compruebe que el perfil está declarado por el proyecto y que existe el renderer correspondiente.
+
+Por ejemplo:
+
+```text
+_quarto-pdf.yml
+```
+
+También debe disponer de las dependencias que necesite el formato. PDF, por ejemplo, puede requerir una instalación TeX funcional.
+
+## Quiero reconstruir aunque nada haya cambiado
+
+Utilice:
+
+```r
+build()
+```
+
+`build()` construye siempre que se invoca.
+
+## `publish()` dice que no hay cambios
+
+`publish()` calcula una firma de los formatos seleccionados en `_outputs/` y la compara con la guardada en la última publicación. Si no han cambiado, no hay nada que volver a materializar.
+
+## Quiero publicar lo que ya está construido
+
+Utilice:
+
+```r
+publish()
+```
+
+`publish()` toma siempre su entrada de `_outputs/`. Puede limitar la operación con `format`, por ejemplo `publish(format = "pdf")`.
+
+## Quiero preparar los entregables locales
+
+Utilice:
+
+```r
+release()
+```
+
+Para paquetes R recoge los artefactos fuente y binario. Para publicaciones recoge el contenido previamente preparado por `publish()`.
+
+## Quiero desplegar a un servicio externo
+
+El despliegue externo no forma parte de `iasi.quarto`. Utilice la herramienta responsable del entorno de desarrollo o despliegue, por ejemplo `iasi-dev`.

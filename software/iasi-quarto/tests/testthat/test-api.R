@@ -6,3 +6,9 @@ test_that("status constants are numeric bitmasks", {
 test_that("deploy is not public", {
   expect_false("deploy" %in% getNamespaceExports("iasi.quarto"))
 })
+
+test_that("publish exposes only format and path", {
+  expect_identical(names(formals(iasi.quarto::publish)), c("format", "path"))
+  expect_null(formals(iasi.quarto::publish)$format)
+  expect_identical(formals(iasi.quarto::publish)$path, ".")
+})
