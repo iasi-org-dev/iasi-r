@@ -197,14 +197,3 @@ Build now reports concise progress without restoring discovery/selection debug:
 - source/binary phase messages for R packages.
 
 Raw R and Quarto subprocess output remains visible.
-
-## v24 publish format selection
-
-`publish()` now exposes only `format` and `path`. `force` was removed from the
-public API. A NULL format selection publishes every built materialization; an
-explicit selection publishes only matching `_outputs/<format>` trees.
-
-Publish freshness remains content-addressed internally. The hash is calculated
-from the selected format trees, and an unchanged publication is skipped without
-requiring a public override.
-

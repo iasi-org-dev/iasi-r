@@ -4,6 +4,7 @@
     withCallingHandlers(
       engine(context),
       error = function(error) {
+        message("ERROR: ", conditionMessage(error))
         if (bitwAnd(context$rc, .IASI$status$ERROR_MASK) == 0L) .rc_add(context, .IASI$status$ERROR)
       }
     ),

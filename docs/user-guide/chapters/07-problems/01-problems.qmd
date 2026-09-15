@@ -40,7 +40,13 @@ build()
 
 ## `publish()` dice que no hay cambios
 
-`publish()` calcula una firma de los formatos seleccionados en `_outputs/` y la compara con la guardada en la última publicación. Si no han cambiado, no hay nada que volver a materializar.
+`publish()` calcula una firma de `_outputs/` y la compara con la guardada en la última publicación.
+
+Si quiere repetir expresamente el proceso:
+
+```r
+publish(force = TRUE)
+```
 
 ## Quiero publicar lo que ya está construido
 
@@ -50,7 +56,7 @@ Utilice:
 publish()
 ```
 
-`publish()` toma siempre su entrada de `_outputs/`. Puede limitar la operación con `format`, por ejemplo `publish(format = "pdf")`.
+`publish()` toma siempre su entrada de `_outputs/`.
 
 ## Quiero preparar los entregables locales
 

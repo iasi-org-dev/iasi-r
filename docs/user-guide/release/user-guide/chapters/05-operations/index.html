@@ -374,13 +374,11 @@ document.addEventListener("DOMContentLoaded", () => {
 <button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button>
 </div>
 <p><code>publish()</code> trabaja únicamente con proyectos publicables. Toma siempre como entrada el árbol <code>_outputs/</code>; no vuelve a renderizar las fuentes.</p>
-<p>Sin <code>format</code>, publica todos los formatos construidos disponibles. También puede seleccionar uno o varios:</p>
+<p>Antes de publicar calcula una firma del contenido de <code>_outputs/</code>. Si coincide con la firma de la última publicación, la operación se omite. Puede forzarse una nueva publicación aunque el contenido no haya cambiado:</p>
 <div class="code-copy-outer-scaffold">
-<div class="sourceCode" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">publish</span>(<span class="at">format =</span> <span class="st">"html"</span>)</span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="fu">publish</span>(<span class="at">format =</span> <span class="fu">c</span>(<span class="st">"html"</span>, <span class="st">"pdf"</span>))</span></code></pre></div>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">publish</span>(<span class="at">force =</span> <span class="cn">TRUE</span>)</span></code></pre></div>
 <button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button>
 </div>
-<p>Antes de publicar calcula una firma de los formatos seleccionados. Si coincide con la firma de la última publicación, la operación se omite.</p>
 <p>La preparación se realiza sobre un árbol temporal <code>.work</code>. Solo cuando la copia y el postprocesado terminan correctamente se sustituye el destino final. Si el proceso falla, la publicación anterior permanece intacta.</p>
 <p>En una publicación individual:</p>
 <pre class="text"><code>publication/
@@ -426,9 +424,9 @@ release   → reunir entregables</code></pre>
 <div class="sourceCode" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">publish</span>()</span></code></pre></div>
 <button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button>
 </div>
-<p>Una segunda llamada a <code>publish()</code> no repite trabajo si los formatos seleccionados de <code>_outputs/</code> no han cambiado. Para publicar solo un formato ya construido:</p>
+<p>Una segunda llamada a <code>publish()</code> no repite trabajo si <code>_outputs/</code> no ha cambiado. Para repetir expresamente la publicación:</p>
 <div class="code-copy-outer-scaffold">
-<div class="sourceCode" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="fu">publish</span>(<span class="at">format =</span> <span class="st">"html"</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="fu">publish</span>(<span class="at">force =</span> <span class="cn">TRUE</span>)</span></code></pre></div>
 <button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button>
 </div>
 <p>Cuando quiera reunir los entregables locales:</p>
@@ -438,7 +436,7 @@ release   → reunir entregables</code></pre>
 </div>
 <p>La regla práctica es:</p>
 <pre class="text"><code>build    → construye siempre
-publish  → publica los formatos seleccionados si cambiaron
+publish  → publica si cambió; force publica siempre
 release  → recoge lo ya construido/publicado</code></pre>
 
 
@@ -861,7 +859,7 @@ release  → recoge lo ya construido/publicado</code></pre>
        
     </div>
     <div class="nav-footer-right">
-<p><span id="iasi-publish-date">Publicado: 14/09/2026</span></p>
+<p><span id="iasi-publish-date">Publicado: 12/09/2026</span></p>
 </div>
   </div>
 </footer>

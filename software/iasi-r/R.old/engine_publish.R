@@ -35,7 +35,7 @@
 # materialization is unchanged.
 .publish_project = function(context, project) {
   source = file.path(project$path, .IASI$dirs$output)
-  formats = .resolve_publish_formats(source, context$format)
+  formats = .resolve_publish_formats(source, context$format, project)
 
   if (!length(formats)) {
     message("No matching built formats to publish: ", project$path)
@@ -44,7 +44,7 @@
   }
 
   destination = .publish_destination(project)
-  hash = .publish_hash(source, formats)
+  hash = .publish_hash(source, formats, project)
 
   if (.publish_unchanged(destination, hash)) {
     message("Publication unchanged: ", project$path)
@@ -59,10 +59,10 @@
 
 # Resolve the public format selection against materializations that actually
 # exist under `_outputs`. NULL means every available built format.
-.resolve_publish_formats = function(source, format = NULL) {
+.resolve_publish_formats = function(source, format = NULL, project = NULL) {
   if (!dir.exists(source)) return(character())
 
-  available = .publish_format_directories(source)
+  available = .publish_format_directories(source, project)
   selection = .normalise_build_selection(format, "format")
 
   if (identical(selection, "all")) return(available)
@@ -100,16 +100,16 @@
 }
 
 
-.publish_hash = function(path, formats) {
+.publish_hash = function(path, formats, project = NULL) {
   path = normalizePath(path, winslash = "/", mustWork = TRUE)
   roots = file.path(path, formats)
   roots = roots[dir.exists(roots)]
 
   files = unlist(
-    lapply(roots, function(root) list.files(root, recursive = TRUE, full.names = TRUE, all.files = TRUE, no.. = TRUE)),
+    lapply(roots, .publish_tree_files, project = project),
     use.names = FALSE
   )
-  files = sort(files[file.exists(files) & !dir.exists(files)])
+  files = sort(unique(files))
 
   relative = if (length(files)) substring(normalizePath(files, winslash = "/", mustWork = TRUE), nchar(path) + 2L) else character()
   hashes = if (length(files)) unname(tools::md5sum(files)) else character()

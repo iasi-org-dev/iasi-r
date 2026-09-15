@@ -3,7 +3,7 @@
 # Existing publication pipeline, adapted to the current context/project model.
 #
 # Flow:
-# build output -> temporary .work tree -> post-process -> metadata -> replace target.
+# build output -> unique sibling temporary tree -> post-process -> metadata -> replace target.
 # The final publication is never modified until the temporary tree is complete.
 
 .export_formats = c(pdf = "PDF", pdfua = "PDF/UA", epub = "EPUB", docx = "DOCX", odt = "ODT", git = "GitBook")
@@ -22,34 +22,31 @@
 
 
 # Materialise one publication atomically. The source tree is never modified:
-# work happens in a sibling `.work` directory and replaces only this target.
+# work happens in a unique temporary directory beside the final destination so
+# the final rename remains on the same filesystem.
 .publish_project_to = function(project, destination, hash, formats, clean = TRUE) {
   source_path = file.path(project$path, .IASI$dirs$output)
 
   .check_publish_tree(source = source_path, destination = destination, project = project$name)
 
-  source_formats = intersect(formats, .publish_format_directories(source_path))
+  source_formats = intersect(formats, .publish_format_directories(source_path, project))
 
   if (!length(source_formats)) stop(sprintf("Publish source contains no selected non-empty format directories for project '%s': %s.", project$name, source_path), call. = FALSE)
 
   if (clean) {
-    work_path = paste0(destination, ".work")
-    if (dir.exists(work_path)) unlink(work_path, recursive = TRUE, force = TRUE)
+    work_path = .publish_temporary_path(destination)
     dir.create(work_path, recursive = TRUE, showWarnings = FALSE)
-    completed = FALSE
 
     on.exit(
-      if (!completed && dir.exists(work_path)) {
+      if (dir.exists(work_path)) {
         unlink(work_path, recursive = TRUE, force = TRUE)
       },
       add = TRUE
-   )
+    )
 
     .prepare_publish_tree(source = source_path, destination = work_path, project = project, hash = hash, formats = source_formats)
 
     .replace_publish_tree(work = work_path, destination = destination)
-
-    completed = TRUE
   } else {
     dir.create(destination, recursive = TRUE, showWarnings = FALSE)
 
@@ -64,16 +61,37 @@
   project
 }
 
+
+# Create a unique staging path beside the final publication. Keeping staging on
+# the same filesystem preserves rename semantics while avoiding a shared fixed
+# `_publish.work` directory across runs.
+.publish_temporary_path = function(destination) {
+  parent = dirname(destination)
+  dir.create(parent, recursive = TRUE, showWarnings = FALSE)
+
+  tempfile(
+    pattern = paste0(".", basename(destination), "-"),
+    tmpdir = parent
+  )
+}
+
 # Copy one complete build tree, apply strategy-specific normalisation, move
 # the preferred browser-facing profile into the publication root, and stamp metadata.
 .prepare_publish_tree = function(source, destination, project, hash, formats) {
   message("- Preparando árbol de publicación...")
 
-  available = .publish_format_directories(source)
-  excluded = file.path(source, setdiff(available, formats))
-  .copy_directory_contents(from = source, to = destination, exclude = excluded)
+  for (format in formats) {
+    source_format = file.path(source, format)
+    destination_format = file.path(destination, format)
 
-  formats = .publish_format_directories(destination)
+    .copy_publish_directory(
+      from = source_format,
+      to = destination_format,
+      project = project
+    )
+  }
+
+  formats = .publish_format_directories(destination, project)
 
   publication = .publication_info(project)
 
@@ -137,22 +155,109 @@
 
 # Only non-empty first-level directories are publication formats. Empty output
 # directories are not evidence that a format was successfully built.
-.publish_format_directories = function(path) {
-  entries = list.files(path, recursive = FALSE, full.names = TRUE, all.files = TRUE, no.. = TRUE)
+.publish_reserved_directory_names = function(project = NULL) {
+  names = c(
+    .IASI$dirs$output,
+    .IASI$dirs$publish,
+    .IASI$dirs$release,
+    paste0(.IASI$dirs$publish, ".work")
+  )
 
+  if (!is.null(project) && is.list(project$config$paths)) {
+    configured = unname(unlist(project$config$paths[c("publish", "release")], use.names = FALSE))
+    configured = configured[is.character(configured) & !is.na(configured) & nzchar(configured)]
+
+    if (length(configured)) {
+      names = c(names, basename(gsub("\\\\", "/", configured)))
+    }
+  }
+
+  unique(tolower(names[nzchar(names)]))
+}
+
+
+.publish_skip_directory = function(path, project = NULL) {
+  tolower(basename(path)) %in% .publish_reserved_directory_names(project)
+}
+
+
+.publish_tree_files = function(path, project = NULL) {
+  if (!dir.exists(path)) return(character())
+
+  entries = list.files(path, full.names = TRUE, all.files = TRUE, no.. = TRUE)
+  if (!length(entries)) return(character())
+
+  directories = entries[dir.exists(entries)]
+  directories = directories[!vapply(directories, .publish_skip_directory, logical(1), project = project)]
+
+  files = entries[!dir.exists(entries)]
+  files = files[basename(files) != ".publish"]
+
+  nested = if (length(directories)) {
+    unlist(lapply(directories, .publish_tree_files, project = project), use.names = FALSE)
+  } else {
+    character()
+  }
+
+  c(files, nested)
+}
+
+
+.copy_publish_directory = function(from, to, project = NULL) {
+  if (!dir.exists(from)) {
+    stop(sprintf("Publish format source does not exist: %s.", from), call. = FALSE)
+  }
+
+  dir.create(to, recursive = TRUE, showWarnings = FALSE)
+
+  entries = list.files(from, full.names = TRUE, all.files = TRUE, no.. = TRUE)
+  if (!length(entries)) return(invisible(TRUE))
+
+  for (entry in entries) {
+    target = file.path(to, basename(entry))
+
+    if (dir.exists(entry)) {
+      if (.publish_skip_directory(entry, project)) next
+      .copy_publish_directory(entry, target, project)
+      next
+    }
+
+    if (identical(basename(entry), ".publish")) next
+
+    copied = file.copy(
+      entry,
+      target,
+      overwrite = TRUE,
+      copy.mode = FALSE,
+      copy.date = TRUE
+    )
+
+    if (!isTRUE(copied)) {
+      stop(sprintf("Could not copy publication file from '%s' to '%s'.", entry, target), call. = FALSE)
+    }
+  }
+
+  invisible(TRUE)
+}
+
+
+# Only non-empty first-level directories are publication formats. Generated
+# IASI trees are never formats, even if stale copies are already present under
+# the build root.
+.publish_format_directories = function(path, project = NULL) {
+  entries = list.files(path, recursive = FALSE, full.names = TRUE, all.files = TRUE, no.. = TRUE)
   entries = entries[dir.exists(entries)]
 
-  if (!length(entries)) {
-    return(character())
-  }
+  if (!length(entries)) return(character())
+
+  entries = entries[!vapply(entries, .publish_skip_directory, logical(1), project = project)]
+  if (!length(entries)) return(character())
 
   non_empty = vapply(
     entries,
-    function(entry) {
-      length(list.files(entry, recursive = TRUE, all.files = TRUE, no.. = TRUE)) > 0L
-    },
+    function(entry) length(.publish_tree_files(entry, project)) > 0L,
     logical(1)
- )
+  )
 
   basename(entries[non_empty])
 }
@@ -282,30 +387,6 @@
     writeLines(normalised, exports, useBytes = TRUE)
   }
 
-  invisible(TRUE)
-}
-
-.copy_directory_contents = function(from, to, exclude = character()) {
-  entries = list.files(from, full.names = TRUE, all.files = TRUE, no.. = TRUE)
-  if (!length(entries)) return(invisible(TRUE))
-
-  if (length(exclude)) {
-    exclude = tolower(normalizePath(exclude, winslash = "/", mustWork = FALSE))
-
-    entry_keys = tolower(normalizePath(entries, winslash = "/", mustWork = FALSE))
-
-    entries = entries[!entry_keys %in% exclude]
-  }
-
-  if (length(entries)) {
-    generated = vapply(entries, function(entry) dir.exists(entry) && file.exists(file.path(entry, ".publish")), logical(1))
-    entries = entries[!generated]
-  }
-
-  if (!length(entries)) return(invisible(TRUE))
-
-  copied = file.copy(entries, to, recursive = TRUE, overwrite = TRUE, copy.mode = FALSE, copy.date = TRUE)
-  if (!all(copied)) stop(sprintf("Could not copy all publication files from '%s' to '%s'.", from, to), call. = FALSE)
   invisible(TRUE)
 }
 

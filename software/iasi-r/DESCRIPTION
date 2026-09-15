@@ -1,7 +1,7 @@
-Package: iasi.quarto
+Package: iasi
 Type: Package
-Title: Build System for Quarto Publications
-Version: 0.10.2
+Title: Build System for R environment
+Version: 0.11.0
 Authors@R: person(
     given = "Javier",
     family = "G. Grandez",

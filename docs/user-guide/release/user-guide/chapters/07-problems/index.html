@@ -348,20 +348,25 @@ document.addEventListener("DOMContentLoaded", () => {
 <p><code>build()</code> construye siempre que se invoca.</p>
 </section><section id="publish-dice-que-no-hay-cambios" class="level2" data-number="8.5"><h2 data-number="8.5" class="anchored" data-anchor-id="publish-dice-que-no-hay-cambios">
 <span class="header-section-number">8.5</span> <code>publish()</code> dice que no hay cambios</h2>
-<p><code>publish()</code> calcula una firma de los formatos seleccionados en <code>_outputs/</code> y la compara con la guardada en la última publicación. Si no han cambiado, no hay nada que volver a materializar.</p>
+<p><code>publish()</code> calcula una firma de <code>_outputs/</code> y la compara con la guardada en la última publicación.</p>
+<p>Si quiere repetir expresamente el proceso:</p>
+<div class="code-copy-outer-scaffold">
+<div class="sourceCode" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">publish</span>(<span class="at">force =</span> <span class="cn">TRUE</span>)</span></code></pre></div>
+<button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button>
+</div>
 </section><section id="quiero-publicar-lo-que-ya-está-construido" class="level2" data-number="8.6"><h2 data-number="8.6" class="anchored" data-anchor-id="quiero-publicar-lo-que-ya-está-construido">
 <span class="header-section-number">8.6</span> Quiero publicar lo que ya está construido</h2>
 <p>Utilice:</p>
 <div class="code-copy-outer-scaffold">
-<div class="sourceCode" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">publish</span>()</span></code></pre></div>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">publish</span>()</span></code></pre></div>
 <button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button>
 </div>
-<p><code>publish()</code> toma siempre su entrada de <code>_outputs/</code>. Puede limitar la operación con <code>format</code>, por ejemplo <code>publish(format = "pdf")</code>.</p>
+<p><code>publish()</code> toma siempre su entrada de <code>_outputs/</code>.</p>
 </section><section id="quiero-preparar-los-entregables-locales" class="level2" data-number="8.7"><h2 data-number="8.7" class="anchored" data-anchor-id="quiero-preparar-los-entregables-locales">
 <span class="header-section-number">8.7</span> Quiero preparar los entregables locales</h2>
 <p>Utilice:</p>
 <div class="code-copy-outer-scaffold">
-<div class="sourceCode" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">release</span>()</span></code></pre></div>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">release</span>()</span></code></pre></div>
 <button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button>
 </div>
 <p>Para paquetes R recoge los artefactos fuente y binario. Para publicaciones recoge el contenido previamente preparado por <code>publish()</code>.</p>
@@ -786,7 +791,7 @@ document.addEventListener("DOMContentLoaded", () => {
        
     </div>
     <div class="nav-footer-right">
-<p><span id="iasi-publish-date">Publicado: 14/09/2026</span></p>
+<p><span id="iasi-publish-date">Publicado: 12/09/2026</span></p>
 </div>
   </div>
 </footer>

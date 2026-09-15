@@ -18,10 +18,10 @@ Cuando el resultado construido sea publicable:
 publish()
 ```
 
-Una segunda llamada a `publish()` no repite trabajo si los formatos seleccionados de `_outputs/` no han cambiado. Para publicar solo un formato ya construido:
+Una segunda llamada a `publish()` no repite trabajo si `_outputs/` no ha cambiado. Para repetir expresamente la publicación:
 
 ```r
-publish(format = "html")
+publish(force = TRUE)
 ```
 
 Cuando quiera reunir los entregables locales:
@@ -34,6 +34,6 @@ La regla práctica es:
 
 ```text
 build    → construye siempre
-publish  → publica los formatos seleccionados si cambiaron
+publish  → publica si cambió; force publica siempre
 release  → recoge lo ya construido/publicado
 ```
