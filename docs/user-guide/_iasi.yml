@@ -1,4 +1,4 @@
-type: guide
+type: quarto
 publication:
   strategy: regular
   content-dir: chapters
