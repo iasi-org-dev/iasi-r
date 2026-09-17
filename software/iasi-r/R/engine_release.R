@@ -12,11 +12,16 @@
   message("Release project: ", project$path, " [", type, "]")
 
   if (identical(type, .IASI$types$pkg)) return(.release_package(context, project))
-  if (identical(type, .IASI$types$web)) return(.release_tree(context, project, .IASI$dirs$output, root = TRUE))
+
+  # Publicable projects release from the publication tree.
+  # Non-publicable Quarto projects release directly from build outputs.
+  if (.publish_applicable(project)) {
+    root = identical(type, .IASI$types$web)
+    return(.release_tree(context, project, project$config$paths$publish, root = root))
+  }
 
   if (identical(type, .IASI$types$quarto)) {
-    source = if (is.null(project$config$strategy)) .IASI$dirs$output else project$config$paths$publish
-    return(.release_tree(context, project, source, root = FALSE))
+    return(.release_tree(context, project, .IASI$dirs$output, root = FALSE))
   }
 
   .rc_add(context, .IASI$status$NOTHING_TO_DO)
