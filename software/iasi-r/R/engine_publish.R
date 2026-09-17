@@ -1,7 +1,8 @@
 # Publish engine ----------------------------------------------------------
 #
 # publish() is meaningful only for Quarto projects that opt into an IASI
-# strategy. All other project types are valid calls with nothing to do.
+# strategy, plus IASI website projects. All other project types are valid calls
+# with nothing to do.
 
 
 # Publish every applicable selected target.
@@ -26,8 +27,13 @@
 }
 
 
-# Only strategic Quarto projects have an IASI post-processing phase.
+# Websites are directly publishable.
+# Other Quarto projects require an explicit IASI strategy.
 .publish_applicable = function(project) {
+  if (identical(project$config$type, .IASI$types$web)) {
+    return(TRUE)
+  }
+
   identical(project$config$type, .IASI$types$quarto) &&
     !is.null(project$config$strategy)
 }
