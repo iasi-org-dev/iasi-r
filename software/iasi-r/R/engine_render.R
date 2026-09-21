@@ -277,7 +277,7 @@
 }
 
 # Quarto output-dir is injected through a temporary profile so build output
-# policy stays in iasi.quarto without rewriting the author's configuration.
+# policy stays in iasi without rewriting the author's configuration.
 .create_quarto_output_profile = function(path, output_dir) {
   file = tempfile("_quarto-iasi-output-", tmpdir = path, fileext = ".yml")
   yaml::write_yaml(

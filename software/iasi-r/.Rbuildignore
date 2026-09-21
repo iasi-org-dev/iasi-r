@@ -1,3 +1,6 @@
 ^.*\.Rproj$
 ^\.Rproj\.user$
 ^\.iasi$
+^_iasi\.yml$
+^inputs$
+^release$

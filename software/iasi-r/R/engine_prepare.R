@@ -22,7 +22,7 @@
     direct = .prepare_direct_project(project),
     stop(
       sprintf(
-        "Unsupported IASI strategy '%s'.",
+        "Unsupported IASI publication strategy '%s'.",
         .display_checked_value(project$strategy)
       ),
       call. = FALSE

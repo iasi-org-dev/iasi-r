@@ -10,7 +10,7 @@ print.iasi_quarto_publication = function(x, ...) {
   cat("------------------------\n")
   cat(sprintf("Path      : %s\n", x$path))
   cat(sprintf("Type      : %s\n", x$type))
-  cat(sprintf("Strategy  : %s\n", x$strategy))
+  if (!is.null(x$strategy)) cat(sprintf("Strategy  : %s\n", x$strategy))
   if (identical(x$type, "book")) {
     cat(sprintf("Chapters  : %d\n", length(x$chapters)))
   }
@@ -18,11 +18,7 @@ print.iasi_quarto_publication = function(x, ...) {
   cat(sprintf("Artifacts : %d\n", length(x$artifacts)))
   cat(sprintf(
     "Changed   : %s\n",
-    if (isTRUE(x$changed)) {
-      "yes"
-    } else {
-      "no"
-    }
+    if (isTRUE(x$changed)) "yes" else "no"
   ))
 
   invisible(x)
@@ -30,7 +26,7 @@ print.iasi_quarto_publication = function(x, ...) {
 
 .new_publication = function(path,
                             type,
-                            strategy,
+                            strategy = NULL,
                             chapters = character(),
                             artifacts = character(),
                             changed = FALSE) {

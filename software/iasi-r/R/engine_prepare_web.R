@@ -2,7 +2,7 @@
   project$publication = .new_publication(
     path = project$path,
     type = project$type,
-    strategy = "regular",
+    strategy = NULL,
     chapters = character(),
     artifacts = character(),
     changed = FALSE

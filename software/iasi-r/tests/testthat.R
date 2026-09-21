@@ -1,4 +1,4 @@
 library(testthat)
-library(iasi.quarto)
+library(iasi)
 
-test_check("iasi.quarto")
+test_check("iasi")

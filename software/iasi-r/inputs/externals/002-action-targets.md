@@ -1,6 +1,6 @@
 # Action Targets
 
-All public actions use the same discovery and selection infrastructure.
+All public actions use the same discovery infrastructure.
 
 Public actions:
 
@@ -11,17 +11,18 @@ publish
 release
 ```
 
-`prepare_context()` discovers projects below `path` and selects only the project types to which the current action applies.
+`prepare_context()` discovers marked IASI projects below `path` and excludes
+repository containers from execution. Each action then decides what is
+applicable to the remaining project types.
 
-Current applicability:
+Current behavior:
 
 ```text
-validate  -> guide, web, r-package
-build     -> guide, web, r-package
-publish   -> guide, web
-release   -> guide, web, r-package
+validate  -> quarto, website, r-package
+build     -> quarto, website, r-package
+publish   -> website, and quarto with publication.strategy
+release   -> website, r-package, and quarto
 ```
 
-Projects to which an action does not apply are ignored silently.
-
-Action engines do not repeat target filtering. Selection belongs to `prepare_context()`.
+For `quarto` without `publication.strategy`, build uses Quarto as-is and release
+collects the build output directly. Such a project has no IASI publish step.

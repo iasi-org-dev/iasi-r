@@ -11,7 +11,7 @@
   if (identical(project$iasi_type, .IASI$types$quarto) && is.null(project$strategy)) {
     project$valid = length(errors) == 0L
     project$errors = unique(errors)
-    project$warnings = "No IASI strategy defined; Quarto will be used as-is."
+    project$warnings = "No IASI publication strategy defined; Quarto will be used as-is."
     return(project)
   }
 
@@ -126,6 +126,13 @@
   publication = if (is.list(source)) source[["publication"]] else NULL
   paths = if (is.list(source)) source[["paths"]] else NULL
 
+  if (is.list(source) && !is.null(source[["strategy"]])) {
+    errors = c(
+      errors,
+      sprintf("Top-level 'strategy' in %s is obsolete; use 'publication.strategy'.", config_name)
+    )
+  }
+
   errors = c(
     errors,
     .check_iasi_paths(
@@ -195,7 +202,7 @@
     errors = c(
       errors,
       sprintf(
-        "Invalid Quarto strategy: %s. Supported strategies are: %s.",
+        "Invalid Quarto publication strategy: %s. Supported strategies are: %s.",
         .display_checked_value(project$strategy),
         paste(.IASI$strategies, collapse = ", ")
       )
@@ -256,7 +263,7 @@
 
 
 # `paths` is intentionally extensible: other IASI components may define
-# additional path roles. iasi.quarto only validates conventions that affect
+# additional path roles. iasi only validates conventions that affect
 # publication engineering.
 #
 # A project has one current release materialisation, not a local release
@@ -310,6 +317,7 @@
 
   errors
 }
+
 
 
 .check_project_structure = function(project) {

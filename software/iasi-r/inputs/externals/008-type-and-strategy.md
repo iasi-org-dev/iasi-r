@@ -1,12 +1,22 @@
-# Type and Strategy
+# Type and Publication Strategy
 
-`type` and `strategy` are different dimensions.
+`type` and `publication.strategy` are different dimensions.
 
-`type` answers: what kind of project is this?
+`type` answers: what kind of IASI project is this?
 
-`strategy` answers: how is this publication organized or post-processed?
+For `type: quarto`, `publication.strategy` answers: how should IASI structure
+and post-process the Quarto publication?
 
-A Quarto book-like publication can therefore share the same project family while using different strategies, for example:
+Canonical configuration:
+
+```yaml
+type: quarto
+
+publication:
+  strategy: parted
+```
+
+Supported Quarto publication strategies are:
 
 ```text
 regular
@@ -15,4 +25,6 @@ parted
 direct
 ```
 
-Do not collapse `type` and `strategy` into one classification.
+A top-level `strategy` key is not valid. Strategy belongs to `publication`.
+If a Quarto project omits `publication.strategy`, IASI renders it with Quarto
+as-is.

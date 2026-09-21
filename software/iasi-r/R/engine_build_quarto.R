@@ -1,26 +1,24 @@
 # Quarto build -----------------------------------------------------------
 #
-# A Quarto project without an IASI strategy is rendered by Quarto as-is.
-# A strategy opts the project into the IASI prepare/render pipeline.
+# A Quarto project without publication.strategy is rendered by Quarto as-is.
+# A publication strategy opts the project into the IASI prepare/render pipeline.
 
 
 # Build one selected Quarto project.
 .build_quarto_project = function(context, project) {
-  if (
-    identical(project$config$type, .IASI$types$quarto) &&
-      is.null(project$config$strategy)
-  ) {
-    warning(
-      sprintf("No IASI strategy defined for Quarto project '%s'; using Quarto as-is.", project$name),
-      call. = FALSE
-    )
-
-    return(.render_plain_quarto(context, project))
-  }
-
   formats = .resolve_build_formats(context$format)
   quarto = .as_quarto_project(project)
   quarto = .ensure_checked_project(quarto)
+
+  if (identical(project$config$type, .IASI$types$quarto) && is.null(quarto$strategy)) {
+    warning(
+      sprintf("No IASI publication strategy defined for Quarto project '%s'; using Quarto as-is.", project$name),
+      call. = FALSE
+    )
+
+    return(.render_plain_quarto(context, project, formats))
+  }
+
   quarto = .prepare_project(quarto)
   quarto = .render_build_project(quarto, formats)
   .IASI$status$OK
@@ -28,7 +26,7 @@
 
 
 # Render one Quarto project without IASI structural preparation.
-.render_plain_quarto = function(context, project) {
+.render_plain_quarto = function(context, project, formats = .resolve_build_formats(context$format)) {
   previous_directory = setwd(project$path)
   on.exit(setwd(previous_directory), add = TRUE)
 
@@ -39,11 +37,10 @@
   on.exit(unlink(output_profile$file), add = TRUE)
 
   arguments = c("render", "--profile", output_profile$name)
-  formats = .resolve_build_formats(context$format)
 
   if (!identical(formats, "all")) {
     if (length(formats) != 1L) {
-      stop("Quarto without an IASI strategy accepts at most one explicit format.", call. = FALSE)
+      stop("Quarto without an IASI publication strategy accepts at most one explicit format.", call. = FALSE)
     }
 
     arguments = c(arguments, "--to", formats)

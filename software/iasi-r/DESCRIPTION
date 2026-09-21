@@ -1,6 +1,6 @@
 Package: iasi
 Type: Package
-Title: Build System for R environment
+Title: Build System for the R Environment
 Version: 0.11.0
 Authors@R: person(
     given = "Javier",

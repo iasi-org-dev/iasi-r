@@ -1,6 +1,6 @@
 # Lifecycle
 
-The IASI Quarto lifecycle is:
+The IASI lifecycle is:
 
 ```text
 validate
@@ -14,21 +14,26 @@ Responsibilities:
 ```text
 validate -> check selected projects
 build    -> construct artifacts
-publish  -> prepare publicable artifacts
+publish  -> materialize publicable built artifacts
 release  -> collect deliverables
 ```
 
-External deployment is deliberately outside `iasi.quarto`.
+External deployment is deliberately outside `iasi`. A higher-level tool such as
+`iasi-dev` may deploy released artifacts to external systems.
 
-A higher-level tool such as `iasi-dev` may deploy released artifacts to external systems.
-
-Artifact progression for publicable projects:
+For Quarto projects with an IASI publication strategy:
 
 ```text
 sources -> _outputs -> _publish -> release
 ```
 
-Artifact progression for software packages:
+For Quarto projects without a strategy:
+
+```text
+sources -> _outputs -> release
+```
+
+For R packages:
 
 ```text
 sources -> *.tar.gz / *.zip -> release

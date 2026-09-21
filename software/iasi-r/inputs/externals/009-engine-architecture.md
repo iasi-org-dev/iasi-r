@@ -11,14 +11,12 @@ Each public operation calls one internal engine:
 
 The engine function should be the first function in its engine file.
 
-Generic orchestration belongs in the generic engine file.
+Generic orchestration belongs in the generic engine file. Implementation-specific
+behavior is separated only when there is a real responsibility boundary.
 
-Implementation-specific behavior may be separated when there is a real responsibility boundary.
-
-Avoid creating thin files whose only purpose is forwarding calls.
-
-`prepare_context()` owns discovery and target selection.
-
+`prepare_context()` owns project discovery and generic project selection.
 `prepare_project_config()` owns inherited configuration resolution.
 
-Action engines should consume the prepared context instead of rediscovering or reselecting projects.
+Quarto configuration is normalized in `core_quarto.R`. In particular,
+`publication.strategy` is the single canonical source of Quarto publication
+strategy. Engines must not read a root-level `strategy` key.

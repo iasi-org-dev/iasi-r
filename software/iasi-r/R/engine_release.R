@@ -13,8 +13,6 @@
 
   if (identical(type, .IASI$types$pkg)) return(.release_package(context, project))
 
-  # Publicable projects release from the publication tree.
-  # Non-publicable Quarto projects release directly from build outputs.
   if (.publish_applicable(project)) {
     root = identical(type, .IASI$types$web)
     return(.release_tree(context, project, project$config$paths$publish, root = root))

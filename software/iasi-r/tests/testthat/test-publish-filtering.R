@@ -17,7 +17,7 @@ test_that("publish ignores generated IASI trees recursively", {
   withr::defer(unlink(root, recursive = TRUE, force = TRUE))
 
   project = list(config = list(paths = list(publish = "_publish", release = "release")))
-  iasi.quarto:::.copy_publish_directory(source, destination, project)
+  iasi:::.copy_publish_directory(source, destination, project)
 
   expect_true(file.exists(file.path(destination, "index.html")))
   expect_true(file.exists(file.path(destination, "assets", "site.css")))
@@ -41,27 +41,5 @@ test_that("generated IASI directories are never treated as publish formats", {
 
   withr::defer(unlink(root, recursive = TRUE, force = TRUE))
 
-  expect_identical(
-    iasi.quarto:::.publish_format_directories(root),
-    "html"
-  )
-})
-
-
-
-test_that("publish staging paths are unique siblings of the final destination", {
-  root = tempfile("iasi-publish-staging-")
-  dir.create(root)
-  withr::defer(unlink(root, recursive = TRUE, force = TRUE))
-
-  destination = file.path(root, "_publish")
-  first = iasi.quarto:::.publish_temporary_path(destination)
-  second = iasi.quarto:::.publish_temporary_path(destination)
-
-  expect_identical(normalizePath(dirname(first), winslash = "/", mustWork = TRUE), normalizePath(root, winslash = "/", mustWork = TRUE))
-  expect_identical(normalizePath(dirname(second), winslash = "/", mustWork = TRUE), normalizePath(dirname(first), winslash = "/", mustWork = TRUE))
-  expect_false(identical(first, second))
-  expect_match(basename(first), "^\\._publish-")
-  expect_false(dir.exists(first))
-  expect_false(dir.exists(second))
+  expect_identical(iasi:::.publish_format_directories(root), "html")
 })

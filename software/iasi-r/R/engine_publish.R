@@ -1,11 +1,10 @@
 # Publish engine ----------------------------------------------------------
 #
 # publish() is meaningful only for Quarto projects that opt into an IASI
-# strategy, plus IASI website projects. All other project types are valid calls
-# with nothing to do.
+# publication strategy, plus IASI website projects. All other project types are
+# valid calls with nothing to do.
 
 
-# Publish every applicable selected target.
 .engine_publish = function(context) {
   context = .prepare_context(context)
 
@@ -27,19 +26,16 @@
 }
 
 
-# Websites are directly publishable.
-# Other Quarto projects require an explicit IASI strategy.
 .publish_applicable = function(project) {
   if (identical(project$config$type, .IASI$types$web)) {
     return(TRUE)
   }
 
   identical(project$config$type, .IASI$types$quarto) &&
-    !is.null(project$config$strategy)
+    !is.null(.config_publication_strategy(project$config))
 }
 
 
-# Publish one target from its `_outputs` directory.
 .publish_project = function(context, project) {
   source = file.path(project$path, .IASI$dirs$output)
   formats = .resolve_publish_formats(source, context$format, project)
@@ -65,8 +61,6 @@
 }
 
 
-# Resolve the public format selection against materializations that actually
-# exist under `_outputs`. NULL means every available built format.
 .resolve_publish_formats = function(source, format = NULL, project = NULL) {
   if (!dir.exists(source)) return(character())
 
@@ -83,8 +77,6 @@
   unique(selection[selection %in% available])
 }
 
-
-# Publish metadata --------------------------------------------------------
 
 .write_publish_metadata = function(path, stamp, hash) {
   yaml::write_yaml(list(timestamp = as.character(stamp), hash = hash), file.path(path, ".publish"))

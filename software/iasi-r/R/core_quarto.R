@@ -1,3 +1,9 @@
+.config_publication_strategy = function(config) {
+  publication = .yaml_section(config, "publication")
+  .yaml_field(publication, "strategy")
+}
+
+
 .as_quarto_project = function(project) {
   if (!file.exists(file.path(project$path, "_quarto.yml"))) {
     message("Missing _quarto.yml in: ", project$path)
@@ -71,7 +77,7 @@
     quarto_file = .normalise_project_path(quarto_file),
     iasi_file = .normalise_project_path(iasi_file),
     type = type,
-    strategy = .yaml_field(iasi, "strategy"),
+    strategy = .yaml_field(publication, "strategy"),
     version = .yaml_field(publication, "version"),
     front_matter_dir = .yaml_field(publication, "front-matter"),
     front_matter_path = .content_path(

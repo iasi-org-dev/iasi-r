@@ -1,4 +1,4 @@
-# Internal IASI Quarto constants.
+# Internal IASI constants.
 #
 # Canonical names and defaults used by the package live here so engines do not
 # scatter protocol strings and filesystem conventions through their code.
