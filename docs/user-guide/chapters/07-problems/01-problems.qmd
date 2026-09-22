@@ -2,13 +2,22 @@
 
 Compruebe que se encuentra en la ruta correcta y que el proyecto contiene `_iasi.yml` o `.iasi.yml`.
 
-Ejecute:
+El campo `type` debe estar en la raíz de la configuración y utilizar uno de los tipos soportados:
 
-```r
-validate()
+```text
+repository
+quarto
+website
+r-package
 ```
 
-Para una publicación Quarto también debe existir `_quarto.yml`; para un `r-package`, `DESCRIPTION`.
+Para un proyecto Quarto también debe existir `_quarto.yml`; para un `r-package`, `DESCRIPTION`.
+
+## Hay dos archivos de configuración IASI
+
+Un mismo directorio no debe contener simultáneamente `_iasi.yml` y `.iasi.yml`. Si existen ambos, la configuración es ambigua.
+
+Conserve únicamente el que corresponda al proyecto.
 
 ## Un proyecto hijo no se descubre
 
@@ -16,9 +25,30 @@ Los directorios intermedios no necesitan una marca IASI. El descubrimiento desci
 
 Compruebe que el directorio del proyecto contiene directamente `_iasi.yml` o `.iasi.yml` y que no está bajo una ruta excluida.
 
+## Aparece "No IASI publication strategy defined"
+
+En un proyecto:
+
+```yaml
+type: quarto
+```
+
+sin `publication.strategy`, ese aviso significa que IASI utilizará **Quarto as-is**. Es un modo válido.
+
+Si esperaba utilizar una estrategia IASI, declárela dentro de `publication`:
+
+```yaml
+type: quarto
+
+publication:
+  strategy: parted
+```
+
+No coloque `strategy` en la raíz. Esa ubicación es obsoleta y se considera un error de configuración.
+
 ## Un formato no se genera
 
-Compruebe que el perfil está declarado por el proyecto y que existe el renderer correspondiente.
+Compruebe que el perfil está declarado por el proyecto y que IASI dispone de renderer para él.
 
 Por ejemplo:
 
@@ -28,7 +58,7 @@ _quarto-pdf.yml
 
 También debe disponer de las dependencias que necesite el formato. PDF, por ejemplo, puede requerir una instalación TeX funcional.
 
-## Quiero reconstruir aunque nada haya cambiado
+## Quiero reconstruir
 
 Utilice:
 
@@ -38,25 +68,30 @@ build()
 
 `build()` construye siempre que se invoca.
 
-## `publish()` dice que no hay cambios
+## `publish()` dice que no hay formatos construidos
 
-`publish()` calcula una firma de `_outputs/` y la compara con la guardada en la última publicación.
+`publish()` solo utiliza perfiles declarados por Quarto que tengan una materialización disponible en `_outputs/`.
 
-Si quiere repetir expresamente el proceso:
+Si ha cambiado la configuración o existen restos de un build anterior, puede borrar `_outputs/` y volver a construirlo:
 
 ```r
-publish(force = TRUE)
+build()
+publish()
 ```
+
+Los directorios residuales que no correspondan a perfiles declarados se ignoran como formatos de publicación.
 
 ## Quiero publicar lo que ya está construido
 
-Utilice:
+Para proyectos publicables utilice:
 
 ```r
 publish()
 ```
 
-`publish()` toma siempre su entrada de `_outputs/`.
+`publish()` toma su entrada de `_outputs/` y no vuelve a renderizar.
+
+En un `type: quarto` sin estrategia, `publish()` no aplica; utilice `release()` sobre los outputs construidos.
 
 ## Quiero preparar los entregables locales
 
@@ -66,8 +101,8 @@ Utilice:
 release()
 ```
 
-Para paquetes R recoge los artefactos fuente y binario. Para publicaciones recoge el contenido previamente preparado por `publish()`.
+Para paquetes R recoge los artefactos fuente y binario. Para publicaciones recoge la materialización correspondiente según el tipo de proyecto.
 
 ## Quiero desplegar a un servicio externo
 
-El despliegue externo no forma parte de `iasi.quarto`. Utilice la herramienta responsable del entorno de desarrollo o despliegue, por ejemplo `iasi-dev`.
+El despliegue externo no forma parte de IASI R. Utilice la herramienta responsable del entorno de desarrollo o despliegue, por ejemplo `iasi-dev`.

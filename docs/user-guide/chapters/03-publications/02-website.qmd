@@ -1,25 +1,24 @@
 ## Crear un Website
 
-Un Website utiliza el tipo de proyecto `website` de Quarto y la estrategia `regular` de IASI Quarto.
+IASI R representa un Website como un tipo IASI propio. En `_iasi.yml`:
 
-En `_quarto.yml`:
+```yaml
+type: website
+```
+
+Y Quarto continúa describiendo el proyecto en `_quarto.yml`:
 
 ```yaml
 project:
   type: website
 ```
 
-En `_iasi.yml` puede utilizar:
+Un Website no necesita `publication.strategy`. Su estructura y navegación siguen siendo las definidas por Quarto.
 
-```yaml
-publication:
-  strategy: regular
-```
+IASI R puede construirlo, preparar su árbol local de publicación y reunirlo posteriormente en `release/`.
 
-Para un Website, IASI Quarto no introduce las estrategias editoriales propias de los libros. La estructura y navegación continúan siendo las del proyecto Website de Quarto.
-
-Para construirlo:
+Para construir su perfil web:
 
 ```r
-build(format = "html")
+build()
 ```

@@ -1,6 +1,34 @@
+## Proyectos Quarto y estrategias
+
+IASI R distingue entre el **tipo de proyecto IASI** y la configuración propia de Quarto.
+
+Un libro gestionado por IASI se declara así en `_iasi.yml`:
+
+```yaml
+type: quarto
+
+publication:
+  strategy: regular
+```
+
+Mientras que `_quarto.yml` continúa declarando el tipo Quarto:
+
+```yaml
+project:
+  type: book
+```
+
+La estrategia no es una propiedad raíz del proyecto. Su ubicación canónica es siempre:
+
+```text
+publication.strategy
+```
+
+Un `type: quarto` sin `publication.strategy` también es válido. En ese caso IASI utiliza **Quarto as-is**: no prepara una estructura editorial IASI antes del renderizado.
+
 ## Estrategias soportadas
 
-IASI Quarto soporta tres estrategias de publicación. La estrategia define cómo se interpreta la organización de los documentos fuente.
+Cuando un libro opta por la preparación editorial de IASI, dispone de cuatro estrategias:
 
 ```{r}
 #| echo: false
@@ -8,16 +36,17 @@ IASI Quarto soporta tres estrategias de publicación. La estrategia define cómo
 #| message: false
 
 strategies = data.frame(
-  Estrategia = c("regular", "structured", "direct"),
-  "Disponible para" = c("Website y Book", "Book", "Book"),
+  Estrategia = c("regular", "structured", "parted", "direct"),
   "Organización editorial" = c(
-    "En un Book, cada carpeta de contenido forma una unidad y sus archivos .qmd se combinan.",
-    "Cada carpeta representa una Parte; su index.qmd presenta la Parte y los demás archivos .qmd son Capítulos.",
+    "Cada carpeta de contenido forma una unidad y sus archivos .qmd se combinan.",
+    "Cada carpeta superior representa una Parte; su index.qmd presenta la Parte y los demás .qmd son Capítulos.",
+    "Cada carpeta superior representa una Parte y puede contener capítulos directos o subcarpetas de capítulo con su propio index.qmd.",
     "Cada archivo .qmd se publica directamente como Capítulo; las carpetas solo organizan los fuentes."
   ),
   "Cuándo utilizarla" = c(
-    "Cuando varios documentos fuente forman una única unidad editorial. Es la estrategia predeterminada.",
-    "Cuando la estructura Parte → Capítulo debe estar representada explícitamente.",
+    "Cuando varios documentos fuente forman una única unidad editorial.",
+    "Cuando la estructura Parte → Capítulo se representa directamente en cada carpeta superior.",
+    "Cuando necesita Partes con capítulos que a su vez pueden agrupar varios documentos.",
     "Cuando cada documento ya es una unidad editorial completa."
   ),
   check.names = FALSE
@@ -27,49 +56,44 @@ if (knitr::is_html_output() && requireNamespace("kableExtra", quietly = TRUE)) {
   knitr::kable(
     strategies,
     format = "html",
-    align = c("l", "l", "l", "l")
+    align = c("l", "l", "l")
   ) |>
     kableExtra::kable_styling(full_width = TRUE) |>
-    kableExtra::column_spec(1, width = "12%", bold = TRUE) |>
-    kableExtra::column_spec(2, width = "15%") |>
-    kableExtra::column_spec(3, width = "36%") |>
-    kableExtra::column_spec(4, width = "37%")
+    kableExtra::column_spec(1, width = "14%", bold = TRUE) |>
+    kableExtra::column_spec(2, width = "43%") |>
+    kableExtra::column_spec(3, width = "43%")
 } else {
-  knitr::kable(
-    strategies,
-    align = c("l", "l", "l", "l")
-  )
+  knitr::kable(strategies, align = c("l", "l", "l"))
 }
 ```
 
-Para un Website, la estrategia soportada es `regular`. Las estrategias `structured` y `direct` son propias de publicaciones de tipo Book.
+## Configuración de un libro
 
-## Configuración de una publicación
+Para un proyecto Quarto de tipo `book`, IASI proporciona valores predeterminados para la organización del contenido:
 
-Una publicación IASI Quarto combina la configuración de Quarto con `_iasi.yml`.
+```text
+front-matter = front-matter
+content-dir  = chapters
+back-matter  = back-matter
+numbered     = true
+```
 
-`_quarto.yml` continúa describiendo el proyecto Quarto. `_iasi.yml` indica cómo debe interpretar IASI Quarto su organización.
+La estrategia **no tiene valor predeterminado**. Debe declararse explícitamente si desea utilizar el pipeline editorial de IASI.
 
-Una configuración mínima de libro puede ser:
+Una configuración habitual puede ser:
 
 ```yaml
+type: quarto
+
 publication:
-  strategy: regular
+  strategy: parted
   content-dir: chapters
+  front-matter: front-matter
+  back-matter: back-matter
   numbered: true
 ```
 
-Los valores predeterminados para un libro son:
-
-```text
-strategy    = regular
-content-dir = chapters
-numbered    = true
-```
-
-`content-dir` indica dónde se encuentra el contenido organizado de la publicación.
-
-Cuando `numbered: true`, los documentos y carpetas de contenido que participan en el orden editorial utilizan prefijos numéricos, por ejemplo:
+Cuando `numbered: true`, los documentos y carpetas que participan en el orden editorial utilizan prefijos numéricos, por ejemplo:
 
 ```text
 chapters/

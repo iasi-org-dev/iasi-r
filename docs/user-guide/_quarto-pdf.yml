@@ -1,4 +1,3 @@
-# _quarto-pdf.yml
 format:
   pdf:
     toc: true
@@ -10,7 +9,7 @@ format:
         \clearpairofpagestyles
 
         \ifoot{\footnotesize © 2026 Javier G. Grandez · IASI Rocks 🤘}
-        \cfoot{\footnotesize v0.2.1 · Publicado: 25/08/2026}
+        \cfoot{\footnotesize IASI R User Guide}
         \ofoot{\footnotesize \pagemark}
 
         \pagestyle{scrheadings}

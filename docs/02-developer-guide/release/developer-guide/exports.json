@@ -1,5 +1,0 @@
-{
-  "exports": [
-    {"profile": "pdf", "text": "PDF", "icon": "file-earmark-pdf", "href": "pdf/iasi-quarto-developer-guide.pdf"}
-  ]
-}

@@ -1,0 +1,31 @@
+## Elegir el modo de publicación
+
+```{r}
+#| echo: false
+#| warning: false
+#| message: false
+
+choices = data.frame(
+  "Si necesita..." = c(
+    "Un proyecto Quarto sin preparación estructural de IASI",
+    "Un Website Quarto",
+    "Combinar varios archivos .qmd de una carpeta en una única unidad",
+    "Representar Partes con capítulos directos",
+    "Representar Partes con capítulos que pueden agrupar varios documentos",
+    "Publicar cada archivo .qmd directamente como Capítulo"
+  ),
+  Configuración = c(
+    "type: quarto, sin publication.strategy",
+    "type: website",
+    "publication.strategy: regular",
+    "publication.strategy: structured",
+    "publication.strategy: parted",
+    "publication.strategy: direct"
+  ),
+  check.names = FALSE
+)
+
+knitr::kable(choices, align = c("l", "l"))
+```
+
+La elección de estrategia es editorial. No depende del formato final: un mismo libro puede utilizar la misma estrategia para HTML, PDF, EPUB y otros perfiles.

@@ -1,0 +1,50 @@
+## Crear un Book Parted
+
+`parted` extiende el modelo de Partes para permitir capítulos compuestos por varios documentos.
+
+La regla principal es:
+
+```text
+carpeta superior
+    → Parte
+
+index.qmd de la carpeta superior
+    → presentación de la Parte
+
+.qmd directos
+    → Capítulos directos
+
+subcarpeta de capítulo
+    ├── index.qmd
+    └── otros .qmd
+    → Capítulo + documentos asociados
+```
+
+Ejemplo:
+
+```text
+chapters/
+└── 20-methodologies/
+    ├── index.qmd
+    ├── intro.qmd
+    ├── 01-history.qmd
+    └── 02-current/
+        ├── index.qmd
+        ├── 01-model.qmd
+        └── 02-practice.qmd
+```
+
+En `_iasi.yml`:
+
+```yaml
+type: quarto
+
+publication:
+  strategy: parted
+  content-dir: chapters
+  numbered: true
+```
+
+Cada Parte necesita su `index.qmd`. Las subcarpetas que representan capítulos también necesitan su propio `index.qmd`.
+
+Use `parted` cuando la jerarquía editorial necesite **Partes y capítulos con estructura interna**, sin renunciar a documentos que funcionen como capítulos directos de una Parte.

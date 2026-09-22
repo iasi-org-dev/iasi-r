@@ -5,8 +5,8 @@ $grid-body-width: 1200px;
 $grid-sidebar-width: 360px;
 
 // IASI corporate palette
-$iasi-quarto-blue: #39729e;
-$navbar-bg: $iasi-quarto-blue;
+$iasi-blue: #39729e;
+$navbar-bg: $iasi-blue;
 $navbar-fg: #ffffff;
 
 
@@ -25,7 +25,7 @@ body {
 
 :root {
   --iasi-page-pad: clamp(1.5rem, 4vw, 4rem);
-  --iasi-quarto-blue: #{$iasi-quarto-blue};
+  --iasi-blue: #{$iasi-blue};
   --iasi-soft: rgba(127, 127, 127, 0.10);
   --iasi-border: rgba(127, 127, 127, 0.22);
 
@@ -56,7 +56,7 @@ body {
 #quarto-document-content h2,
 #quarto-document-content h3,
 #title-block-header h1 {
-  color: var(--iasi-quarto-blue);
+  color: var(--iasi-blue);
 }
 
 #quarto-document-content h1 a,
@@ -90,7 +90,7 @@ body {
   font-weight: var(--iasi-title-font-weight) !important;
   line-height: var(--iasi-title-line-height) !important;
   letter-spacing: var(--iasi-title-letter-spacing) !important;
-  color: var(--iasi-quarto-blue) !important;
+  color: var(--iasi-blue) !important;
   text-align: center;
 }
 
@@ -112,7 +112,7 @@ body {
   font-weight: var(--iasi-title-font-weight);
   line-height: var(--iasi-title-line-height);
   letter-spacing: var(--iasi-title-letter-spacing);
-  color: var(--iasi-quarto-blue);
+  color: var(--iasi-blue);
   text-align: center;
 }
 

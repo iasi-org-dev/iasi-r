@@ -1,6 +1,6 @@
 ## Operaciones principales
 
-La API pública de `iasi.quarto` gira alrededor de cuatro operaciones:
+La API pública del paquete `iasi` gira alrededor de cuatro operaciones:
 
 ```r
 validate()
@@ -9,7 +9,7 @@ publish()
 release()
 ```
 
-Las cuatro utilizan la misma infraestructura de descubrimiento y selección. A partir de `path`, IASI recorre el árbol, descubre los proyectos IASI y selecciona únicamente los tipos a los que aplica la operación solicitada.
+Todas parten del mismo mecanismo de descubrimiento. A partir de `path`, IASI recorre el árbol, localiza proyectos marcados por `_iasi.yml` o `.iasi.yml` y resuelve su configuración efectiva. Los proyectos `repository` actúan como contenedores y no se procesan directamente.
 
 ### Validar
 
@@ -19,7 +19,7 @@ validate()
 
 `validate()` comprueba los proyectos IASI seleccionados.
 
-Para publicaciones Quarto valida su configuración y estructura. Para paquetes R comprueba, entre otras condiciones, la existencia de `DESCRIPTION`.
+Para proyectos Quarto valida su configuración y, cuando existe una estrategia IASI, también la estructura editorial correspondiente. Para paquetes R comprueba, entre otras condiciones, la existencia de `DESCRIPTION`.
 
 No construye, publica ni libera artefactos.
 
@@ -31,7 +31,7 @@ build()
 
 `build()` construye siempre que se invoca. No intenta decidir si los fuentes han cambiado.
 
-Para publicaciones Quarto, los resultados se materializan en `_outputs/`, separados por perfil/formato:
+Para proyectos Quarto, los resultados se materializan bajo `_outputs/`. Cuando se utiliza el pipeline IASI, los perfiles se mantienen separados:
 
 ```text
 publication/
@@ -48,9 +48,7 @@ Durante la edición puede construirse un formato concreto:
 build(format = "html")
 ```
 
-Si no se indica `format`, se construyen los perfiles declarados por el proyecto para los que exista renderer.
-
-Para un proyecto `r-package`, `build()` genera los dos artefactos del paquete en su raíz:
+Para un proyecto `r-package`, `build()` genera los artefactos del paquete en su raíz:
 
 ```text
 package/
@@ -66,15 +64,25 @@ El primero es el paquete fuente y el segundo el paquete binario en Windows.
 publish()
 ```
 
-`publish()` trabaja únicamente con proyectos publicables. Toma siempre como entrada el árbol `_outputs/`; no vuelve a renderizar las fuentes.
+`publish()` trabaja con proyectos IASI `website` y con proyectos `quarto` que hayan declarado `publication.strategy`.
 
-Antes de publicar calcula una firma del contenido de `_outputs/`. Si coincide con la firma de la última publicación, la operación se omite. Puede forzarse una nueva publicación aunque el contenido no haya cambiado:
+Toma como entrada exclusivamente formatos ya construidos en `_outputs/`; **no vuelve a renderizar las fuentes**.
+
+Puede publicar todos los formatos construidos:
 
 ```r
-publish(force = TRUE)
+publish()
 ```
 
-La preparación se realiza sobre un árbol temporal `.work`. Solo cuando la copia y el postprocesado terminan correctamente se sustituye el destino final. Si el proceso falla, la publicación anterior permanece intacta.
+o seleccionar uno:
+
+```r
+publish(format = "html")
+```
+
+IASI solo considera formatos los perfiles declarados por el proyecto Quarto. Directorios residuales o arbitrarios dentro de `_outputs/` no se promocionan a formatos publicables.
+
+La preparación se realiza en un directorio temporal único situado junto al destino final. Solo cuando la copia, el postprocesado y los metadatos terminan correctamente se sustituye `_publish/`. Si el proceso falla antes, la publicación anterior permanece intacta.
 
 En una publicación individual:
 
@@ -90,9 +98,9 @@ publication/
         └── libro.epub
 ```
 
-El contenido HTML ocupa la raíz del árbol publicable; los demás formatos permanecen como exports.
+El contenido HTML ocupa la raíz del árbol publicable cuando es el perfil primario; los demás formatos permanecen como exports.
 
-La metadata `.publish` conserva el timestamp y la firma del contenido que originó la publicación.
+La metadata `.publish` conserva el timestamp y una firma del contenido utilizado para materializar la publicación.
 
 ### Liberar
 
@@ -100,19 +108,25 @@ La metadata `.publish` conserva el timestamp y la firma del contenido que origin
 release()
 ```
 
-`release()` reúne los entregables locales. No despliega nada en servicios externos.
+`release()` reúne entregables locales. No despliega nada en servicios externos.
 
 Para un `r-package`, mueve a `release/` los artefactos construidos (`*.tar.*` y `*.zip`).
 
-Para proyectos publicables, copia a `release/` el contenido previamente materializado por `publish()`.
+Para un `website` o un proyecto `quarto` con estrategia, reúne el contenido previamente materializado por `publish()`.
 
-Por tanto, el ciclo queda separado deliberadamente:
+Para un proyecto `quarto` sin estrategia, `publish()` no aplica y `release()` recoge directamente los artefactos de `_outputs/`.
+
+Por tanto, el ciclo depende del tipo de proyecto:
 
 ```text
-validate  → comprobar
-build     → construir artefactos
-publish   → preparar publicaciones
-release   → reunir entregables
+Quarto con estrategia / Website
+validate → build → publish → release
+
+Quarto as-is
+validate → build → release
+
+R package
+validate → build → release
 ```
 
-`iasi.quarto` termina aquí. El despliegue a sistemas externos pertenece a herramientas de nivel superior, como `iasi-dev`.
+IASI R termina aquí. El despliegue a sistemas externos pertenece a herramientas de nivel superior, como `iasi-dev`.

@@ -5,10 +5,14 @@
 **/_outputs/
 **/_publish/
 **/.quarto/
+**/_freeze/
+**/_generated/
 **/_book/
 **/_site/
 **/_cache/
 **/.iasi/
+_book-structure.yml
+chapters/**/index.qmd
 
 # Quarto/R generated side directories
 **/*_files/

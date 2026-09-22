@@ -11,8 +11,8 @@ metadata-files:
   - _book-structure.yml
 
 book:
-  title: "IASI Quarto User Guide"
-  subtitle: "Framework for Engineering Documentation with Quarto"
+  title: "IASI R User Guide"
+  subtitle: "Build, publication and release for IASI projects"
   author: "IASI Project"
 
 format:
@@ -29,11 +29,11 @@ format:
 
 execute:
   freeze: auto
-  
+
 filters:
   - iasi-plantuml
   - resources/lua/iasi-js.lua
-  
+
 filter-options:
   plantuml:
     enabled: true

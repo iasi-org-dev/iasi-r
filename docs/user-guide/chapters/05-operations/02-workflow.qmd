@@ -1,6 +1,6 @@
 ## Flujo recomendado
 
-Durante la edición, construya únicamente el formato que necesita revisar:
+Durante la edición de un libro con estrategia IASI, construya únicamente el formato que necesita revisar:
 
 ```r
 build(format = "html")
@@ -12,16 +12,16 @@ Cuando quiera materializar todos los perfiles declarados:
 build()
 ```
 
-Cuando el resultado construido sea publicable:
+Cuando los resultados construidos deban convertirse en una publicación local:
 
 ```r
 publish()
 ```
 
-Una segunda llamada a `publish()` no repite trabajo si `_outputs/` no ha cambiado. Para repetir expresamente la publicación:
+Si solo quiere publicar un formato ya construido:
 
 ```r
-publish(force = TRUE)
+publish(format = "html")
 ```
 
 Cuando quiera reunir los entregables locales:
@@ -33,7 +33,9 @@ release()
 La regla práctica es:
 
 ```text
-build    → construye siempre
-publish  → publica si cambió; force publica siempre
-release  → recoge lo ya construido/publicado
+build    → construye
+publish  → materializa _publish a partir de _outputs
+release  → reúne entregables locales
 ```
+
+`publish()` no es incremental: si se invoca sobre formatos disponibles, vuelve a preparar la publicación. La firma guardada en `.publish` describe la materialización realizada, pero no evita por sí sola una nueva ejecución.

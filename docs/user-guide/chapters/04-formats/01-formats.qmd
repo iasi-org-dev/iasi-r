@@ -1,6 +1,6 @@
 ## Formatos disponibles
 
-IASI Quarto puede construir los perfiles para los que dispone de renderer:
+IASI R utiliza los perfiles declarados por Quarto y dispone de renderers para los perfiles de libro habituales:
 
 ```{r}
 #| echo: false
@@ -8,11 +8,11 @@ IASI Quarto puede construir los perfiles para los que dispone de renderer:
 #| message: false
 
 formats = data.frame(
-  Formato = c("html", "pdf", "pdfua", "epub", "docx", "odt", "git"),
+  Perfil = c("html", "pdf", "pdfua", "epub", "docx", "odt", "git"),
   "Resultado habitual" = c(
     "Publicación HTML",
     "PDF generado por Quarto",
-    "PDF/UA mediante el perfil Typst configurado",
+    "PDF/UA mediante Typst",
     "Libro EPUB",
     "Documento DOCX",
     "Documento ODT",
@@ -24,13 +24,13 @@ formats = data.frame(
 knitr::kable(formats, align = c("l", "l"))
 ```
 
-Un proyecto `web` utiliza su perfil web. Un `guide` puede declarar varios perfiles de salida.
+Un proyecto IASI `website` utiliza su perfil lógico `web`. Un proyecto `quarto` de tipo Book puede declarar varios perfiles de salida.
 
-El formato `git` representa una publicación destinada a GitBook.
+El perfil `git` representa una publicación destinada a GitBook.
 
 ## Configurar un formato
 
-Cada formato se configura mediante su perfil Quarto correspondiente, por ejemplo:
+Cada perfil se configura mediante su configuración Quarto correspondiente, por ejemplo:
 
 ```text
 _quarto-html.yml
@@ -38,7 +38,7 @@ _quarto-pdf.yml
 _quarto-epub.yml
 ```
 
-IASI Quarto no sustituye la configuración propia de Quarto para cada formato.
+IASI R no sustituye la configuración propia de Quarto para cada formato.
 
 ## Construir formatos
 
@@ -54,14 +54,14 @@ Para construir solo PDF:
 build(format = "pdf")
 ```
 
-Puede solicitar varios formatos:
+En proyectos con estrategia IASI puede solicitar varios perfiles:
 
 ```r
 build(format = c("html", "pdf"))
 ```
 
-## Construcción predeterminada
-
 Si no indica `format`, `build()` utiliza los perfiles declarados por el proyecto y construye aquellos para los que existe renderer.
+
+En un proyecto `type: quarto` sin `publication.strategy`, IASI delega el renderizado en Quarto. Si se indica explícitamente `format` en ese modo, se admite como máximo un formato por llamada.
 
 `build()` no utiliza el estado anterior para decidir si debe trabajar: una llamada a `build()` significa construir.

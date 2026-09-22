@@ -28,14 +28,14 @@ chapters/
 En `_iasi.yml`:
 
 ```yaml
+type: quarto
+
 publication:
   strategy: structured
   content-dir: chapters
   numbered: true
 ```
 
-A diferencia de `regular`, el `index.qmd` de cada carpeta es **fuente** y debe existir. IASI Quarto no lo genera a partir de otros documentos.
-
-`front-matter.quarto` no participa en la estrategia `structured`.
+A diferencia de `regular`, el `index.qmd` de cada carpeta es **fuente** y debe existir. IASI R no lo genera a partir de otros documentos.
 
 Use `structured` cuando quiera que la jerarquía editorial Parte → Capítulo esté representada directamente por la estructura del proyecto.

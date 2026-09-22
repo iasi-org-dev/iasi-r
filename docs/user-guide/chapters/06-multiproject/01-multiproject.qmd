@@ -1,28 +1,49 @@
 ## Trabajar con varios proyectos IASI
 
-Un repositorio puede contener varios proyectos IASI bajo una misma raíz. Los directorios intermedios no necesitan configuración IASI: el descubrimiento continúa descendiendo hasta encontrar un directorio que contenga `_iasi.yml` o `.iasi.yml`, salvo las ramas definidas como excluidas.
+Un repositorio puede contener varios proyectos IASI bajo una misma raíz. La raíz puede declararse como contenedor mediante:
+
+```yaml
+type: repository
+```
+
+Los directorios intermedios no necesitan configuración IASI: el descubrimiento continúa descendiendo hasta encontrar un directorio que contenga `_iasi.yml` o `.iasi.yml`, salvo las ramas excluidas por el motor.
 
 Ejemplo:
 
 ```text
 repository/
-├── _iasi.yml
+├── _iasi.yml                 type: repository
 ├── docs/
 │   └── user-guide/
-│       ├── _iasi.yml
-│       ├── _quarto.yml
-│       └── _outputs/
+│       ├── _iasi.yml         type: quarto
+│       ├── _quarto.yml       project.type: book
+│       └── chapters/
 └── software/
-    └── iasi-quarto/
-        ├── .iasi.yml
+    └── iasi-r/
+        ├── _iasi.yml         type: r-package
         └── DESCRIPTION
 ```
 
-En este ejemplo, `docs/` y `software/` son únicamente contenedores. Los proyectos IASI son la raíz `repository/`, `docs/user-guide/` y `software/iasi-quarto/`.
+En este ejemplo, `docs/` y `software/` son únicamente contenedores. Los proyectos IASI están en la raíz, en `docs/user-guide/` y en `software/iasi-r/`.
+
+## Configuración heredada
+
+La configuración local de cada proyecto tiene prioridad. La configuración de sus padres completa únicamente los valores que falten.
+
+Por ejemplo, la raíz puede fijar un destino común de release:
+
+```yaml
+type: repository
+
+paths:
+  release: release
+```
+
+Los proyectos hijos pueden heredar ese destino sin repetirlo.
 
 ## `path` define el ámbito
 
-Las operaciones utilizan `path` como único selector del ámbito:
+Las operaciones utilizan `path` como selector del ámbito:
 
 ```r
 validate(path = ".")
@@ -41,41 +62,55 @@ Por ejemplo:
 build(path = "docs/user-guide", format = "html")
 ```
 
-## Selección por operación
+## Aplicabilidad de las operaciones
 
-Descubrir un proyecto no significa necesariamente procesarlo.
-
-Cada operación selecciona de los proyectos descubiertos únicamente los tipos a los que aplica:
+Descubrir un proyecto no significa que todas las operaciones le apliquen del mismo modo.
 
 ```text
-validate  → guide, web, r-package
-build     → guide, web, r-package
-publish   → guide, web
-release   → guide, web, r-package
+repository              → contenedor; no se procesa directamente
+quarto + strategy       → validate, build, publish, release
+quarto sin strategy     → validate, build, release
+website                 → validate, build, publish, release
+r-package               → validate, build, release
 ```
 
-Un proyecto de tipo `repository` puede servir como raíz de configuración y contener otros proyectos IASI, pero no se procesa como una publicación o un paquete.
+## Publicación local por proyecto
 
-## Un único árbol de publicación
-
-Cuando `publish()` se ejecuta desde la raíz que contiene varias publicaciones, utiliza un único `_publish/` común. Cada publicación ocupa un slot estable.
-
-Los prefijos numéricos organizativos se eliminan al derivar el nombre del slot:
+Cada proyecto publicable posee su propio `_publish/`:
 
 ```text
-01-user-guide       → _publish/user-guide/
-02-developer-guide  → _publish/developer-guide/
+repository/
+├── docs/
+│   ├── 01-user-guide/
+│   │   ├── _outputs/
+│   │   └── _publish/
+│   └── 02-developer-guide/
+│       ├── _outputs/
+│       └── _publish/
+└── release/
 ```
 
-Cada publicación se prepara primero en su árbol temporal y sustituye únicamente su destino. Publicar `user-guide` no modifica `developer-guide`.
+`publish()` nunca necesita un `_publish/` compartido para el multiproyecto. Cada proyecto prepara y sustituye únicamente su propia publicación local.
 
-Cuando `path` apunta directamente a una publicación individual, esa publicación utiliza su propio `_publish/`.
+## `release()` reúne los entregables
 
-Los niveles quedan separados:
+El ensamblado común ocurre en `release()`.
+
+Para proyectos Quarto, el nombre del destino elimina un prefijo numérico organizativo:
+
+```text
+01-user-guide/_publish/       → release/user-guide/
+02-developer-guide/_publish/  → release/developer-guide/
+```
+
+De esta manera se separan claramente los niveles:
 
 ```text
 fuentes
-→ _outputs/   artefactos construidos
-→ _publish/   publicación local preparada
-→ release/    entregables locales
+   ↓
+_outputs/      artefactos construidos de cada proyecto
+   ↓
+_publish/      publicación local de cada proyecto
+   ↓
+release/       entregables reunidos en el ámbito superior
 ```
