@@ -65,6 +65,15 @@
   if (!dir.exists(source)) return(character())
 
   available = .publish_format_directories(source, project)
+
+  # A build root may contain stale directories left by an earlier plain Quarto
+  # render. Only formats declared by the current Quarto project are publication
+  # formats; arbitrary first-level directories are never promoted to formats.
+  if (!is.null(project) && inherits(project, "iasi_quarto_project")) {
+    declared = .resolve_project_build_formats(project, "all", warn = FALSE)
+    available = intersect(declared, available)
+  }
+
   selection = .normalise_build_selection(format, "format")
 
   if (identical(selection, "all")) return(available)

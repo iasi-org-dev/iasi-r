@@ -97,37 +97,22 @@
 
 .release_path = function(project) {
   value = project$config$paths$release
-  base = .config_base(project$path, "release", repository_fallback = TRUE)
+  base = .config_base(project$path, "release")
   path = if (.is_absolute_path(value)) value else file.path(base, value)
   normalizePath(path, winslash = "/", mustWork = FALSE)
 }
 
 
-.config_base = function(path, key, repository_fallback = FALSE) {
+.config_base = function(path, key) {
   current = path
-  repository_base = NULL
 
   repeat {
     config = .read_optional_iasi(current)
 
-    if (!is.null(config)) {
-      if (is.list(config$paths) && !is.null(config$paths[[key]])) return(current)
-
-      if (
-        isTRUE(repository_fallback) &&
-          is.null(repository_base) &&
-          identical(config$type, .IASI$types$repo)
-      ) {
-        repository_base = current
-      }
-    }
+    if (!is.null(config) && is.list(config$paths) && !is.null(config$paths[[key]])) return(current)
 
     parent = dirname(current)
-    if (identical(parent, current)) break
+    if (identical(parent, current)) return(path)
     current = parent
   }
-
-  if (!is.null(repository_base)) return(repository_base)
-
-  path
 }

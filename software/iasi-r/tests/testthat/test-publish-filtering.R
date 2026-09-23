@@ -43,3 +43,52 @@ test_that("generated IASI directories are never treated as publish formats", {
 
   expect_identical(iasi:::.publish_format_directories(root), "html")
 })
+
+
+test_that("publish ignores stale plain-Quarto directories beside format outputs", {
+  root = tempfile("iasi-publish-stale-")
+  dir.create(file.path(root, "html"), recursive = TRUE)
+  dir.create(file.path(root, "chapters"), recursive = TRUE)
+  dir.create(file.path(root, "front-matter"), recursive = TRUE)
+  dir.create(file.path(root, "resources"), recursive = TRUE)
+
+  writeLines("index", file.path(root, "html", "index.html"))
+  writeLines("stale", file.path(root, "chapters", "old.html"))
+  writeLines("stale", file.path(root, "front-matter", "old.html"))
+  writeLines("stale", file.path(root, "resources", "old.css"))
+
+  withr::defer(unlink(root, recursive = TRUE, force = TRUE))
+
+  project = structure(
+    list(
+      type = "book",
+      quarto = list(profile = list(group = c("html", "pdf")))
+    ),
+    class = c("iasi_quarto_project", "list")
+  )
+
+  expect_identical(
+    iasi:::.resolve_publish_formats(root, project = project),
+    "html"
+  )
+})
+
+
+test_that("publish replacement removes stale files from the previous publication", {
+  root = tempfile("iasi-publish-replace-")
+  work = file.path(root, ".publish-new")
+  destination = file.path(root, "_publish")
+
+  dir.create(work, recursive = TRUE)
+  dir.create(destination, recursive = TRUE)
+  writeLines("new", file.path(work, "index.html"))
+  writeLines("stale", file.path(destination, "old.pdf"))
+
+  withr::defer(unlink(root, recursive = TRUE, force = TRUE))
+
+  iasi:::.replace_publish_tree(work, destination)
+
+  expect_true(file.exists(file.path(destination, "index.html")))
+  expect_false(file.exists(file.path(destination, "old.pdf")))
+  expect_false(dir.exists(work))
+})

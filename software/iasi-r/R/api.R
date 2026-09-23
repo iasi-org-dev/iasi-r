@@ -31,7 +31,10 @@ validate = function(path = ".") {
 #' Builds every selected IASI project to which the build action applies.
 #'
 #' Calling `build()` always performs the build. The function does not decide
-#' whether a project needs rebuilding.
+#' whether a project needs rebuilding. Before rendering each Quarto project,
+#' its existing `_outputs` tree is removed. The selected formats therefore
+#' define the complete output set for that execution; builds never accumulate
+#' formats from earlier runs.
 #'
 #' @param format Optional Quarto format/profile selection.
 #' @param path Directory from which IASI projects are discovered.

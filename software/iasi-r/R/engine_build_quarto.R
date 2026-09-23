@@ -10,6 +10,10 @@
   quarto = .as_quarto_project(project)
   quarto = .ensure_checked_project(quarto)
 
+  # Build outputs are derived state, never an accumulator across runs.
+  # A build must represent exactly the formats selected for this execution.
+  .clean_build_outputs(project)
+
   if (identical(project$config$type, .IASI$types$quarto) && is.null(quarto$strategy)) {
     warning(
       sprintf("No IASI publication strategy defined for Quarto project '%s'; using Quarto as-is.", project$name),
@@ -151,6 +155,26 @@
 
 
 # Build-output cleanup ----------------------------------------------------
+
+# `_outputs` is fully derived from the current build request. Never preserve
+# formats or files from a previous run: a partial build intentionally replaces
+# the previous output set instead of extending it.
+.clean_build_outputs = function(project) {
+  path = file.path(project$path, .IASI$dirs$output)
+
+  if (!file.exists(path) && !dir.exists(path)) {
+    return(invisible(path))
+  }
+
+  unlink(path, recursive = TRUE, force = TRUE)
+
+  if (file.exists(path) || dir.exists(path)) {
+    stop(sprintf("Could not clean build output directory '%s'.", path), call. = FALSE)
+  }
+
+  invisible(path)
+}
+
 
 # Resolve output-only paths that must be removed from rendered static resources.
 .build_output_exclusion_paths = function(project) {

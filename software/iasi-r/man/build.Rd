@@ -19,5 +19,8 @@ Builds every selected IASI project to which the build action applies.
 }
 \details{
 Calling \code{build()} always performs the build. The function does not decide
-whether a project needs rebuilding.
+whether a project needs rebuilding. Before rendering each Quarto project, its
+existing \code{_outputs} tree is removed. The selected formats therefore define
+the complete output set for that execution; builds never accumulate formats
+from earlier runs.
 }

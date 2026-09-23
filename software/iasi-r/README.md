@@ -46,3 +46,33 @@ r-package
 
 Historical duplicate source trees, IDE state, built package archives and release
 artifacts are intentionally excluded from this baseline.
+## Configuration
+
+For `type: quarto`, publication-specific behavior belongs under `publication`.
+
+```yaml
+type: quarto
+
+publication:
+  strategy: parted
+```
+
+Build and publish only treat Quarto-declared profiles as format outputs. Stale
+first-level directories left by older plain-Quarto builds are ignored.
+
+## Derived-output invariant
+
+`_outputs` and `_publish` are derived, disposable trees. They are never a
+history of previous executions.
+
+A build replaces the previous `_outputs` tree before rendering. Therefore the
+format selection is authoritative for that run:
+
+```text
+build(format = "pdf")   -> _outputs contains PDF
+build(format = "html")  -> _outputs contains HTML
+build()                 -> _outputs contains every declared format
+```
+
+Publishing is likewise materialized through a temporary tree and replaces the
+previous `_publish` destination only after the new publication is complete.
