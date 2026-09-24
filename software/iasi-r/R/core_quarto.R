@@ -78,7 +78,6 @@
     iasi_file = .normalise_project_path(iasi_file),
     type = type,
     strategy = .yaml_field(publication, "strategy"),
-    version = .yaml_field(publication, "version"),
     front_matter_dir = .yaml_field(publication, "front-matter"),
     front_matter_path = .content_path(
       project_path,

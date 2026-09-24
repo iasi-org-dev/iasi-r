@@ -391,32 +391,37 @@
   invisible(TRUE)
 }
 
-.publication_info = function(project, timestamp = Sys.time()) {
-   version = project$version
+.find_publication_version = function(path) {
+   current = normalizePath(path, winslash = "/", mustWork = TRUE)
 
-   if (
-      is.null(version) ||
-      length(version) != 1L ||
-      is.list(version) ||
-      is.na(version) ||
-      !nzchar(as.character(version))
-  ) {
-      version = NULL
-   } else {
-      version = as.character(version)
+   repeat {
+      file = file.path(current, "VERSION")
+
+      if (file.exists(file)) {
+         value = trimws(paste(readLines(file, warn = FALSE, encoding = "UTF-8"), collapse = ""))
+         return(if (nzchar(value)) value else NULL)
+      }
+
+      parent = dirname(current)
+      if (identical(parent, current)) break
+      current = parent
    }
 
-   stamp = format(timestamp, tz = "UTC", format = "%Y-%m-%dT%H:%M:%OS6Z")
+   NULL
+}
 
+.publication_info = function(project, timestamp = Sys.time()) {
+   version = .find_publication_version(project$path)
+   stamp = format(timestamp, tz = "UTC", format = "%Y-%m-%dT%H:%M:%OS6Z")
    publish_date = format(timestamp, "%d/%m/%Y")
 
-   text = if (is.null(version)) {
-      sprintf("Publicado: %s", publish_date)
-   } else {
-      sprintf("v%s · Publicado: %s", version, publish_date)
-   }
-
-   list(timestamp = timestamp, stamp = stamp, date = publish_date, version = version, text = text)
+   list(
+      timestamp = timestamp,
+      stamp = stamp,
+      date = publish_date,
+      version = version,
+      text = sprintf("Publicado: %s", publish_date)
+   )
 }
 
 .normalise_publication = function(path, project, formats, publication) {
@@ -437,15 +442,21 @@
 
    if (!length(files)) return(invisible(TRUE))
 
-   placeholder = '<span id="iasi-publish-date"></span>'
-   replacement = sprintf('<span id="iasi-publish-date">%s</span>', publication$text)
+   date_placeholder = '<span id="iasi-publish-date"></span>'
+   date_replacement = sprintf('<span id="iasi-publish-date">%s</span>', publication$text)
+
+   version_placeholder = '<span id="iasi-version"></span>'
+   version_replacement = if (is.null(publication$version)) {
+      version_placeholder
+   } else {
+      sprintf('<span id="iasi-version">%s</span>', publication$version)
+   }
 
    for (file in files) {
       html = paste(readLines(file, warn = FALSE, encoding = "UTF-8"), collapse = "\n")
 
-      if (!grepl(placeholder, html, fixed = TRUE)) next
-
-      html = gsub(placeholder, replacement, html, fixed = TRUE)
+      html = gsub(date_placeholder, date_replacement, html, fixed = TRUE)
+      html = gsub(version_placeholder, version_replacement, html, fixed = TRUE)
 
       writeLines(html, file, useBytes = TRUE)
    }
