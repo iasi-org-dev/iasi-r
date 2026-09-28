@@ -36,6 +36,7 @@
 
   strategies = c(
     "regular",
+    "outlined",
     "structured",
     "parted",
     "direct"

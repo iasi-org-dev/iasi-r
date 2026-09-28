@@ -1,5 +1,5 @@
 .generated_dir_name = "_generated"
-.book_structure_name = "_book-structure.yml"
+.iasi_metadata_name = "iasi-metadata.yml"
 .generated_navbar_left_name = "navbar-left.yml"
 
 .generated_dir = function(project) {
@@ -28,14 +28,16 @@
 }
 
 .book_structure_path = function(project) {
-  file.path(
-    project$path,
-    .book_structure_name
+  .generated_artifact_path(
+    project,
+    .iasi_metadata_name
   )
 }
 
 .book_structure_relative_path = function() {
-  .book_structure_name
+  .generated_artifact_relative_path(
+    .iasi_metadata_name
+  )
 }
 
 .navbar_left_path = function(project) {

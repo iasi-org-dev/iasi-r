@@ -17,6 +17,7 @@
   switch(
     project$strategy,
     regular = .prepare_regular_project(project),
+    outlined = .prepare_outlined_project(project),
     structured = .prepare_structured_project(project),
     parted = .prepare_parted_project(project),
     direct = .prepare_direct_project(project),
