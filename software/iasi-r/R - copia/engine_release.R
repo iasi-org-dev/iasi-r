@@ -7,32 +7,19 @@
 
 .release_project = function(context, project) {
   project = .prepare_project_config(project)
-  type = project$config$iasi$type
+  type = project$config$type
 
   message("Release project: ", project$path, " [", type, "]")
 
   if (identical(type, .IASI$types$pkg)) return(.release_package(context, project))
 
   if (.publish_applicable(project)) {
-    return(
-      .release_tree(
-        context,
-        project,
-        project$config$iasi$paths$publish,
-        root = isTRUE(context$current)
-      )
-    )
+    root = identical(type, .IASI$types$web)
+    return(.release_tree(context, project, project$config$paths$publish, root = root))
   }
 
   if (identical(type, .IASI$types$quarto)) {
-    return(
-      .release_tree(
-        context,
-        project,
-        .IASI$dirs$output,
-        root = isTRUE(context$current)
-      )
-    )
+    return(.release_tree(context, project, .IASI$dirs$output, root = FALSE))
   }
 
   .rc_add(context, .IASI$status$NOTHING_TO_DO)
@@ -98,7 +85,7 @@
 .release_source_path = function(project, source) {
   if (.is_absolute_path(source)) return(normalizePath(source, winslash = "/", mustWork = FALSE))
 
-  base = if (identical(source, project$config$iasi$paths$publish)) {
+  base = if (identical(source, project$config$paths$publish)) {
     .config_base(project$path, "publish")
   } else {
     project$path
@@ -109,7 +96,7 @@
 
 
 .release_path = function(project) {
-  value = project$config$iasi$paths$release
+  value = project$config$paths$release
   base = .config_base(project$path, "release")
   path = if (.is_absolute_path(value)) value else file.path(base, value)
   normalizePath(path, winslash = "/", mustWork = FALSE)

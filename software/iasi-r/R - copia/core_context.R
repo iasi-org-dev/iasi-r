@@ -1,4 +1,3 @@
-
 # Create the mutable execution context used by every public action.
 .new_context = function(...) {
   context = list2env(list(...), parent = emptyenv())
@@ -10,13 +9,6 @@
 # Accumulate one return-code bit or mask in the execution context.
 .rc_add = function(context, rc) {
   context$rc = bitwOr(as.integer(context$rc), as.integer(rc))
-  invisible(context$rc)
-}
-
-
-.attention = function(context, ...) {
-  message("ATTENTION: ", ...)
-  .rc_add(context, .IASI$status$ATTENTION)
   invisible(context$rc)
 }
 
@@ -40,7 +32,7 @@
   projects = Filter(Negate(is.null), projects)
 
   selected = Filter(
-    function(project) !identical(project$config$iasi$type, .IASI$types$repo),
+    function(project) !identical(project$config$type, .IASI$types$repo),
     projects
   )
 
@@ -51,25 +43,22 @@
 
 
 .read_iasi_project = function(path, context) {
-  config_file = .iasi_file(path, context = context)
+  config_file = .iasi_file(path, required = TRUE)
+  config = .read_config(config_file)
 
-  if (is.null(config_file)) {
-    .attention(context, "Missing iasi.toml in: ", path)
-    return(NULL)
-  }
-
-  iasi = .read_config(config_file)
-  type = iasi$type
+  type = config$type
 
   if (is.null(type) || !is.character(type) || length(type) != 1L || is.na(type) || !nzchar(type)) {
-    .attention(context, "Missing project type in: ", config_file)
+    message("ATTENTION: Missing project type in: ", config_file)
+    .rc_add(context, .IASI$status$ATTENTION)
     return(NULL)
   }
 
   valid = unname(unlist(.IASI$types, use.names = FALSE))
 
   if (!type %in% valid) {
-    .attention(context, "Invalid project type '", type, "' in: ", config_file)
+    message("ATTENTION: Invalid project type '", type, "' in: ", config_file)
+    .rc_add(context, .IASI$status$ATTENTION)
     return(NULL)
   }
 
@@ -77,10 +66,7 @@
     name = basename(path),
     path = normalizePath(path, winslash = "/", mustWork = TRUE),
     config_file = normalizePath(config_file, winslash = "/", mustWork = TRUE),
-    config = list(
-      iasi = iasi,
-      quarto = .read_quarto_config(path)
-    )
+    config = config
   )
 
   class(project) = c("iasi_project", "list")
@@ -89,13 +75,13 @@
 
 
 .prepare_project_config = function(project) {
-  project$config$iasi = .resolve_config(project)
+  project$config = .resolve_config(project)
   project
 }
 
 
 .resolve_config = function(project) {
-  config = project$config$iasi
+  config = project$config
   path = dirname(project$path)
 
   repeat {
@@ -109,6 +95,7 @@
   }
 
   if (is.null(config$paths)) config$paths = list()
+  if (identical(config$type, .IASI$types$pkg) && is.null(config$paths$output)) config$paths$output = "."
   if (is.null(config$paths$publish)) config$paths$publish = .IASI$dirs$publish
   if (is.null(config$paths$release)) config$paths$release = .IASI$dirs$release
 
@@ -132,46 +119,39 @@
 
 
 .read_optional_iasi = function(path) {
-  file = .iasi_file(path, warn_legacy = FALSE)
+  file = .iasi_file(path)
   if (is.null(file)) return(NULL)
   .read_config(file)
 }
 
 
-.iasi_file = function(path, context = NULL, warn_legacy = TRUE) {
-  canonical = file.path(path, .IASI$files$iasi)
-  legacy = file.path(path, .IASI$files$legacy_iasi)
-  existing_legacy = legacy[file.exists(legacy)]
+.iasi_file = function(path, required = FALSE) {
+  candidates = file.path(path, .IASI$files$iasi)
+  found = candidates[file.exists(candidates)]
 
-  if (warn_legacy && file.exists(canonical) && length(existing_legacy)) {
-    if (is.null(context)) {
-      message(
-        "ATTENTION: Multiple IASI configuration files found in: ",
-        path,
-        ". Using iasi.toml; legacy files: ",
-        paste(basename(existing_legacy), collapse = ", ")
-      )
-    } else {
-      .attention(
-        context,
-        "Multiple IASI configuration files found in: ",
-        path,
-        ". Using iasi.toml; legacy files: ",
-        paste(basename(existing_legacy), collapse = ", ")
-      )
-    }
+  if (length(found) > 1L) {
+    message("Multiple IASI configuration files found in: ", path)
+    stop("IASI configuration is ambiguous.", call. = FALSE)
   }
 
-  if (!file.exists(canonical)) return(NULL)
-  canonical
+  if (!length(found)) {
+    if (required) {
+      message("IASI configuration not found in: ", path)
+      stop("IASI configuration not found.", call. = FALSE)
+    }
+
+    return(NULL)
+  }
+
+  found[[1L]]
 }
 
 
 .read_config = function(path) {
   config = tryCatch(
-    RcppTOML::parseTOML(path),
+    yaml::read_yaml(path),
     error = function(error) {
-      message("Invalid IASI TOML configuration: ", path, ": ", conditionMessage(error))
+      message("Invalid IASI configuration: ", path, ": ", conditionMessage(error))
       stop(error)
     }
   )
@@ -179,39 +159,9 @@
   if (is.null(config)) config = list()
 
   if (!is.list(config)) {
-    message("IASI configuration must be a TOML table: ", path)
+    message("IASI configuration must be a mapping: ", path)
     stop("Invalid IASI configuration.", call. = FALSE)
   }
 
-  unclass(config)
-}
-
-
-.read_quarto_config = function(path) {
-  base_file = file.path(path, .IASI$files$quarto)
-  base = if (file.exists(base_file)) .read_yaml_file(base_file) else NULL
-
-  profile_files = list.files(
-    path,
-    pattern = "^_quarto-.+\\.ya?ml$",
-    full.names = TRUE,
-    recursive = FALSE,
-    ignore.case = TRUE
-  )
-
-  profiles = lapply(profile_files, .read_yaml_file)
-
-  if (length(profile_files)) {
-    names(profiles) = sub(
-      "^_quarto-(.+)\\.ya?ml$",
-      "\\1",
-      basename(profile_files),
-      ignore.case = TRUE
-    )
-  }
-
-  list(
-    base = base,
-    profiles = profiles
-  )
+  config
 }

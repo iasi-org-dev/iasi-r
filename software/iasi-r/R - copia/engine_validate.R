@@ -11,7 +11,7 @@
 .validate_project = function(context, project) {
   project = .prepare_project_config(project)
 
-  if (identical(project$config$iasi$type, .IASI$types$pkg)) {
+  if (identical(project$config$type, .IASI$types$pkg)) {
     if (!file.exists(file.path(project$path, "DESCRIPTION"))) {
       message("Missing DESCRIPTION in R package: ", project$path)
       stop("Invalid R package project.", call. = FALSE)

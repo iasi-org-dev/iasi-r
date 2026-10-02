@@ -1,4 +1,3 @@
-
 # Internal IASI constants.
 #
 # Canonical names and defaults used by the package live here so engines do not
@@ -19,9 +18,7 @@
   ),
 
   files = list(
-    iasi = "iasi.toml",
-    legacy_iasi = c("_iasi.yml", ".iasi.yml"),
-    quarto = "_quarto.yml"
+    iasi = c("_iasi.yml", ".iasi.yml")
   ),
 
   dirs = list(

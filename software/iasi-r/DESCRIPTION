@@ -20,7 +20,8 @@ Depends:
 Imports:
     utils,
     xml2,
-    yaml
+    yaml,
+    RcppTOML
 Roxygen: list(markdown = TRUE)
 Suggests:
     testthat (>= 3.0.0),

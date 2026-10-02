@@ -5,14 +5,14 @@
 
 
 .as_quarto_project = function(project) {
-  if (is.null(project$config$quarto$base)) {
+  if (!file.exists(file.path(project$path, "_quarto.yml"))) {
     message("Missing _quarto.yml in: ", project$path)
     stop("Missing Quarto configuration.", call. = FALSE)
   }
 
-  quarto_project = .discover_project(project)
+  quarto_project = .discover_project(project$path, project$config)
   quarto_project$config = project$config
-  quarto_project$iasi_type = project$config$iasi$type
+  quarto_project$iasi_type = project$config$type
   quarto_project
 }
 
@@ -38,17 +38,18 @@
 
 # Quarto project parsing --------------------------------------------------
 
-.discover_project = function(source_project) {
-  project_path = .normalise_project_path(source_project$path)
+.discover_project = function(path, iasi_source = NULL) {
+  project_path = .normalise_project_path(path)
 
   quarto_file = file.path(
     project_path,
-    .IASI$files$quarto
+    "_quarto.yml"
   )
 
-  iasi_file = source_project$config_file
-  iasi_source = source_project$config$iasi
-  quarto = source_project$config$quarto$base
+  iasi_file = .iasi_file(project_path, required = TRUE)
+
+  quarto = .read_yaml_file(quarto_file)
+  if (is.null(iasi_source)) iasi_source = .read_yaml_file(iasi_file)
 
   quarto_project = .yaml_section(
     quarto,
@@ -94,10 +95,7 @@
       .yaml_field(publication, "back-matter")
     ),
     exclude = .normalise_exclude(
-      .yaml_field(
-        .yaml_section(iasi, "excludes"),
-        "paths"
-      )
+      .yaml_field(iasi, "exclude")
     ),
     numbered = .yaml_field(publication, "numbered"),
     html_landing_page = .yaml_field(

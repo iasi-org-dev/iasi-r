@@ -148,22 +148,13 @@
     )
   }
 
-  excludes = if (is.list(source)) source[["excludes"]] else NULL
-  exclude_paths = if (is.list(excludes)) excludes[["paths"]] else NULL
+  exclude = if (is.list(source)) source[["exclude"]] else NULL
 
-  if (!is.null(excludes) && !is.list(excludes)) {
+  if (!.valid_exclude(exclude)) {
     errors = c(
       errors,
       sprintf(
-        "The 'excludes' section in %s must be a mapping.",
-        config_name
-      )
-    )
-  } else if (!.valid_exclude(exclude_paths)) {
-    errors = c(
-      errors,
-      sprintf(
-        "The 'excludes.paths' value in %s must be a list of non-empty directory names.",
+        "The 'exclude' section in %s must be a list of non-empty directory names.",
         config_name
       )
     )

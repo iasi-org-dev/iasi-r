@@ -1,4 +1,3 @@
-
 .discover = function(context) {
   root = normalizePath(context$path, winslash = "/", mustWork = TRUE)
 
@@ -39,17 +38,11 @@
 
   directories = directories[!excluded]
 
-  discovery_files = c(
-    .IASI$files$iasi,
-    .IASI$files$legacy_iasi,
-    .IASI$files$quarto
-  )
-
   projects = directories[
     vapply(
       directories,
       function(path) {
-        candidates = file.path(path, discovery_files)
+        candidates = file.path(path, .IASI$files$iasi)
         any(file.exists(candidates))
       },
       logical(1)

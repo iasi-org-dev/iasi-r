@@ -14,7 +14,7 @@
   # A build must represent exactly the formats selected for this execution.
   .clean_build_outputs(project)
 
-  if (identical(project$config$iasi$type, .IASI$types$quarto) && is.null(quarto$strategy)) {
+  if (identical(project$config$type, .IASI$types$quarto) && is.null(quarto$strategy)) {
     warning(
       sprintf("No IASI publication strategy defined for Quarto project '%s'; using Quarto as-is.", project$name),
       call. = FALSE
@@ -223,8 +223,8 @@
 
 # Resolve the expected output filename for an export profile.
 .resolve_export_output_file = function(project, profile) {
-  profile_quarto = project$config$quarto$profiles[[profile]]
-  if (is.null(profile_quarto)) profile_quarto = list()
+  profile_file = file.path(project$path, sprintf("_quarto-%s.yml", profile))
+  profile_quarto = if (file.exists(profile_file)) .read_yaml_file(profile_file) else list()
 
   candidates = list(.yaml_field(.yaml_section(profile_quarto, "book"), "output-file"), .yaml_field(.yaml_section(project$quarto, "book"), "output-file"), project$name)
 

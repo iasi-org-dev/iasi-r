@@ -20,8 +20,8 @@
 # Dispatch one selected project to the build implementation for its type.
 .build_project = function(context, project) {
   project = .prepare_project_config(project)
-  message("Building: ", project$path, " [", project$config$iasi$type, "]")
+  message("Building: ", project$path, " [", project$config$type, "]")
 
-  if (identical(project$config$iasi$type, .IASI$types$pkg)) return(.build_package_project(context, project))
+  if (identical(project$config$type, .IASI$types$pkg)) return(.build_package_project(context, project))
   .build_quarto_project(context, project)
 }

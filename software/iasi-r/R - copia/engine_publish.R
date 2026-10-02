@@ -27,12 +27,12 @@
 
 
 .publish_applicable = function(project) {
-  if (identical(project$config$iasi$type, .IASI$types$web)) {
+  if (identical(project$config$type, .IASI$types$web)) {
     return(TRUE)
   }
 
-  identical(project$config$iasi$type, .IASI$types$quarto) &&
-    !is.null(.config_publication_strategy(project$config$iasi))
+  identical(project$config$type, .IASI$types$quarto) &&
+    !is.null(.config_publication_strategy(project$config))
 }
 
 

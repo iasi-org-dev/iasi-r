@@ -99,10 +99,18 @@
 }
 
 .profile_config = function(project, profile) {
-  profile_quarto = project$config$quarto$profiles[[profile]]
+  profile_path = file.path(
+    project$path,
+    sprintf(
+      "_quarto-%s.yml",
+      profile
+    )
+  )
 
-  if (is.null(profile_quarto)) {
-    profile_quarto = list()
+  profile_quarto = if (file.exists(profile_path)) {
+    .read_yaml_file(profile_path)
+  } else {
+    list()
   }
 
   output_dir = .resolve_output_dir(

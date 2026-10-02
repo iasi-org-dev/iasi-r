@@ -14,7 +14,7 @@
 # project/configuration root only; build-format directories never participate in
 # destination resolution. release() assembles project publications later.
 .publish_destination = function(project) {
-  value = project$config$iasi$paths$publish
+  value = project$config$paths$publish
   base = .config_base(project$path, "publish")
   path = if (.is_absolute_path(value)) value else file.path(base, value)
   normalizePath(path, winslash = "/", mustWork = FALSE)
@@ -164,8 +164,8 @@
     paste0(.IASI$dirs$publish, ".work")
   )
 
-  if (!is.null(project) && is.list(project$config$iasi$paths)) {
-    configured = unname(unlist(project$config$iasi$paths[c("publish", "release")], use.names = FALSE))
+  if (!is.null(project) && is.list(project$config$paths)) {
+    configured = unname(unlist(project$config$paths[c("publish", "release")], use.names = FALSE))
     configured = configured[is.character(configured) & !is.na(configured) & nzchar(configured)]
 
     if (length(configured)) {
@@ -400,7 +400,7 @@
       is.list(version) ||
       is.na(version) ||
       !nzchar(as.character(version))
-   ) {
+  ) {
       version = NULL
    } else {
       version = as.character(version)
